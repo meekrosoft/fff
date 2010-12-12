@@ -6,7 +6,7 @@
  */
 
 #include "embedded.h"
-#include "cmock.h"
+#include "../cmock.h"
 #include <assert.h>
 #include <stdio.h>
 
