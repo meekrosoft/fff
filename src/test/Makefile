@@ -1,23 +1,30 @@
 $(VERBOSE).SILENT:
 
-C_PROGNAME = cmock
-CPP_PROGNAME = cppmock
+C_PROGNAME = ../../build/cmock
+CPP_PROGNAME = ../../build/cppmock
 CC = gcc
 CC += -c
 CPP = g++
 CPP += -c
 LD = g++
 
-C_OBJFILES = $(patsubst %.c,%.o,$(wildcard *.c))
-CPP_OBJFILES = cppmocktest.o embedded.o
+ODIR = ../../build
 
+C_OBJFILES = $(patsubst %.c,../../build/%.o,$(wildcard *.c))
+
+CPP_OBJFILES = ../../build/cppmocktest.o ../../build/embedded.o
+CPP_LIBS = -lgtest -lpthread -lgtest_main
+
+ODIR = ../../build
 
 all: $(C_PROGNAME) $(CPP_PROGNAME)
 
+.PHONY: clean
+
 clean:
 	@echo "Cleaning object files"
-	@echo "    rm -f     *.o"
-	rm -f *.o
+	@echo "    rm -f     ../../build/*.o"
+	rm -f ../../build/*.o
 	@echo "Cleaning backups"
 	@echo "    rm -f     *~"
 	rm -f *~
@@ -28,15 +35,15 @@ clean:
 	rm -f $(CPP_PROGNAME)
 
 
-%.o: %.c
+../../build/%.o: %.c
 	@echo "Compiling "$@
 	@echo "    CC        "$<
-	$(CC) $<
+	$(CC)  -o $@ $<
 
-%.o: %.cpp
+../../build/%.o: %.cpp
 	@echo "Compiling "$@
 	@echo "    CPP       "$<
-	$(CPP) -I/home/mlong/tools/gtest/gtest-1.5.0/include $<
+	$(CPP) -I/home/mlong/tools/gtest/gtest-1.5.0/include -o $@ $< 
 
 $(C_PROGNAME): $(C_OBJFILES)
 	@echo "Linking "$@
@@ -46,7 +53,9 @@ $(C_PROGNAME): $(C_OBJFILES)
 $(CPP_PROGNAME): $(CPP_OBJFILES) $(C_OBJFILES)
 	@echo "Linking "$@
 	@echo "    LD        -o "$(CPP_PROGNAME)"        "$(CPP_OBJFILES)
-	$(LD) -L/home/mlong/tools/gtest -o $(CPP_PROGNAME) $(CPP_OBJFILES) -lgtest -lpthread -lgtest_main
+	$(LD) -L/home/mlong/tools/gtest -o $(CPP_PROGNAME) $(CPP_OBJFILES) $(CPP_LIBS)
+
+
 
 nothing:
 	@echo "Nothing to do; quitting  :("
