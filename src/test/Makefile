@@ -28,7 +28,7 @@ clean:
 	@echo "Cleaning backups"
 	@echo "    rm -f     *~"
 	rm -f *~
-	@echo "Removing programm"
+	@echo "Removing programs"
 	@echo "    rm -f     "$(C_PROGNAME)
 	rm -f $(C_PROGNAME)
 	@echo "    rm -f     "$(CPP_PROGNAME)

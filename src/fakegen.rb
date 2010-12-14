@@ -22,7 +22,7 @@ def output_macro(args, is_value_function)
     puts "	} \\"
     output_reset_function(args)
   }
-  puts "STATIC_INIT(FUNCNAME) \\"
+  puts "STATIC_INIT(FUNCNAME) \\" if $cpp_output
   puts ""
 end
 
@@ -125,6 +125,13 @@ def define_reset_fake
   puts "#define RESET_FAKE(FUNCNAME) { \\"
   puts "    FUNCNAME##_reset(); \\"
   puts "} \\"
+  puts ""
+end
+
+def extern_c
+  puts "extern \"C\"{ \\" unless !$cpp_output
+  yield
+  puts "} \\" unless !$cpp_output
 end
 
 def include_guard
@@ -138,15 +145,25 @@ def include_guard
   puts "#endif // FAKE_FUNCTIONS"
 end
 
-def extern_c
 
-  puts "extern \"C\"{ \\" unless !$cpp_output
-  yield
-  puts "} \\" unless !$cpp_output
+def output_c_and_cpp
+
+  include_guard {
+    puts "#ifdef __cplusplus"
+    $cpp_output = true
+    yield
+
+    puts "#else  /* ansi c */"
+
+    $cpp_output = false
+    yield
+    puts "#endif  /* cpp/ansi c */"
+  }
 end
 
+
 # lets generate!!
-include_guard {
+output_c_and_cpp{
   output_reset_code if $cpp_output
   output_static_initializer if $cpp_output
   10.times {|arg_count| output_macro(arg_count, false)}
