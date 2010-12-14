@@ -1,0 +1,10 @@
+
+cmock is a micro-framework for creating fake C functions for tests.
+
+Here are some cmock truths:  
+ * It maintains a call count and will capture the arguments sent
+ * It can be used in C or C++ tests
+ * It is simple - just include a header file and you are good to go.
+ 
+What I'd like to add:
+ * Proper mock - setting expectations, etc   
