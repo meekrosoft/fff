@@ -1,5 +1,6 @@
 $(VERBOSE).SILENT:
 
+TEMPLATE_PROGNAME = ../../build/template
 C_PROGNAME = ../../build/cmock
 CPP_PROGNAME = ../../build/cppmock
 CC = gcc
@@ -10,14 +11,14 @@ LD = g++
 
 ODIR = ../../build
 
-C_OBJFILES = $(patsubst %.c,../../build/%.o,$(wildcard *.c))
-
+C_OBJFILES = ../../build/cmocktest.o ../../build/embedded.o
+TEMPLATE_OBJFILES = ../../build/test_suite_template.o
 CPP_OBJFILES = ../../build/cppmocktest.o ../../build/embedded.o
 CPP_LIBS = -lgtest -lpthread -lgtest_main
 
 ODIR = ../../build
 
-all: $(C_PROGNAME) $(CPP_PROGNAME)
+all: $(C_PROGNAME) $(CPP_PROGNAME) $(TEMPLATE_PROGNAME)
 
 .PHONY: clean
 
@@ -44,6 +45,11 @@ clean:
 	@echo "Compiling "$@
 	@echo "    CPP       "$<
 	$(CPP) -I/home/mlong/tools/gtest/gtest-1.5.0/include -o $@ $< 
+
+$(TEMPLATE_PROGNAME): $(TEMPLATE_OBJFILES)
+	@echo "Linking "$@
+	@echo "    LD        -o "ctemplate"        "$(TEMPLATE_OBJFILES)
+	$(LD) -o $(TEMPLATE_PROGNAME) $(TEMPLATE_OBJFILES)
 
 $(C_PROGNAME): $(C_OBJFILES)
 	@echo "Linking "$@
