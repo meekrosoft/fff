@@ -6,6 +6,7 @@ void DISPLAY_clear();
 int DISPLAY_get_line_capacity();
 int DISPLAY_get_line_insert_index();
 void DISPLAY_output_message(char * message);
+unsigned char DISPLAY_get_pixel(unsigned int x, unsigned int y);
 
 void UI_init()
 {

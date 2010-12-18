@@ -16,6 +16,7 @@ FAKE_VOID_FUNC0(DISPLAY_clear);
 FAKE_VOID_FUNC1(DISPLAY_output_message, const char*);
 FAKE_VALUE_FUNC0(int, DISPLAY_get_line_capacity);
 FAKE_VALUE_FUNC0(int, DISPLAY_get_line_insert_index);
+FAKE_VALUE_FUNC2(unsigned char, DISPLAY_get_pixel, unsigned int, unsigned int);
 
 void setup()
 {

@@ -64,7 +64,7 @@ extern "C"{ \
     static ARG0_TYPE FUNCNAME##_arg0_val; \
     static ARG1_TYPE FUNCNAME##_arg1_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_call_count++; \
@@ -85,7 +85,7 @@ extern "C"{ \
     static ARG1_TYPE FUNCNAME##_arg1_val; \
     static ARG2_TYPE FUNCNAME##_arg2_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -109,7 +109,7 @@ extern "C"{ \
     static ARG2_TYPE FUNCNAME##_arg2_val; \
     static ARG3_TYPE FUNCNAME##_arg3_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -136,7 +136,7 @@ extern "C"{ \
     static ARG3_TYPE FUNCNAME##_arg3_val; \
     static ARG4_TYPE FUNCNAME##_arg4_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -166,7 +166,7 @@ extern "C"{ \
     static ARG4_TYPE FUNCNAME##_arg4_val; \
     static ARG5_TYPE FUNCNAME##_arg5_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -199,7 +199,7 @@ extern "C"{ \
     static ARG5_TYPE FUNCNAME##_arg5_val; \
     static ARG6_TYPE FUNCNAME##_arg6_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -235,7 +235,7 @@ extern "C"{ \
     static ARG6_TYPE FUNCNAME##_arg6_val; \
     static ARG7_TYPE FUNCNAME##_arg7_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6ARG7_TYPE arg7){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -274,7 +274,7 @@ extern "C"{ \
     static ARG7_TYPE FUNCNAME##_arg7_val; \
     static ARG8_TYPE FUNCNAME##_arg8_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6ARG7_TYPE arg7ARG8_TYPE arg8){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -344,7 +344,7 @@ extern "C"{ \
     static ARG1_TYPE FUNCNAME##_arg1_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_call_count++; \
@@ -367,7 +367,7 @@ extern "C"{ \
     static ARG2_TYPE FUNCNAME##_arg2_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -393,7 +393,7 @@ extern "C"{ \
     static ARG3_TYPE FUNCNAME##_arg3_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -422,7 +422,7 @@ extern "C"{ \
     static ARG4_TYPE FUNCNAME##_arg4_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -454,7 +454,7 @@ extern "C"{ \
     static ARG5_TYPE FUNCNAME##_arg5_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -489,7 +489,7 @@ extern "C"{ \
     static ARG6_TYPE FUNCNAME##_arg6_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -527,7 +527,7 @@ extern "C"{ \
     static ARG7_TYPE FUNCNAME##_arg7_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6ARG7_TYPE arg7){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -568,7 +568,7 @@ extern "C"{ \
     static ARG8_TYPE FUNCNAME##_arg8_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6ARG7_TYPE arg7ARG8_TYPE arg8){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -634,7 +634,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG0_TYPE FUNCNAME##_arg0_val; \
     static ARG1_TYPE FUNCNAME##_arg1_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_call_count++; \
@@ -652,7 +652,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG1_TYPE FUNCNAME##_arg1_val; \
     static ARG2_TYPE FUNCNAME##_arg2_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -673,7 +673,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG2_TYPE FUNCNAME##_arg2_val; \
     static ARG3_TYPE FUNCNAME##_arg3_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -697,7 +697,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG3_TYPE FUNCNAME##_arg3_val; \
     static ARG4_TYPE FUNCNAME##_arg4_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -724,7 +724,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG4_TYPE FUNCNAME##_arg4_val; \
     static ARG5_TYPE FUNCNAME##_arg5_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -754,7 +754,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG5_TYPE FUNCNAME##_arg5_val; \
     static ARG6_TYPE FUNCNAME##_arg6_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -787,7 +787,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG6_TYPE FUNCNAME##_arg6_val; \
     static ARG7_TYPE FUNCNAME##_arg7_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6ARG7_TYPE arg7){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -823,7 +823,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG7_TYPE FUNCNAME##_arg7_val; \
     static ARG8_TYPE FUNCNAME##_arg8_val; \
     static int FUNCNAME##_call_count = 0; \
-    void FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6ARG7_TYPE arg7ARG8_TYPE arg8){ \
+    void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -884,7 +884,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG1_TYPE FUNCNAME##_arg1_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_call_count++; \
@@ -904,7 +904,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG2_TYPE FUNCNAME##_arg2_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -927,7 +927,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG3_TYPE FUNCNAME##_arg3_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -953,7 +953,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG4_TYPE FUNCNAME##_arg4_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -982,7 +982,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG5_TYPE FUNCNAME##_arg5_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -1014,7 +1014,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG6_TYPE FUNCNAME##_arg6_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -1049,7 +1049,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG7_TYPE FUNCNAME##_arg7_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6ARG7_TYPE arg7){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
@@ -1087,7 +1087,7 @@ STATIC_INIT(FUNCNAME) \
     static ARG8_TYPE FUNCNAME##_arg8_val; \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_call_count = 0; \
-    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0ARG1_TYPE arg1ARG2_TYPE arg2ARG3_TYPE arg3ARG4_TYPE arg4ARG5_TYPE arg5ARG6_TYPE arg6ARG7_TYPE arg7ARG8_TYPE arg8){ \
+    RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \

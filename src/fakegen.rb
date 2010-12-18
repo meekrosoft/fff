@@ -96,7 +96,9 @@ def output_function_signature(args, is_value_function)
     print "    void FUNCNAME("
   end
 
-  args.times { |i| print "ARG#{i}_TYPE arg#{i}" }
+  arguments = []
+  args.times { |i| arguments << "ARG#{i}_TYPE arg#{i}" }
+  print arguments.join(", ")
 
   print ")"
 end
