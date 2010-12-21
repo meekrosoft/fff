@@ -313,6 +313,7 @@ extern "C"{ \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -332,6 +333,7 @@ extern "C"{ \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -354,6 +356,7 @@ extern "C"{ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
         FUNCNAME##_arg1_val = (ARG1_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -379,6 +382,7 @@ extern "C"{ \
         FUNCNAME##_arg1_val = (ARG1_TYPE) 0; \
         FUNCNAME##_arg2_val = (ARG2_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -407,6 +411,7 @@ extern "C"{ \
         FUNCNAME##_arg2_val = (ARG2_TYPE) 0; \
         FUNCNAME##_arg3_val = (ARG3_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -438,6 +443,7 @@ extern "C"{ \
         FUNCNAME##_arg3_val = (ARG3_TYPE) 0; \
         FUNCNAME##_arg4_val = (ARG4_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -472,6 +478,7 @@ extern "C"{ \
         FUNCNAME##_arg4_val = (ARG4_TYPE) 0; \
         FUNCNAME##_arg5_val = (ARG5_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -509,6 +516,7 @@ extern "C"{ \
         FUNCNAME##_arg5_val = (ARG5_TYPE) 0; \
         FUNCNAME##_arg6_val = (ARG6_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -549,6 +557,7 @@ extern "C"{ \
         FUNCNAME##_arg6_val = (ARG6_TYPE) 0; \
         FUNCNAME##_arg7_val = (ARG7_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -592,6 +601,7 @@ extern "C"{ \
         FUNCNAME##_arg7_val = (ARG7_TYPE) 0; \
         FUNCNAME##_arg8_val = (ARG8_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -602,6 +612,14 @@ STATIC_INIT(FUNCNAME) \
     FUNCNAME##_reset(); \
 } \
 
+#define MAX_CALL_HISTORY 10u
+static void * call_history[MAX_CALL_HISTORY];
+static unsigned int call_history_idx;
+void RESET_HISTORY() { 
+    call_history_idx = 0; 
+}
+#define REGISTER_CALL(function) \
+   if(call_history_idx < MAX_CALL_HISTORY) call_history[call_history_idx++] = (void *)function;
 #else  /* ansi c */
 
 /* Defining a void function with 0 parameters*/
@@ -859,6 +877,7 @@ STATIC_INIT(FUNCNAME) \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -875,6 +894,7 @@ STATIC_INIT(FUNCNAME) \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -894,6 +914,7 @@ STATIC_INIT(FUNCNAME) \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
         FUNCNAME##_arg1_val = (ARG1_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -916,6 +937,7 @@ STATIC_INIT(FUNCNAME) \
         FUNCNAME##_arg1_val = (ARG1_TYPE) 0; \
         FUNCNAME##_arg2_val = (ARG2_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -941,6 +963,7 @@ STATIC_INIT(FUNCNAME) \
         FUNCNAME##_arg2_val = (ARG2_TYPE) 0; \
         FUNCNAME##_arg3_val = (ARG3_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -969,6 +992,7 @@ STATIC_INIT(FUNCNAME) \
         FUNCNAME##_arg3_val = (ARG3_TYPE) 0; \
         FUNCNAME##_arg4_val = (ARG4_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -1000,6 +1024,7 @@ STATIC_INIT(FUNCNAME) \
         FUNCNAME##_arg4_val = (ARG4_TYPE) 0; \
         FUNCNAME##_arg5_val = (ARG5_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -1034,6 +1059,7 @@ STATIC_INIT(FUNCNAME) \
         FUNCNAME##_arg5_val = (ARG5_TYPE) 0; \
         FUNCNAME##_arg6_val = (ARG6_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -1071,6 +1097,7 @@ STATIC_INIT(FUNCNAME) \
         FUNCNAME##_arg6_val = (ARG6_TYPE) 0; \
         FUNCNAME##_arg7_val = (ARG7_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -1111,6 +1138,7 @@ STATIC_INIT(FUNCNAME) \
         FUNCNAME##_arg7_val = (ARG7_TYPE) 0; \
         FUNCNAME##_arg8_val = (ARG8_TYPE) 0; \
         FUNCNAME##_call_count = 0; \
+        FUNCNAME##_return_val = 0; \
     } \
 
 
@@ -1119,6 +1147,14 @@ STATIC_INIT(FUNCNAME) \
     FUNCNAME##_reset(); \
 } \
 
+#define MAX_CALL_HISTORY 10u
+static void * call_history[MAX_CALL_HISTORY];
+static unsigned int call_history_idx;
+void RESET_HISTORY() { 
+    call_history_idx = 0; 
+}
+#define REGISTER_CALL(function) \
+   if(call_history_idx < MAX_CALL_HISTORY) call_history[call_history_idx++] = (void *)function;
 #endif  /* cpp/ansi c */
 
 #endif // FAKE_FUNCTIONS

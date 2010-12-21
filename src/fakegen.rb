@@ -4,6 +4,9 @@
 
 
 $cpp_output = true
+$MAX_ARGS = 10
+$MAX_ARG_HISTORY = 10
+$MAX_CALL_HISTORY = 10
 
 def output_macro(args, is_value_function)
 
@@ -20,13 +23,13 @@ def output_macro(args, is_value_function)
     puts "{ \\"
     output_function_body(args, is_value_function)
     puts "	} \\"
-    output_reset_function(args)
+    output_reset_function(args, is_value_function)
   }
   puts "STATIC_INIT(FUNCNAME) \\" if $cpp_output
   puts ""
 end
 
-def output_reset_code
+def output_cpp_reset_code
   puts <<-REGISTRATION
 #include <vector>
 typedef void (*void_fptr)();
@@ -44,7 +47,7 @@ void RESET_FAKES()
   REGISTRATION
 end
 
-def output_static_initializer
+def output_cpp_static_initializer
   puts <<-MY_STATIC_INITIALIZER
 #define STATIC_INIT(FUNCNAME) \\
 class StaticInitializer_##FUNCNAME \\
@@ -83,13 +86,21 @@ def output_macro_name(macro_name, args, return_type)
   puts ") \\"
 end
 
-def output_variables(args, is_value_function)
-  args.times { |i| puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_val; \\" }
+def output_argument_capture_variables(i)
+  # last argument
+  puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_val; \\"
+  # argument history array
+#  puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_history[];"
+#  puts "    static int FUNCNAME##_arg#{i}_history_idx;"
+end
+
+def output_variables(arg_count, is_value_function)
+  arg_count.times { |i| output_argument_capture_variables(i) }
   puts "    static RETURN_TYPE FUNCNAME##_return_val; \\" unless not is_value_function
   puts "    static int FUNCNAME##_call_count = 0; \\"
 end
 
-def output_function_signature(args, is_value_function)
+def output_function_signature(args_count, is_value_function)
   if is_value_function
     print "    RETURN_TYPE FUNCNAME("
   else
@@ -97,27 +108,28 @@ def output_function_signature(args, is_value_function)
   end
 
   arguments = []
-  args.times { |i| arguments << "ARG#{i}_TYPE arg#{i}" }
+  args_count.times { |i| arguments << "ARG#{i}_TYPE arg#{i}" }
   print arguments.join(", ")
 
   print ")"
 end
 
-def output_function_body(args, is_value_function)
+def output_function_body(arg_count, is_value_function)
   # capture arguments
-  args.times { |i| puts "        FUNCNAME##_arg#{i}_val = arg#{i}; \\" }
+  arg_count.times { |i| puts "        FUNCNAME##_arg#{i}_val = arg#{i}; \\" }
   # update call count
   puts "        FUNCNAME##_call_count++; \\"
   # return something if value function
   puts "        return FUNCNAME##_return_val; \\" unless not is_value_function
 end
 
-def output_reset_function(args)
+def output_reset_function(arg_count, is_value_function)
   puts "    void FUNCNAME##_reset(){ \\"
-  args.times { |i|
+  arg_count.times { |i|
     puts "        FUNCNAME##_arg#{i}_val = (ARG#{i}_TYPE) 0; \\"
   }
   puts "        FUNCNAME##_call_count = 0; \\"
+  puts "        FUNCNAME##_return_val = 0; \\" unless not is_value_function
   puts "    } \\"
 end
 
@@ -129,6 +141,19 @@ def define_reset_fake
   puts "} \\"
   puts ""
 end
+
+def define_call_history
+  puts "#define MAX_CALL_HISTORY #{$MAX_CALL_HISTORY}u"
+  puts "static void * call_history[MAX_CALL_HISTORY];"
+  puts "static unsigned int call_history_idx;"
+  puts "void RESET_HISTORY() { "
+  puts "    call_history_idx = 0; "
+  puts "}"
+
+  puts "#define REGISTER_CALL(function) \\"
+  puts "   if(call_history_idx < MAX_CALL_HISTORY) call_history[call_history_idx++] = (void *)function;"
+end
+
 
 def extern_c
   puts "extern \"C\"{ \\" unless !$cpp_output
@@ -166,9 +191,10 @@ end
 
 # lets generate!!
 output_c_and_cpp{
-  output_reset_code if $cpp_output
-  output_static_initializer if $cpp_output
+  output_cpp_reset_code if $cpp_output
+  output_cpp_static_initializer if $cpp_output
   10.times {|arg_count| output_macro(arg_count, false)}
   10.times {|arg_count| output_macro(arg_count, true)}
   define_reset_fake
+  define_call_history
 }

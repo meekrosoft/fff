@@ -6,7 +6,7 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
-#include "../cmock.h"
+#include "../fff.h"
 
 extern "C"{
 #include "embedded.h"
