@@ -138,3 +138,11 @@ TEST_F(FFFTestSuite, call_history_will_not_write_past_array_bounds)
 	}
 	ASSERT_EQ(MAX_CALL_HISTORY, call_history_idx);
 }
+
+
+TEST_F(FFFTestSuite, calling_fake_registers_one_call)
+{
+	longfunc0();
+	ASSERT_EQ(call_history_idx, 1u);
+	ASSERT_EQ(call_history[0], (void *)longfunc0);
+}

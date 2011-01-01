@@ -33,6 +33,7 @@ extern "C"{ \
     static int FUNCNAME##_call_count = 0; \
     void FUNCNAME(){ \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_call_count = 0; \
@@ -49,6 +50,7 @@ extern "C"{ \
     void FUNCNAME(ARG0_TYPE arg0){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -68,6 +70,7 @@ extern "C"{ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -90,6 +93,7 @@ extern "C"{ \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -115,6 +119,7 @@ extern "C"{ \
         FUNCNAME##_arg2_val = arg2; \
         FUNCNAME##_arg3_val = arg3; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -143,6 +148,7 @@ extern "C"{ \
         FUNCNAME##_arg3_val = arg3; \
         FUNCNAME##_arg4_val = arg4; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -174,6 +180,7 @@ extern "C"{ \
         FUNCNAME##_arg4_val = arg4; \
         FUNCNAME##_arg5_val = arg5; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -208,6 +215,7 @@ extern "C"{ \
         FUNCNAME##_arg5_val = arg5; \
         FUNCNAME##_arg6_val = arg6; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -245,6 +253,7 @@ extern "C"{ \
         FUNCNAME##_arg6_val = arg6; \
         FUNCNAME##_arg7_val = arg7; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -285,6 +294,7 @@ extern "C"{ \
         FUNCNAME##_arg7_val = arg7; \
         FUNCNAME##_arg8_val = arg8; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -309,6 +319,7 @@ extern "C"{ \
     static int FUNCNAME##_call_count = 0; \
     RETURN_TYPE FUNCNAME(){ \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -328,6 +339,7 @@ extern "C"{ \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -350,6 +362,7 @@ extern "C"{ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -375,6 +388,7 @@ extern "C"{ \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -403,6 +417,7 @@ extern "C"{ \
         FUNCNAME##_arg2_val = arg2; \
         FUNCNAME##_arg3_val = arg3; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -434,6 +449,7 @@ extern "C"{ \
         FUNCNAME##_arg3_val = arg3; \
         FUNCNAME##_arg4_val = arg4; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -468,6 +484,7 @@ extern "C"{ \
         FUNCNAME##_arg4_val = arg4; \
         FUNCNAME##_arg5_val = arg5; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -505,6 +522,7 @@ extern "C"{ \
         FUNCNAME##_arg5_val = arg5; \
         FUNCNAME##_arg6_val = arg6; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -545,6 +563,7 @@ extern "C"{ \
         FUNCNAME##_arg6_val = arg6; \
         FUNCNAME##_arg7_val = arg7; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -588,6 +607,7 @@ extern "C"{ \
         FUNCNAME##_arg7_val = arg7; \
         FUNCNAME##_arg8_val = arg8; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -627,6 +647,7 @@ void RESET_HISTORY() {
     static int FUNCNAME##_call_count = 0; \
     void FUNCNAME(){ \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_call_count = 0; \
@@ -640,6 +661,7 @@ void RESET_HISTORY() {
     void FUNCNAME(ARG0_TYPE arg0){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -656,6 +678,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -675,6 +698,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -697,6 +721,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg2_val = arg2; \
         FUNCNAME##_arg3_val = arg3; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -722,6 +747,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg3_val = arg3; \
         FUNCNAME##_arg4_val = arg4; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -750,6 +776,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg4_val = arg4; \
         FUNCNAME##_arg5_val = arg5; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -781,6 +808,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg5_val = arg5; \
         FUNCNAME##_arg6_val = arg6; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -815,6 +843,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg6_val = arg6; \
         FUNCNAME##_arg7_val = arg7; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -852,6 +881,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg7_val = arg7; \
         FUNCNAME##_arg8_val = arg8; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -873,6 +903,7 @@ void RESET_HISTORY() {
     static int FUNCNAME##_call_count = 0; \
     RETURN_TYPE FUNCNAME(){ \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -889,6 +920,7 @@ void RESET_HISTORY() {
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -908,6 +940,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -930,6 +963,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg1_val = arg1; \
         FUNCNAME##_arg2_val = arg2; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -955,6 +989,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg2_val = arg2; \
         FUNCNAME##_arg3_val = arg3; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -983,6 +1018,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg3_val = arg3; \
         FUNCNAME##_arg4_val = arg4; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1014,6 +1050,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg4_val = arg4; \
         FUNCNAME##_arg5_val = arg5; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1048,6 +1085,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg5_val = arg5; \
         FUNCNAME##_arg6_val = arg6; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1085,6 +1123,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg6_val = arg6; \
         FUNCNAME##_arg7_val = arg7; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1125,6 +1164,7 @@ void RESET_HISTORY() {
         FUNCNAME##_arg7_val = arg7; \
         FUNCNAME##_arg8_val = arg8; \
         FUNCNAME##_call_count++; \
+        REGISTER_CALL(FUNCNAME); \
         return FUNCNAME##_return_val; \
 	} \
     void FUNCNAME##_reset(){ \

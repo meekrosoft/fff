@@ -119,6 +119,8 @@ def output_function_body(arg_count, is_value_function)
   arg_count.times { |i| puts "        FUNCNAME##_arg#{i}_val = arg#{i}; \\" }
   # update call count
   puts "        FUNCNAME##_call_count++; \\"
+  #register call
+  puts "        REGISTER_CALL(FUNCNAME); \\"
   # return something if value function
   puts "        return FUNCNAME##_return_val; \\" unless not is_value_function
 end
