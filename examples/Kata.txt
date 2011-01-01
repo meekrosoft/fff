@@ -1,0 +1,25 @@
+
+Problem Definition
+------------------
+The task is to write a user interface module for an embedded device.  
+
+Interrupts:
+ * The user interface is responsible for initializing the display.
+ * The user interface will register an interrupt handler for GPIO input 2 (a 
+   push button).
+ * It will be possible to register a callback function for button presses. 
+ * When there is no callback function set the irq handler will increment a 
+   missed irq counter.  
+ * When the interrupt occurs the handler will schedule or execute the button 
+   press callback if there is one registered.
+Output:
+ * Tasks can write messages to the user interface to be output on the display.
+ * The display is line oriented; when the last line of the display is written 
+   the user interface is responsible for clearing the display.
+ * The display is 26 characters wide.  Any string longer than that must be 
+   truncated before being sent to the display. The string must be null 
+   terminated and thus maximum 27 bytes long.
+   
+ * BONUS: Have the display be scrolling, i.e. when the display is full, the 
+   previous lines must be shifted up one and the new line written in the bottom
+   line.  

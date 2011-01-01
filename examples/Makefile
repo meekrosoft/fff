@@ -2,17 +2,17 @@ $(VERBOSE).SILENT:
 
 BUILD_DIR = ../build
 TEMPLATE_PROGNAME = $(BUILD_DIR)/template
-C_PROGNAME = $(BUILD_DIR)/cmock
-CPP_PROGNAME = $(BUILD_DIR)/cppmock
+C_PROGNAME = $(BUILD_DIR)/ui_test_ansic
+CPP_PROGNAME = $(BUILD_DIR)/ui_test_cpp
 CC = gcc
 CC += -c
 CPP = g++
 CPP += -c
 LD = g++
 
-C_OBJFILES = $(BUILD_DIR)/cmocktest.o $(BUILD_DIR)/embedded.o
+C_OBJFILES = $(BUILD_DIR)/UI_test_ansic.o $(BUILD_DIR)/UI.o
 TEMPLATE_OBJFILES = $(BUILD_DIR)/test_suite_template.o
-CPP_OBJFILES = $(BUILD_DIR)/cppmocktest.o $(BUILD_DIR)/embedded.o
+CPP_OBJFILES = $(BUILD_DIR)/UI_test_cpp.o $(BUILD_DIR)/UI.o
 CPP_LIBS = -lgtest -lpthread -lgtest_main
 
 
