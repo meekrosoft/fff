@@ -1,18 +1,22 @@
 
+BUILD_DIR = ../build
+
 CPP_SRCS += \
 fff_test.cpp 
 
 OBJS += \
-../../build/fff_test.o 
+$(BUILD_DIR)/fff_test.o 
 
 LIBS := -lgtest_main -lgtest -lpthread
 
+PROGNAME = $(BUILD_DIR)/fff_test
+
 # All Target
-all: ../../build/fff_test
+all: $(BUILD_DIR)/fff_test
 
 
 # Each subdirectory must supply rules for building sources it contributes
-../../build/%.o: %.cpp
+$(BUILD_DIR)/%.o: %.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -I/home/mlong/tools/gtest/gtest-1.5.0/include -O0 -g3 -Wall -c -o"$@" "$<"
@@ -21,15 +25,15 @@ all: ../../build/fff_test
 
 
 # Tool invocations
-../../build/fff_test: $(OBJS) $(USER_OBJS)
+$(PROGNAME): $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L/home/mlong/tools/gtest -o"../../build/fff_test" $(OBJS) $(LIBS)
+	g++ -L/home/mlong/tools/gtest -o"$(PROGNAME)" $(OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS) fff_test
+	-$(RM) $(OBJS) $(PROGNAME)
 	-@echo ' '
 

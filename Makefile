@@ -1,7 +1,8 @@
 all: 
-	cd src/test; make all
-	cd src/examples; make all
+	mkdir -p build
+	cd test; make all
+	cd examples; make all
 
 clean: 
-	cd src/test; make clean
-	cd src/examples; make clean
+	cd test; make clean
+	cd examples; make clean

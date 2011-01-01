@@ -1,22 +1,20 @@
 $(VERBOSE).SILENT:
 
-TEMPLATE_PROGNAME = ../../build/template
-C_PROGNAME = ../../build/cmock
-CPP_PROGNAME = ../../build/cppmock
+BUILD_DIR = ../build
+TEMPLATE_PROGNAME = $(BUILD_DIR)/template
+C_PROGNAME = $(BUILD_DIR)/cmock
+CPP_PROGNAME = $(BUILD_DIR)/cppmock
 CC = gcc
 CC += -c
 CPP = g++
 CPP += -c
 LD = g++
 
-ODIR = ../../build
-
-C_OBJFILES = ../../build/cmocktest.o ../../build/embedded.o
-TEMPLATE_OBJFILES = ../../build/test_suite_template.o
-CPP_OBJFILES = ../../build/cppmocktest.o ../../build/embedded.o
+C_OBJFILES = $(BUILD_DIR)/cmocktest.o $(BUILD_DIR)/embedded.o
+TEMPLATE_OBJFILES = $(BUILD_DIR)/test_suite_template.o
+CPP_OBJFILES = $(BUILD_DIR)/cppmocktest.o $(BUILD_DIR)/embedded.o
 CPP_LIBS = -lgtest -lpthread -lgtest_main
 
-ODIR = ../../build
 
 all: $(C_PROGNAME) $(CPP_PROGNAME) $(TEMPLATE_PROGNAME)
 
@@ -24,24 +22,24 @@ all: $(C_PROGNAME) $(CPP_PROGNAME) $(TEMPLATE_PROGNAME)
 
 clean:
 	@echo "Cleaning object files"
-	@echo "    rm -f     ../../build/*.o"
-	rm -f ../../build/*.o
+	@echo "    rm -f     $(BUILD_DIR)/*.o"
+	rm -f $(BUILD_DIR)/*.o
 	@echo "Cleaning backups"
 	@echo "    rm -f     *~"
 	rm -f *~
 	@echo "Removing programs"
 	@echo "    rm -f     "$(C_PROGNAME)
 	rm -f $(C_PROGNAME)
-	@echo "    rm -f     "$(CPP_PROGNAME)
-	rm -f $(CPP_PROGNAME)
+	@echo "    rm -f     "$(CPP_PROGNAME) $(TEMPLATE_PROGNAME)
+	rm -f $(CPP_PROGNAME) $(TEMPLATE_PROGNAME)
 
 
-../../build/%.o: %.c
+$(BUILD_DIR)/%.o: %.c
 	@echo "Compiling "$@
 	@echo "    CC        "$<
 	$(CC)  -o $@ $<
 
-../../build/%.o: %.cpp
+$(BUILD_DIR)/%.o: %.cpp
 	@echo "Compiling "$@
 	@echo "    CPP       "$<
 	$(CPP) -I/home/mlong/tools/gtest/gtest-1.5.0/include -o $@ $< 
