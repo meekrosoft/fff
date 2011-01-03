@@ -125,6 +125,7 @@ arguments, for instance to fake:
     double pow(double base, double exponent);
     
 you would use a syntax like this:
+
     FAKE_VALUE_FUNC2(double, pow, double, double);
 
 
