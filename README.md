@@ -161,7 +161,7 @@ Here's how it works:
 
     	ASSERT_EQ(call_history[0], (void *)longfunc0);
     	ASSERT_EQ(call_history[1], (void *)voidfunc2);
-    	ASSERT_EQ(call_history[3], (void *)longfunc0);
+    	ASSERT_EQ(call_history[2], (void *)longfunc0);
     }
     
 They are reset by calling <tt>RESET_HISTORY();</tt>
