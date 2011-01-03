@@ -32,7 +32,11 @@ Here's how you would define a fake function for this in your test suite:
 	    ASSERT_EQ(1, DISPLAY_init_call_count);
     }
 
-So what has happened here?  The magic is in the <tt>FAKE_VOID_FUNC0</tt>.  This 
+So what has happened here?  The first thing to note is that the framework is 
+header only, all you need to do to use it is download <tt>fff.h</tt> and include
+it in your test suite.  
+
+The magic is in the <tt>FAKE_VOID_FUNC0</tt>.  This 
 expands a macro that defines a function returning <tt>void</tt> 
 which has zero arguments.  It also defines a variable 
 <tt>"function_name"_call_count</tt> which is incremented every time the faked 
