@@ -25,7 +25,9 @@ Here's how you would define a fake function for this in your test suite:
     // test.c(pp)
     #include "fff.h"
     FAKE_VOID_FUNC0(DISPLAY_init);
-    
+
+And the unit test might look something like this:
+
     TEST_F(GreeterTests, init_initialises_display)
     {
 	    UI_init();
@@ -65,7 +67,9 @@ Ok, enough with the toy examples.  What about faking functions with arguments?
 Here's how you would define a fake function for this in your test suite:
 
     FAKE_VOID_FUNC1(DISPLAY_output_message, const char*);
-    
+
+And the unit test might look something like this:
+
     TEST_F(GreeterTests, given_name_when_greet_called_outputs_name)
     {
 	    char name[] = "mike";
@@ -99,6 +103,8 @@ Here's how you would define a fake functions for these in your test suite:
 
     FAKE_VALUE_FUNC0(int, DISPLAY_get_line_insert_index);
     FAKE_VALUE_FUNC0(int, DISPLAY_get_line_capacity);
+
+And the unit test might look something like this:
     
     TEST_F(GreeterTests, given_non_full_screen_will_not_reset_display)
     {
@@ -179,6 +185,11 @@ To be implemented...
 
 To be implemented...
 
+## Find out more...
+
+Look under the examlples directory for full length examples in both C and C++.
+There is also a test suite for the framework under the test directory.
+
 -------------------------
 
 ## Benefits
@@ -205,3 +216,31 @@ So whats the point?
  * Function return value sequences
  * Proper mock syntax - setting expectations, etc   
 
+## Cheat Sheet
+<table>
+    <tr>
+        <th>Macro</th>
+        <th>Description</th>
+        <th>Example</th>
+    </tr>
+    <tr>
+        <td>FAKE_VOID_FUNC{n}(fn [,arg_types*]);</td>
+        <td>Define a fake function named fn returning void with n arguments</td>
+        <td>FAKE_VOID_FUNC1(DISPLAY_output_message, const char*);</td>
+    </tr>
+    <tr>
+        <td>FAKE_VALUE_FUNC{n}(return_type, fn [,arg_types*]);</td>
+        <td>Define a fake function returning a value with type return_type taking n arguments</td>
+        <td>FAKE_VALUE_FUNC0(int, DISPLAY_get_line_insert_index);</td>
+    </tr>
+    <tr>
+        <td>RESET_FAKE(fn);</td>
+        <td>Reset the state of fake function called fn</td>
+        <td>RESET_FAKE(DISPLAY_init);</td>
+    </tr>
+    <tr>
+        <td>RESET_FAKES();</td>
+        <td>Reset all defined fakes</td>
+        <td>RESET_FAKES();</td>
+    </tr>
+</table>
