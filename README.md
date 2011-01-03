@@ -150,6 +150,7 @@ fakes in the setup function of your test suite.
 This can be a bit of work if you have many fakes, but luckily if you are testing
 in a C++ environment there is a shortcut using static initialization 
 registration:
+
     void SetUp()
 	{
         RESET_FAKES(); // resets all fakes
@@ -161,6 +162,7 @@ functionA again, how would you do that?  Well <tt>fff</tt> maintains a call
 history so that it is easy to assert these expectations.
 
 Here's how it works:
+
     FAKE_VOID_FUNC2(voidfunc2, char, char);
     FAKE_VALUE_FUNC0(long, longfunc0);
     
