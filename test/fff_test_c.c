@@ -85,6 +85,45 @@ TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_and_reset_then_captu
 	ASSERT_EQ(voidfunc2_arg1_val, 0);
 }
 
+
+
+// Argument history
+TEST_F(FFFTestSuite, when_void_func_with_2_char_args_created_default_history_is_ten_calls)
+{
+	ASSERT_EQ(10u, (sizeof voidfunc2_arg0_history) / (sizeof voidfunc2_arg0_history[0]));
+	ASSERT_EQ(10u, (sizeof voidfunc2_arg1_history) / (sizeof voidfunc2_arg1_history[0]));
+}
+
+TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_then_arguments_captured_in_history)
+{
+	voidfunc2('g', 'h');
+	ASSERT_EQ('g', voidfunc2_arg0_history[0]);
+	ASSERT_EQ('h', voidfunc2_arg1_history[0]);
+}
+
+TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_max_times_then_no_argument_histories_dropped)
+{
+	int i;
+	for(i = 0; i < 10; i++)
+	{
+		voidfunc2('1'+i, '2'+i);
+	}
+	ASSERT_EQ(0u, voidfunc2_arg_histories_dropped);
+}
+
+TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_max_times_plus_one_then_one_argument_history_dropped)
+{
+	int i;
+	for(i = 0; i < 10; i++)
+	{
+		voidfunc2('1'+i, '2'+i);
+	}
+	voidfunc2('1', '2');
+	ASSERT_EQ(1u, voidfunc2_arg_histories_dropped);
+}
+
+
+
 // Return values
 TEST_F(FFFTestSuite, value_func_will_return_zero_by_default)
 {
@@ -147,6 +186,7 @@ TEST_F(FFFTestSuite, calling_fake_registers_one_call)
 }
 
 
+
 int main()
 {
 	setbuf(stdout, NULL);
@@ -165,6 +205,12 @@ int main()
     RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_then_last_args_captured);
     RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_twice_then_last_args_captured);
     RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_and_reset_then_captured_arg_is_zero);
+
+    RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_created_default_history_is_ten_calls);
+    RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_then_arguments_captured_in_history);
+    RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_max_times_then_no_argument_histories_dropped);
+    RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_max_times_plus_one_then_one_argument_history_dropped);
+
     RUN_TEST(FFFTestSuite, value_func_will_return_zero_by_default);
     RUN_TEST(FFFTestSuite, value_func_will_return_value_given);
     RUN_TEST(FFFTestSuite, value_func_will_return_zero_after_reset);

@@ -25,20 +25,20 @@ public:
 // Call counting
 TEST_F(FFFTestSuite, when_void_func_never_called_then_callcount_is_zero)
 {
-	ASSERT_EQ(voidfunc1_call_count, 0);
+	ASSERT_EQ(voidfunc1_call_count, 0u);
 }
 
 TEST_F(FFFTestSuite, when_void_func_called_once_then_callcount_is_one)
 {
 	voidfunc1(66);
-	ASSERT_EQ(voidfunc1_call_count, 1);
+	ASSERT_EQ(voidfunc1_call_count, 1u);
 }
 
 TEST_F(FFFTestSuite, when_void_func_called_once_and_reset_then_callcount_is_zero)
 {
 	voidfunc1(66);
 	RESET_FAKE(voidfunc1);
-	ASSERT_EQ(voidfunc1_call_count, 0);
+	ASSERT_EQ(voidfunc1_call_count, 0u);
 }
 
 // Single Argument
@@ -85,6 +85,45 @@ TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_and_reset_then_captu
 	ASSERT_EQ(voidfunc2_arg0_val, 0);
 	ASSERT_EQ(voidfunc2_arg1_val, 0);
 }
+
+
+
+// Argument history
+TEST_F(FFFTestSuite, when_void_func_with_2_char_args_created_default_history_is_ten_calls)
+{
+	ASSERT_EQ(10u, (sizeof voidfunc2_arg0_history) / (sizeof voidfunc2_arg0_history[0]));
+	ASSERT_EQ(10u, (sizeof voidfunc2_arg1_history) / (sizeof voidfunc2_arg1_history[0]));
+}
+
+TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_then_arguments_captured_in_history)
+{
+	voidfunc2('g', 'h');
+	ASSERT_EQ('g', voidfunc2_arg0_history[0]);
+	ASSERT_EQ('h', voidfunc2_arg1_history[0]);
+}
+
+TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_max_times_then_no_argument_histories_dropped)
+{
+	int i;
+	for(i = 0; i < 10; i++)
+	{
+		voidfunc2('1'+i, '2'+i);
+	}
+	ASSERT_EQ(0u, voidfunc2_arg_histories_dropped);
+}
+
+TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_max_times_plus_one_then_one_argument_history_dropped)
+{
+	int i;
+	for(i = 0; i < 10; i++)
+	{
+		voidfunc2('1'+i, '2'+i);
+	}
+	voidfunc2('1', '2');
+	ASSERT_EQ(1u, voidfunc2_arg_histories_dropped);
+}
+
+
 
 // Return values
 TEST_F(FFFTestSuite, value_func_will_return_zero_by_default)

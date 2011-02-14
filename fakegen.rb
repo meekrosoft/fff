@@ -5,7 +5,7 @@
 
 $cpp_output = true
 $MAX_ARGS = 10
-$MAX_ARG_HISTORY = 10
+$DEFAULT_ARG_HISTORY = 10
 $MAX_CALL_HISTORY = 10
 
 def output_macro(args, is_value_function)
@@ -90,14 +90,15 @@ def output_argument_capture_variables(i)
   # last argument
   puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_val; \\"
   # argument history array
-#  puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_history[];"
-#  puts "    static int FUNCNAME##_arg#{i}_history_idx;"
+  puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_history[#{$DEFAULT_ARG_HISTORY}];\\"
 end
 
 def output_variables(arg_count, is_value_function)
   arg_count.times { |i| output_argument_capture_variables(i) }
   puts "    static RETURN_TYPE FUNCNAME##_return_val; \\" unless not is_value_function
-  puts "    static int FUNCNAME##_call_count = 0; \\"
+  puts "    static unsigned int FUNCNAME##_call_count = 0; \\"
+  puts "    static unsigned int FUNCNAME##_arg_history_len = #{$DEFAULT_ARG_HISTORY};\\"
+  puts "    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \\"
 end
 
 def output_function_signature(args_count, is_value_function)
@@ -117,6 +118,18 @@ end
 def output_function_body(arg_count, is_value_function)
   # capture arguments
   arg_count.times { |i| puts "        FUNCNAME##_arg#{i}_val = arg#{i}; \\" }
+  # store in argument history
+  arg_count.times { |i|
+    puts "        if(FUNCNAME##_call_count < FUNCNAME##_arg_history_len){\\"
+    puts "            FUNCNAME##_arg#{i}_history[FUNCNAME##_call_count] = arg#{i}; \\"
+    puts "        }\\"
+  }
+
+  # update dropped argument history counts
+  puts "        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\\"
+  puts "            FUNCNAME##_arg_histories_dropped++;\\"
+  puts "        }\\"
+
   # update call count
   puts "        FUNCNAME##_call_count++; \\"
   #register call
