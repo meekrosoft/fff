@@ -132,6 +132,8 @@ TEST_F(FFFTestSuite, when_fake_func_called_max_times_plus_one_then_one_argument_
     }
     voidfunc2('1', '2');
     ASSERT_EQ(1u, voidfunc2_arg_histories_dropped);
+    // or in other words..
+    ASSERT_GT(voidfunc2_call_count, voidfunc2_arg_history_len);
 }
 
 // Return values

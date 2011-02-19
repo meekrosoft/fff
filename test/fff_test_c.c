@@ -9,6 +9,7 @@ void setup();
 #define TEST_F(SUITE, NAME) void NAME()
 #define RUN_TEST(SUITE, TESTNAME) printf(" Running %s.%s: \n", #SUITE, #TESTNAME); setup(); TESTNAME(); printf(" SUCCESS\n");
 #define ASSERT_EQ(A, B) assert((A) == (B))
+#define ASSERT(A) assert((A))
 
 FAKE_VOID_FUNC1(voidfunc1, int);
 FAKE_VOID_FUNC2(voidfunc2, char, char);
@@ -131,6 +132,8 @@ TEST_F(FFFTestSuite, when_fake_func_called_max_times_plus_one_then_one_argument_
     }
     voidfunc2('1', '2');
     ASSERT_EQ(1u, voidfunc2_arg_histories_dropped);
+    // Or in other words...
+    ASSERT(voidfunc2_arg_history_len < voidfunc2_call_count);
 }
 
 // Return values
