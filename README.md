@@ -1,13 +1,13 @@
-# A Fake Function Framework for C (fff)
+# Fake Function Framework  (fff)
 -----------------------------
 > How long can we _maintain_? I wonder. How long before one of us starts raving 
 > and jabbering at this boy? What will he think then? This same lonely desert 
 > was the last known home of the Manson family. Will he make that grim 
 > connection...
 
+## A Fake Function Framework for C
 fff is a micro-framework for creating fake C functions for tests.  Because life
 is too short to spend time hand-writing fake functions for testing.
-
 
 
 ## Hello fake world
@@ -180,9 +180,42 @@ Here's how it works:
 They are reset by calling <tt>RESET_HISTORY();</tt>
 
 
-## Argument History
+## Default Argument History
 
-To be implemented...
+The framework will by default store the arguments for the last ten calls made
+to a fake function.
+    
+    TEST_F(FFFTestSuite, when_fake_func_called_then_arguments_captured_in_history)
+    {
+        voidfunc2('g', 'h');
+        voidfunc2('i', 'j');
+        ASSERT_EQ('g', voidfunc2_arg0_history[0]);
+        ASSERT_EQ('h', voidfunc2_arg1_history[0]);
+        ASSERT_EQ('i', voidfunc2_arg0_history[1]);
+        ASSERT_EQ('j', voidfunc2_arg1_history[1]);
+    }
+
+There are two ways to find out if calls have been dropped.  The first is to 
+check the dropped histories counter:
+
+    TEST_F(FFFTestSuite, when_fake_func_called_max_times_plus_one_then_one_argument_history_dropped)
+    {
+        int i;
+        for(i = 0; i < 10; i++)
+        {
+            voidfunc2('1'+i, '2'+i);
+        }
+        voidfunc2('1', '2');
+        ASSERT_EQ(1u, voidfunc2_arg_histories_dropped);
+    }
+
+The other is to check if the call count is greater than the history size:
+
+coming soon...
+
+## User Defined Argument History
+
+Coming soon...
 
 ## Function Return Value Sequences
 
