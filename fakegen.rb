@@ -142,6 +142,7 @@ def output_reset_function(arg_count, is_value_function)
   puts "    void FUNCNAME##_reset(){ \\"
   arg_count.times { |i|
     puts "        FUNCNAME##_arg#{i}_val = (ARG#{i}_TYPE) 0; \\"
+    puts "        memset(FUNCNAME##_arg#{i}_history, 0, sizeof(FUNCNAME##_arg#{i}_history)); \\"
   }
   puts "        FUNCNAME##_call_count = 0; \\"
   puts "        FUNCNAME##_return_val = 0; \\" unless not is_value_function
