@@ -211,15 +211,18 @@ check the dropped histories counter:
 
 The other is to check if the call count is greater than the history size:
 
-coming soon...
+    ASSERT(voidfunc2_arg_history_len < voidfunc2_call_count);
+    
+The argument histories for a fake function are reset when the RESET_FAKE 
+function is called
 
 ## User Defined Argument History
 
-Coming soon...
+Coming soon!
 
 ## Function Return Value Sequences
 
-To be implemented...
+Coming soon!
 
 ## Find out more...
 
