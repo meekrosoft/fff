@@ -124,26 +124,3 @@ TEST_F(UITests, when_string_longer_than_26_then_truncated_string_output)
 }
 
 
-//TEST_F(UITests, when_outputting_to_full_display_then_previous_inserted)
-//{
-//	// given
-//	DISPLAY_get_line_insert_index_return_val = 1;
-//	char oldest[] = "oldest";
-//	char newest[] = "newest";
-//	// when
-//	UI_write_line(oldest);
-//	UI_write_line(newest);
-//	// then
-//
-//	ASSERT_EQ(DISPLAY_output_call_count, 2);
-//
-//	// fills last line
-//	ASSERT_EQ(strncmp(oldest, DISPLAY_output_arg0_val_history[0], 37), 0);
-//	//clears
-//	ASSERT_EQ(DISPLAY_clear_call_count, 1);
-//	// inserts old line at first
-//	ASSERT_EQ(strncmp(oldest, DISPLAY_output_arg0_val_history[1], 37), 0);
-//	// then inserts new line
-//	ASSERT_EQ(strncmp(newest, DISPLAY_output_arg0_val_history[2], 37), 0);
-//}
-
