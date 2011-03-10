@@ -5,8 +5,14 @@
 
 $cpp_output = true
 $MAX_ARGS = 10
-$DEFAULT_ARG_HISTORY = 10
-$MAX_CALL_HISTORY = 10
+$DEFAULT_ARG_HISTORY = 50
+$MAX_CALL_HISTORY = 50
+
+def output_constants
+  puts "#define FFF_MAX_ARGS ((unsigned)#{$MAX_ARGS})"
+  puts "#define FFF_ARG_HISTORY_LEN ((unsigned)#{$DEFAULT_ARG_HISTORY})"
+  puts "#define FFF_CALL_HISTORY_LEN ((unsigned)#{$MAX_CALL_HISTORY})"
+end
 
 def output_macro(args, is_value_function)
 
@@ -145,7 +151,7 @@ def output_reset_function(arg_count, is_value_function)
     puts "        memset(FUNCNAME##_arg#{i}_history, 0, sizeof(FUNCNAME##_arg#{i}_history)); \\"
   }
   puts "        FUNCNAME##_call_count = 0; \\"
-  puts "        FUNCNAME##_return_val = 0; \\" unless not is_value_function
+  puts "        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \\" unless not is_value_function
   puts "    } \\"
 end
 
@@ -207,6 +213,7 @@ end
 
 # lets generate!!
 output_c_and_cpp{
+  output_constants
   output_cpp_reset_code if $cpp_output
   output_cpp_static_initializer if $cpp_output
   10.times {|arg_count| output_macro(arg_count, false)}

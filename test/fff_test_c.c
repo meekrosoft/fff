@@ -11,17 +11,29 @@ void setup();
 #define ASSERT_EQ(A, B) assert((A) == (B))
 #define ASSERT(A) assert((A))
 
+enum MYBOOL { FALSE = 899, TRUE };
+struct MyStruct {
+    int x;
+    int y;
+};
+
 FAKE_VOID_FUNC1(voidfunc1, int);
 FAKE_VOID_FUNC2(voidfunc2, char, char);
 FAKE_VALUE_FUNC0(long, longfunc0);
+FAKE_VALUE_FUNC0(enum MYBOOL, enumfunc0);
+FAKE_VALUE_FUNC0(struct MyStruct, structfunc0);
+
 
 void setup()
 {
     RESET_FAKE(voidfunc1);
     RESET_FAKE(voidfunc2);
     RESET_FAKE(longfunc0);
+    RESET_FAKE(enumfunc0);
+    RESET_FAKE(structfunc0);
     RESET_HISTORY();
 }
+
 
 TEST_F(FFFTestSuite, when_void_func_never_called_then_callcount_is_zero)
 {
@@ -87,10 +99,10 @@ TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_and_reset_then_captu
 }
 
 // Argument history
-TEST_F(FFFTestSuite, when_fake_func_created_default_history_is_ten_calls)
+TEST_F(FFFTestSuite, when_fake_func_created_default_history_is_fifty_calls)
 {
-    ASSERT_EQ(10u, (sizeof voidfunc2_arg0_history) / (sizeof voidfunc2_arg0_history[0]));
-    ASSERT_EQ(10u, (sizeof voidfunc2_arg1_history) / (sizeof voidfunc2_arg1_history[0]));
+    ASSERT_EQ(FFF_ARG_HISTORY_LEN, (sizeof voidfunc2_arg0_history) / (sizeof voidfunc2_arg0_history[0]));
+    ASSERT_EQ(FFF_ARG_HISTORY_LEN, (sizeof voidfunc2_arg1_history) / (sizeof voidfunc2_arg1_history[0]));
 }
 
 TEST_F(FFFTestSuite, when_fake_func_called_then_arguments_captured_in_history)
@@ -115,8 +127,8 @@ TEST_F(FFFTestSuite, argument_history_is_reset_when_RESET_FAKE_called)
 
 TEST_F(FFFTestSuite, when_fake_func_called_max_times_then_no_argument_histories_dropped)
 {
-    int i;
-    for (i = 0; i < 10; i++)
+    unsigned int i;
+    for (i = 0; i < FFF_ARG_HISTORY_LEN; i++)
     {
         voidfunc2('1' + i, '2' + i);
     }
@@ -125,8 +137,8 @@ TEST_F(FFFTestSuite, when_fake_func_called_max_times_then_no_argument_histories_
 
 TEST_F(FFFTestSuite, when_fake_func_called_max_times_plus_one_then_one_argument_history_dropped)
 {
-    int i;
-    for (i = 0; i < 10; i++)
+    unsigned int i;
+    for (i = 0; i < FFF_ARG_HISTORY_LEN; i++)
     {
         voidfunc2('1' + i, '2' + i);
     }
@@ -182,11 +194,11 @@ TEST_F(FFFTestSuite, reset_call_history_resets_call_history)
 
 TEST_F(FFFTestSuite, call_history_will_not_write_past_array_bounds)
 {
-    for (unsigned int i = 0; i < MAX_CALL_HISTORY + 1; i++)
+    for (unsigned int i = 0; i < FFF_CALL_HISTORY_LEN + 1; i++)
     {
         REGISTER_CALL(longfunc0);
     }
-    ASSERT_EQ(MAX_CALL_HISTORY, call_history_idx);
+    ASSERT_EQ(FFF_CALL_HISTORY_LEN, call_history_idx);
 }
 
 TEST_F(FFFTestSuite, calling_fake_registers_one_call)
@@ -215,7 +227,7 @@ int main()
     RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_twice_then_last_args_captured);
     RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_and_reset_then_captured_arg_is_zero);
 
-    RUN_TEST(FFFTestSuite, when_fake_func_created_default_history_is_ten_calls);
+    RUN_TEST(FFFTestSuite, when_fake_func_created_default_history_is_fifty_calls);
     RUN_TEST(FFFTestSuite, when_fake_func_called_then_arguments_captured_in_history);
     RUN_TEST(FFFTestSuite, argument_history_is_reset_when_RESET_FAKE_called);
     RUN_TEST(FFFTestSuite, when_fake_func_called_max_times_then_no_argument_histories_dropped);
