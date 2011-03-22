@@ -240,7 +240,7 @@ with for the fake function.  It is probably easier to describe with an example:
         ASSERT_EQ(myReturnVals[2], longfunc0());
     }
 
-By specifying a return value sequence using the <tt>SET_RETURN_SEQ<tt> macro, 
+By specifying a return value sequence using the <tt>SET_RETURN_SEQ</tt> macro, 
 the fake will return the values given in the parameter array in sequence.  When
 the end of the sequence is reached the fake will continue to return the last 
 value in the sequence indefinitely.
