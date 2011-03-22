@@ -40,7 +40,7 @@ def output_cpp_reset_code
 #include <vector>
 typedef void (*void_fptr)();
 std::vector<void_fptr> reset_functions;
-void RESET_FAKES()
+static void RESET_FAKES()
 {
 	std::vector<void_fptr>::iterator it = reset_functions.begin();
 	for( ; it != reset_functions.end(); ++it)
