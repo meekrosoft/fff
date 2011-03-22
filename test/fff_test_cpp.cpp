@@ -195,3 +195,35 @@ TEST_F(FFFTestSuite, calling_fake_registers_one_call)
     ASSERT_EQ(call_history_idx, 1u);
     ASSERT_EQ(call_history[0], (void *)longfunc0);
 }
+
+TEST_F(FFFTestSuite, return_value_sequences_not_exhausted)
+{
+    long myReturnVals[3] = { 3, 7, 9 };
+    SET_RETURN_SEQ(longfunc0, myReturnVals, 3);
+    ASSERT_EQ(myReturnVals[0], longfunc0());
+    ASSERT_EQ(myReturnVals[1], longfunc0());
+    ASSERT_EQ(myReturnVals[2], longfunc0());
+}
+
+
+TEST_F(FFFTestSuite, return_value_sequences_exhausted)
+{
+    long myReturnVals[3] = { 3, 7, 9 };
+    SET_RETURN_SEQ(longfunc0, myReturnVals, 3);
+    ASSERT_EQ(myReturnVals[0], longfunc0());
+    ASSERT_EQ(myReturnVals[1], longfunc0());
+    ASSERT_EQ(myReturnVals[2], longfunc0());
+    ASSERT_EQ(myReturnVals[2], longfunc0());
+    ASSERT_EQ(myReturnVals[2], longfunc0());
+}
+
+TEST_F(FFFTestSuite, return_value_sequences_reset)
+{
+    long myReturnVals[3] = { 3, 7, 9 };
+    SET_RETURN_SEQ(longfunc0, myReturnVals, 3);
+    ASSERT_EQ(myReturnVals[0], longfunc0());
+    ASSERT_EQ(myReturnVals[1], longfunc0());
+    RESET_FAKE(longfunc0);
+    ASSERT_EQ(0, longfunc0());
+}
+

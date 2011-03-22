@@ -102,6 +102,9 @@ end
 def output_variables(arg_count, is_value_function)
   arg_count.times { |i| output_argument_capture_variables(i) }
   puts "    static RETURN_TYPE FUNCNAME##_return_val; \\" unless not is_value_function
+  puts "    static int FUNCNAME##_return_val_seq_len = 0; \\" unless not is_value_function
+  puts "    static int FUNCNAME##_return_val_seq_idx = 0; \\" unless not is_value_function
+  puts "    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \\" unless not is_value_function
   puts "    static unsigned int FUNCNAME##_call_count = 0; \\"
   puts "    static unsigned int FUNCNAME##_arg_history_len = #{$DEFAULT_ARG_HISTORY};\\"
   puts "    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \\"
@@ -119,6 +122,17 @@ def output_function_signature(args_count, is_value_function)
   print arguments.join(", ")
 
   print ")"
+end
+
+def output_function_body_return
+  # return something if value function
+  puts "        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \\"
+  puts "            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\\"
+  puts "                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\\"
+  puts "            }\\"
+  puts "            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\\"
+  puts "        } \\"
+  puts "        return FUNCNAME##_return_val; \\"
 end
 
 def output_function_body(arg_count, is_value_function)
@@ -140,8 +154,15 @@ def output_function_body(arg_count, is_value_function)
   puts "        FUNCNAME##_call_count++; \\"
   #register call
   puts "        REGISTER_CALL(FUNCNAME); \\"
-  # return something if value function
-  puts "        return FUNCNAME##_return_val; \\" unless not is_value_function
+  
+  output_function_body_return if is_value_function
+end
+
+def output_reset_function_return
+  puts "        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \\"
+  puts "        FUNCNAME##_return_val_seq_len = 0; \\"
+  puts "        FUNCNAME##_return_val_seq_idx = 0; \\"
+  puts "        FUNCNAME##_return_val_seq = 0; \\"
 end
 
 def output_reset_function(arg_count, is_value_function)
@@ -151,7 +172,7 @@ def output_reset_function(arg_count, is_value_function)
     puts "        memset(FUNCNAME##_arg#{i}_history, 0, sizeof(FUNCNAME##_arg#{i}_history)); \\"
   }
   puts "        FUNCNAME##_call_count = 0; \\"
-  puts "        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \\" unless not is_value_function
+  output_reset_function_return if is_value_function
   puts "    } \\"
 end
 
@@ -168,7 +189,7 @@ def define_call_history
   puts "#define MAX_CALL_HISTORY #{$MAX_CALL_HISTORY}u"
   puts "static void * call_history[MAX_CALL_HISTORY];"
   puts "static unsigned int call_history_idx;"
-  puts "void RESET_HISTORY() { "
+  puts "static void RESET_HISTORY() { "
   puts "    call_history_idx = 0; "
   puts "}"
 
@@ -176,6 +197,11 @@ def define_call_history
   puts "   if(call_history_idx < MAX_CALL_HISTORY) call_history[call_history_idx++] = (void *)function;"
 end
 
+def define_return_sequence
+  puts "#define SET_RETURN_SEQ( FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
+  puts "                        FUNCNAME##_return_val_seq = ARRAY_POINTER; \\"
+  puts "                        FUNCNAME##_return_val_seq_len = ARRAY_LEN;"
+end
 
 def extern_c
   puts "extern \"C\"{ \\" unless !$cpp_output
@@ -194,7 +220,6 @@ def include_guard
   puts "#endif // FAKE_FUNCTIONS"
 end
 
-
 def output_c_and_cpp
 
   include_guard {
@@ -210,14 +235,14 @@ def output_c_and_cpp
   }
 end
 
-
 # lets generate!!
 output_c_and_cpp{
   output_constants
+  define_reset_fake
+  define_call_history
+  define_return_sequence
   output_cpp_reset_code if $cpp_output
   output_cpp_static_initializer if $cpp_output
   10.times {|arg_count| output_macro(arg_count, false)}
   10.times {|arg_count| output_macro(arg_count, true)}
-  define_reset_fake
-  define_call_history
 }
