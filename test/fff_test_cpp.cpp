@@ -5,6 +5,13 @@
  *      Author: mlong
  */
 
+// Want to keep the argument history for 13 calls
+#define OVERRIDE_ARG_HIST_LEN 13u
+#define FFF_ARG_HISTORY_LEN OVERRIDE_ARG_HIST_LEN
+// Want to keep the call sequence history for 17 function calls
+#define OVERRIDE_CALL_HIST_LEN 17u
+#define FFF_CALL_HISTORY_LEN OVERRIDE_CALL_HIST_LEN
+
 #include "../fff.h"
 #include <gtest/gtest.h>
 
@@ -225,5 +232,13 @@ TEST_F(FFFTestSuite, return_value_sequences_reset)
     ASSERT_EQ(myReturnVals[1], longfunc0());
     RESET_FAKE(longfunc0);
     ASSERT_EQ(0, longfunc0());
+}
+
+
+TEST_F(FFFTestSuite, default_constants_can_be_overridden)
+{
+    unsigned sizeCallHistory = (sizeof call_history) / (sizeof call_history[0]);
+    ASSERT_EQ(OVERRIDE_CALL_HIST_LEN, sizeCallHistory);
+    ASSERT_EQ(OVERRIDE_ARG_HIST_LEN, voidfunc2_arg_history_len);
 }
 

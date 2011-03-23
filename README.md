@@ -218,7 +218,16 @@ function is called
 
 ## User Defined Argument History
 
-Coming soon!
+If you wish to control how many calls to capture for argument history you can
+overide the default by defining it before include the <tt>fff.h</tt> like this:
+
+    // Want to keep the argument history for 13 calls
+    #define FFF_ARG_HISTORY_LEN 13
+    // Want to keep the call sequence history for 17 function calls
+    #define FFF_CALL_HISTORY_LEN 17
+    
+    #include "../fff.h"
+
 
 ## Function Return Value Sequences
 

@@ -9,9 +9,13 @@ $DEFAULT_ARG_HISTORY = 50
 $MAX_CALL_HISTORY = 50
 
 def output_constants
-  puts "#define FFF_MAX_ARGS ((unsigned)#{$MAX_ARGS})"
-  puts "#define FFF_ARG_HISTORY_LEN ((unsigned)#{$DEFAULT_ARG_HISTORY})"
-  puts "#define FFF_CALL_HISTORY_LEN ((unsigned)#{$MAX_CALL_HISTORY})"
+  puts "#define FFF_MAX_ARGS (#{$MAX_ARGS}u)"
+  puts "#ifndef FFF_ARG_HISTORY_LEN"
+  puts "    #define FFF_ARG_HISTORY_LEN (#{$DEFAULT_ARG_HISTORY}u)"
+  puts "#endif"
+  puts "#ifndef FFF_CALL_HISTORY_LEN"
+  puts "  #define FFF_CALL_HISTORY_LEN (#{$MAX_CALL_HISTORY}u)"
+  puts "#endif"
 end
 
 def output_macro(args, is_value_function)
@@ -96,7 +100,7 @@ def output_argument_capture_variables(i)
   # last argument
   puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_val; \\"
   # argument history array
-  puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_history[#{$DEFAULT_ARG_HISTORY}];\\"
+  puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_history[FFF_ARG_HISTORY_LEN];\\"
 end
 
 def output_variables(arg_count, is_value_function)
@@ -106,7 +110,7 @@ def output_variables(arg_count, is_value_function)
   puts "    static int FUNCNAME##_return_val_seq_idx = 0; \\" unless not is_value_function
   puts "    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \\" unless not is_value_function
   puts "    static unsigned int FUNCNAME##_call_count = 0; \\"
-  puts "    static unsigned int FUNCNAME##_arg_history_len = #{$DEFAULT_ARG_HISTORY};\\"
+  puts "    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\\"
   puts "    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \\"
 end
 
@@ -186,15 +190,14 @@ def define_reset_fake
 end
 
 def define_call_history
-  puts "#define MAX_CALL_HISTORY #{$MAX_CALL_HISTORY}u"
-  puts "static void * call_history[MAX_CALL_HISTORY];"
+  puts "static void * call_history[FFF_CALL_HISTORY_LEN];"
   puts "static unsigned int call_history_idx;"
   puts "static void RESET_HISTORY() { "
   puts "    call_history_idx = 0; "
   puts "}"
 
   puts "#define REGISTER_CALL(function) \\"
-  puts "   if(call_history_idx < MAX_CALL_HISTORY) call_history[call_history_idx++] = (void *)function;"
+  puts "   if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;"
 end
 
 def define_return_sequence
@@ -243,6 +246,6 @@ output_c_and_cpp{
   define_return_sequence
   output_cpp_reset_code if $cpp_output
   output_cpp_static_initializer if $cpp_output
-  10.times {|arg_count| output_macro(arg_count, false)}
-  10.times {|arg_count| output_macro(arg_count, true)}
+  $MAX_ARGS.times {|arg_count| output_macro(arg_count, false)}
+  $MAX_ARGS.times {|arg_count| output_macro(arg_count, true)}
 }

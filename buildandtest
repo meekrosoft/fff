@@ -1,0 +1,3 @@
+#!/bin/sh
+ruby fakegen.rb > fff.h && make clean && make all && build/fff_test_c && build/fff_test_cpp
+
