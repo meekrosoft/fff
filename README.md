@@ -24,7 +24,7 @@ Here's how you would define a fake function for this in your test suite:
 
     // test.c(pp)
     #include "fff.h"
-    FAKE_VOID_FUNC0(DISPLAY_init);
+    FAKE_VOID_FUNC(DISPLAY_init);
 
 And the unit test might look something like this:
 
@@ -38,7 +38,7 @@ So what has happened here?  The first thing to note is that the framework is
 header only, all you need to do to use it is download <tt>fff.h</tt> and include
 it in your test suite.  
 
-The magic is in the <tt>FAKE_VOID_FUNC0</tt>.  This 
+The magic is in the <tt>FAKE_VOID_FUNC</tt>.  This 
 expands a macro that defines a function returning <tt>void</tt> 
 which has zero arguments.  It also defines a variable 
 <tt>"function_name"_call_count</tt> which is incremented every time the faked 
@@ -66,7 +66,7 @@ Ok, enough with the toy examples.  What about faking functions with arguments?
 
 Here's how you would define a fake function for this in your test suite:
 
-    FAKE_VOID_FUNC1(DISPLAY_output_message, const char*);
+    FAKE_VOID_FUNC(DISPLAY_output_message, const char*);
 
 And the unit test might look something like this:
 
@@ -78,9 +78,9 @@ And the unit test might look something like this:
     	ASSERT_EQ(name, DISPLAY_output_message_arg0_val);
     }
 
-There is no more magic here, the <tt>FAKE_VOID_FUNC1</tt> works as in the 
-previous example.  The "1" defines the number of arguments that the function 
-takes, and the macro arguments following the function name defines the argument
+There is no more magic here, the <tt>FAKE_VOID_FUNC</tt> works as in the 
+previous example.  The number of arguments that the function takes is calculated,
+ and the macro arguments following the function name defines the argument
 type (a char pointer in this example).
 
 A variable is created for every argument in the form 
@@ -91,7 +91,7 @@ A variable is created for every argument in the form
 ## Return values
 
 When you want to define a fake function that returns a value, you should use the
-<tt>FAKE_VOID_FUNC</tt> family of macros.  For instance:
+<tt>FAKE_VOID_FUNC</tt> macro.  For instance:
 
     // UI.c
     ...
@@ -101,8 +101,8 @@ When you want to define a fake function that returns a value, you should use the
 
 Here's how you would define a fake functions for these in your test suite:
 
-    FAKE_VALUE_FUNC0(int, DISPLAY_get_line_insert_index);
-    FAKE_VALUE_FUNC0(int, DISPLAY_get_line_capacity);
+    FAKE_VALUE_FUNC(int, DISPLAY_get_line_insert_index);
+    FAKE_VALUE_FUNC(int, DISPLAY_get_line_capacity);
 
 And the unit test might look something like this:
     
@@ -126,7 +126,7 @@ arguments, for instance to fake:
     
 you would use a syntax like this:
 
-    FAKE_VALUE_FUNC2(double, pow, double, double);
+    FAKE_VALUE_FUNC(double, pow, double, double);
 
 
 
@@ -163,8 +163,8 @@ history so that it is easy to assert these expectations.
 
 Here's how it works:
 
-    FAKE_VOID_FUNC2(voidfunc2, char, char);
-    FAKE_VALUE_FUNC0(long, longfunc0);
+    FAKE_VOID_FUNC(voidfunc2, char, char);
+    FAKE_VALUE_FUNC(long, longfunc0);
     
     TEST_F(FFFTestSuite, calls_in_correct_order)
     {
@@ -236,7 +236,7 @@ events.  One way to do this with fff is to specify a sequence of return values
 with for the fake function.  It is probably easier to describe with an example:
 
     // faking "long longfunc();"
-    FAKE_VALUE_FUNC0(long, longfunc0);
+    FAKE_VALUE_FUNC(long, longfunc0);
     
     TEST_F(FFFTestSuite, return_value_sequences_exhausted)
     {
@@ -259,6 +259,9 @@ value in the sequence indefinitely.
 
 Look under the examlples directory for full length examples in both C and C++.
 There is also a test suite for the framework under the test directory.
+
+## Brief Intorduction, Powerpoint Style!
+<div style="width:425px" id="__ss_7642816"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/meekrosoft/unit-testing-legacy-c" title="Unit Testing Legacy C">Unit Testing Legacy C</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7642816?rel=0" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/meekrosoft">Michael Long</a> </div> </div>
 
 -------------------------
 
@@ -294,14 +297,14 @@ So whats the point?
         <th>Example</th>
     </tr>
     <tr>
-        <td>FAKE_VOID_FUNC{n}(fn [,arg_types*]);</td>
+        <td>FAKE_VOID_FUNC(fn [,arg_types*]);</td>
         <td>Define a fake function named fn returning void with n arguments</td>
-        <td>FAKE_VOID_FUNC1(DISPLAY_output_message, const char*);</td>
+        <td>FAKE_VOID_FUNC(DISPLAY_output_message, const char*);</td>
     </tr>
     <tr>
-        <td>FAKE_VALUE_FUNC{n}(return_type, fn [,arg_types*]);</td>
+        <td>FAKE_VALUE_FUNC(return_type, fn [,arg_types*]);</td>
         <td>Define a fake function returning a value with type return_type taking n arguments</td>
-        <td>FAKE_VALUE_FUNC0(int, DISPLAY_get_line_insert_index);</td>
+        <td>FAKE_VALUE_FUNC(int, DISPLAY_get_line_insert_index);</td>
     </tr>
     <tr>
         <td>RESET_FAKE(fn);</td>
