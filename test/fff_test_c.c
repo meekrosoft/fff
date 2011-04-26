@@ -25,11 +25,11 @@ struct MyStruct {
     int y;
 };
 
-FAKE_VOID_FUNC1(voidfunc1, int);
-FAKE_VOID_FUNC2(voidfunc2, char, char);
-FAKE_VALUE_FUNC0(long, longfunc0);
-FAKE_VALUE_FUNC0(enum MYBOOL, enumfunc0);
-FAKE_VALUE_FUNC0(struct MyStruct, structfunc0);
+FAKE_VOID_FUNC(voidfunc1, int);
+FAKE_VOID_FUNC(voidfunc2, char, char);
+FAKE_VALUE_FUNC(long, longfunc0);
+FAKE_VALUE_FUNC(enum MYBOOL, enumfunc0);
+FAKE_VALUE_FUNC(struct MyStruct, structfunc0);
 
 
 void setup()
@@ -253,6 +253,7 @@ TEST_F(FFFTestSuite, default_constants_can_be_overridden)
     ASSERT_EQ(OVERRIDE_CALL_HIST_LEN, sizeCallHistory);
     ASSERT_EQ(OVERRIDE_ARG_HIST_LEN, voidfunc2_arg_history_len);
 }
+
 
 int main()
 {

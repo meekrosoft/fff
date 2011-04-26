@@ -15,9 +15,9 @@
 #include "../fff.h"
 #include <gtest/gtest.h>
 
-FAKE_VOID_FUNC1(voidfunc1, int);
-FAKE_VOID_FUNC2(voidfunc2, char, char);
-FAKE_VALUE_FUNC0(long, longfunc0);
+FAKE_VOID_FUNC(voidfunc1, int);
+FAKE_VOID_FUNC(voidfunc2, char, char);
+FAKE_VALUE_FUNC(long, longfunc0);
 
 class FFFTestSuite: public testing::Test
 {

@@ -1,7 +1,6 @@
 #ifndef FAKE_FUNCTIONS
 #define FAKE_FUNCTIONS
 
-#ifdef __cplusplus
 #define FFF_MAX_ARGS (10u)
 #ifndef FFF_ARG_HISTORY_LEN
     #define FFF_ARG_HISTORY_LEN (50u)
@@ -9,6 +8,7 @@
 #ifndef FFF_CALL_HISTORY_LEN
   #define FFF_CALL_HISTORY_LEN (50u)
 #endif
+#ifdef __cplusplus
 
 /* Defining a function to reset a fake function */
 #define RESET_FAKE(FUNCNAME) { \
@@ -1320,13 +1320,6 @@ extern "C"{ \
 STATIC_INIT(FUNCNAME) \
 
 #else  /* ansi c */
-#define FFF_MAX_ARGS (10u)
-#ifndef FFF_ARG_HISTORY_LEN
-    #define FFF_ARG_HISTORY_LEN (50u)
-#endif
-#ifndef FFF_CALL_HISTORY_LEN
-  #define FFF_CALL_HISTORY_LEN (50u)
-#endif
 
 /* Defining a function to reset a fake function */
 #define RESET_FAKE(FUNCNAME) { \
@@ -2554,5 +2547,37 @@ static void RESET_HISTORY() {
     } \
 
 #endif  /* cpp/ansi c */
+
+#define PP_NARG_MINUS2(...)     PP_NARG_MINUS2_(__VA_ARGS__, PP_RSEQ_N_MINUS2())
+
+#define PP_NARG_MINUS2_(...)     PP_ARG_MINUS2_N(__VA_ARGS__)
+
+#define PP_ARG_MINUS2_N(returnVal, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, N, ...)   N
+
+#define PP_RSEQ_N_MINUS2()     9,8,7,6,5,4,3,2,1,0
+
+
+#define FAKE_VALUE_FUNC(...)     FUNC_VALUE_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
+
+#define FUNC_VALUE_(N,...)     FUNC_VALUE_N(N,__VA_ARGS__)
+
+#define FUNC_VALUE_N(N,...)     FAKE_VALUE_FUNC ## N(__VA_ARGS__)
+
+
+
+#define PP_NARG_MINUS1(...)     PP_NARG_MINUS1_(__VA_ARGS__, PP_RSEQ_N_MINUS1())
+
+#define PP_NARG_MINUS1_(...)     PP_ARG_MINUS1_N(__VA_ARGS__)
+
+#define PP_ARG_MINUS1_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, N, ...)   N
+
+#define PP_RSEQ_N_MINUS1()     9,8,7,6,5,4,3,2,1,0
+
+#define FAKE_VOID_FUNC(...)     FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
+
+#define FUNC_VOID_(N,...)     FUNC_VOID_N(N,__VA_ARGS__)
+
+#define FUNC_VOID_N(N,...)     FAKE_VOID_FUNC ## N(__VA_ARGS__)
+
 
 #endif // FAKE_FUNCTIONS
