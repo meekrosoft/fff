@@ -260,7 +260,7 @@ value in the sequence indefinitely.
 Look under the examlples directory for full length examples in both C and C++.
 There is also a test suite for the framework under the test directory.
 
-## Brief Intorduction, Powerpoint Style!
+## Brief Introduction, Powerpoint Style!
 <div style="width:425px" id="__ss_7642816"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/meekrosoft/unit-testing-legacy-c" title="Unit Testing Legacy C">Unit Testing Legacy C</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7642816?rel=0" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/meekrosoft">Michael Long</a> </div> </div>
 
 -------------------------
