@@ -18,22 +18,67 @@ def output_constants
   puts "#endif"
 end
 
-def output_macro(args, is_value_function)
+# ------  Helper macros to use internally ------ #
+def output_internal_helper_macros
+  puts "/* -- INTERNAL HELPER MACROS -- */"
+  
+  define_return_sequence_helper
+  define_reset_fake_helper
+  define_declare_arg_helper
+  define_declare_all_func_common
+  
+  puts "/* -- END INTERNAL HELPER MACROS -- */"
+end
+
+def define_return_sequence_helper
+  puts "#define SET_RETURN_SEQ( FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
+  puts "                        FUNCNAME##_return_val_seq = ARRAY_POINTER; \\"
+  puts "                        FUNCNAME##_return_val_seq_len = ARRAY_LEN;"
+end
+
+def define_reset_fake_helper
+  puts ""
+  puts "/* Defining a function to reset a fake function */"
+  puts "#define RESET_FAKE(FUNCNAME) { \\"
+  puts "    FUNCNAME##_reset(); \\"
+  puts "} \\"
+  puts ""
+end
+
+def define_declare_arg_helper
+  puts ""
+  puts "#define DECLARE_ARG(type, argN, FUNCNAME) \\"
+  puts "    static type FUNCNAME##_arg##argN##_val; \\"
+  puts "    static type FUNCNAME##_arg##argN##_history[FFF_ARG_HISTORY_LEN];"
+  #puts "type arg##n##_val; \\"
+  #puts "type arg##n##_history[FFF_ARG_HISTORY_LEN];"
+end
+
+def define_declare_all_func_common
+  puts ""
+  puts "#define DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
+  puts "    static unsigned int FUNCNAME##_call_count = 0; \\"
+  puts "    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\\"
+  puts "    static unsigned int FUNCNAME##_arg_histories_dropped = 0;"
+end
+# ------  End Helper macros ------ #
+
+def output_macro(arg_count, is_value_function)
 
   macro_name_preamble = is_value_function ? "FAKE_VALUE_FUNC" : "FAKE_VOID_FUNC";
-  macro_name = "#{macro_name_preamble}#{args}"
+  macro_name = "#{macro_name_preamble}#{arg_count}"
   return_type = is_value_function ? "RETURN_TYPE" : ""
 
-  output_macro_header(macro_name, args, return_type)
+  output_macro_header(macro_name, arg_count, return_type)
 
   extern_c {  # define argument capture variables
-    output_variables(args, is_value_function)
-    output_function_signature(args, is_value_function)
+    output_variables(arg_count, is_value_function)
+    output_function_signature(arg_count, is_value_function)
 
     puts "{ \\"
-    output_function_body(args, is_value_function)
+    output_function_body(arg_count, is_value_function)
     puts "	} \\"
-    output_reset_function(args, is_value_function)
+    output_reset_function(arg_count, is_value_function)
   }
   puts "STATIC_INIT(FUNCNAME) \\" if $cpp_output
   puts ""
@@ -73,45 +118,48 @@ static StaticInitializer_##FUNCNAME staticInitializer_##FUNCNAME; \\
   MY_STATIC_INITIALIZER
 end
 
-def output_macro_header(macro_name, args, return_type)
+def output_macro_header(macro_name, arg_count, return_type)
   puts ""
 
-  output_macro_name(macro_name, args, return_type)
+  output_macro_name(macro_name, arg_count, return_type)
 
 end
 
-def output_macro_name(macro_name, args, return_type)
+def output_macro_name(macro_name, arg_count, return_type)
   parameter_list = return_type
   if return_type == ""
-    puts "/* Defining a void function with #{args} parameters*/"
+    puts "/* Defining a void function with #{arg_count} parameters*/"
   else
-    puts "/* Defining a function returning a value with #{args} parameters*/"
+    puts "/* Defining a function returning a value with #{arg_count} parameters*/"
     parameter_list += ", "
   end
   parameter_list += "FUNCNAME"
   print "#define #{macro_name}(" + parameter_list
 
-  args.times { |i| print ", ARG#{i}_TYPE" }
+  arg_count.times { |i| print ", ARG#{i}_TYPE" }
 
   puts ") \\"
 end
 
-def output_argument_capture_variables(i)
-  # last argument
-  puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_val; \\"
-  # argument history array
-  puts "    static ARG#{i}_TYPE FUNCNAME##_arg#{i}_history[FFF_ARG_HISTORY_LEN];\\"
+def output_argument_capture_variables(argN)
+  puts "    DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
 end
+
+def output_declare_capture_variable
+end
+
+def output_variables_for_value_function
+  puts "    static RETURN_TYPE FUNCNAME##_return_val; \\" 
+  puts "    static int FUNCNAME##_return_val_seq_len = 0; \\" 
+  puts "    static int FUNCNAME##_return_val_seq_idx = 0; \\" 
+  puts "    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \\" 
+end
+
 
 def output_variables(arg_count, is_value_function)
   arg_count.times { |i| output_argument_capture_variables(i) }
-  puts "    static RETURN_TYPE FUNCNAME##_return_val; \\" unless not is_value_function
-  puts "    static int FUNCNAME##_return_val_seq_len = 0; \\" unless not is_value_function
-  puts "    static int FUNCNAME##_return_val_seq_idx = 0; \\" unless not is_value_function
-  puts "    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \\" unless not is_value_function
-  puts "    static unsigned int FUNCNAME##_call_count = 0; \\"
-  puts "    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\\"
-  puts "    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \\"
+  output_variables_for_value_function unless not is_value_function
+  puts "    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
 end
 
 def output_function_signature(args_count, is_value_function)
@@ -180,14 +228,7 @@ def output_reset_function(arg_count, is_value_function)
   puts "    } \\"
 end
 
-def define_reset_fake
-  puts ""
-  puts "/* Defining a function to reset a fake function */"
-  puts "#define RESET_FAKE(FUNCNAME) { \\"
-  puts "    FUNCNAME##_reset(); \\"
-  puts "} \\"
-  puts ""
-end
+
 
 def define_call_history
   puts "static void * call_history[FFF_CALL_HISTORY_LEN];"
@@ -200,11 +241,7 @@ def define_call_history
   puts "   if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;"
 end
 
-def define_return_sequence
-  puts "#define SET_RETURN_SEQ( FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
-  puts "                        FUNCNAME##_return_val_seq = ARRAY_POINTER; \\"
-  puts "                        FUNCNAME##_return_val_seq_len = ARRAY_LEN;"
-end
+
 
 def extern_c
   puts "extern \"C\"{ \\" unless !$cpp_output
@@ -276,7 +313,7 @@ def output_c_and_cpp
 
   include_guard {
     output_constants
-    define_reset_fake
+    output_internal_helper_macros
     
     puts "#ifdef __cplusplus"
     $cpp_output = true
@@ -295,7 +332,7 @@ end
 # lets generate!!
 output_c_and_cpp{
   define_call_history
-  define_return_sequence
+  
   output_cpp_reset_code if $cpp_output
   output_cpp_static_initializer if $cpp_output
   $MAX_ARGS.times {|arg_count| output_macro(arg_count, false)}

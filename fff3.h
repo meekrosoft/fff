@@ -8,12 +8,26 @@
 #ifndef FFF_CALL_HISTORY_LEN
   #define FFF_CALL_HISTORY_LEN (50u)
 #endif
+/* -- INTERNAL HELPER MACROS -- */
+#define SET_RETURN_SEQ( FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
+                        FUNCNAME##_return_val_seq = ARRAY_POINTER; \
+                        FUNCNAME##_return_val_seq_len = ARRAY_LEN;
 
 /* Defining a function to reset a fake function */
 #define RESET_FAKE(FUNCNAME) { \
     FUNCNAME##_reset(); \
 } \
 
+
+#define DECLARE_ARG(type, argN, FUNCNAME) \
+    static type FUNCNAME##_arg##argN##_val; \
+    static type FUNCNAME##_arg##argN##_history[FFF_ARG_HISTORY_LEN];
+
+#define DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    static unsigned int FUNCNAME##_call_count = 0; \
+    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
+    static unsigned int FUNCNAME##_arg_histories_dropped = 0;
+/* -- END INTERNAL HELPER MACROS -- */
 #ifdef __cplusplus
 static void * call_history[FFF_CALL_HISTORY_LEN];
 static unsigned int call_history_idx;
@@ -22,9 +36,6 @@ static void RESET_HISTORY() {
 }
 #define REGISTER_CALL(function) \
    if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;
-#define SET_RETURN_SEQ( FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
-                        FUNCNAME##_return_val_seq = ARRAY_POINTER; \
-                        FUNCNAME##_return_val_seq_len = ARRAY_LEN;
 #include <vector>
 typedef void (*void_fptr)();
 std::vector<void_fptr> reset_functions;
@@ -53,9 +64,7 @@ static StaticInitializer_##FUNCNAME staticInitializer_##FUNCNAME; \
 /* Defining a void function with 0 parameters*/
 #define FAKE_VOID_FUNC0(FUNCNAME) \
 extern "C"{ \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(){ \
         if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
             FUNCNAME##_arg_histories_dropped++;\
@@ -73,11 +82,8 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a void function with 1 parameters*/
 #define FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0){ \
         FUNCNAME##_arg0_val = arg0; \
         if(FUNCNAME##_call_count < FUNCNAME##_arg_history_len){\
@@ -101,13 +107,9 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a void function with 2 parameters*/
 #define FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -137,15 +139,10 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a void function with 3 parameters*/
 #define FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -181,17 +178,11 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a void function with 4 parameters*/
 #define FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -233,19 +224,12 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a void function with 5 parameters*/
 #define FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -293,21 +277,13 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a void function with 6 parameters*/
 #define FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -361,23 +337,14 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a void function with 7 parameters*/
 #define FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -437,25 +404,15 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a void function with 8 parameters*/
 #define FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static ARG7_TYPE FUNCNAME##_arg7_val; \
-    static ARG7_TYPE FUNCNAME##_arg7_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -521,27 +478,16 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a void function with 9 parameters*/
 #define FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static ARG7_TYPE FUNCNAME##_arg7_val; \
-    static ARG7_TYPE FUNCNAME##_arg7_history[FFF_ARG_HISTORY_LEN];\
-    static ARG8_TYPE FUNCNAME##_arg8_val; \
-    static ARG8_TYPE FUNCNAME##_arg8_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
+    DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -617,9 +563,7 @@ extern "C"{ \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(){ \
         if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
             FUNCNAME##_arg_histories_dropped++;\
@@ -648,15 +592,12 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a function returning a value with 1 parameters*/
 #define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
         FUNCNAME##_arg0_val = arg0; \
         if(FUNCNAME##_call_count < FUNCNAME##_arg_history_len){\
@@ -691,17 +632,13 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a function returning a value with 2 parameters*/
 #define FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -742,19 +679,14 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a function returning a value with 3 parameters*/
 #define FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -801,21 +733,15 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a function returning a value with 4 parameters*/
 #define FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -868,23 +794,16 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a function returning a value with 5 parameters*/
 #define FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -943,25 +862,17 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a function returning a value with 6 parameters*/
 #define FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1026,27 +937,18 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a function returning a value with 7 parameters*/
 #define FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1117,29 +1019,19 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a function returning a value with 8 parameters*/
 #define FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static ARG7_TYPE FUNCNAME##_arg7_val; \
-    static ARG7_TYPE FUNCNAME##_arg7_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1216,31 +1108,20 @@ STATIC_INIT(FUNCNAME) \
 /* Defining a function returning a value with 9 parameters*/
 #define FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
 extern "C"{ \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static ARG7_TYPE FUNCNAME##_arg7_val; \
-    static ARG7_TYPE FUNCNAME##_arg7_history[FFF_ARG_HISTORY_LEN];\
-    static ARG8_TYPE FUNCNAME##_arg8_val; \
-    static ARG8_TYPE FUNCNAME##_arg8_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
+    DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1327,15 +1208,10 @@ static void RESET_HISTORY() {
 }
 #define REGISTER_CALL(function) \
    if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;
-#define SET_RETURN_SEQ( FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
-                        FUNCNAME##_return_val_seq = ARRAY_POINTER; \
-                        FUNCNAME##_return_val_seq_len = ARRAY_LEN;
 
 /* Defining a void function with 0 parameters*/
 #define FAKE_VOID_FUNC0(FUNCNAME) \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(){ \
         if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
             FUNCNAME##_arg_histories_dropped++;\
@@ -1350,11 +1226,8 @@ static void RESET_HISTORY() {
 
 /* Defining a void function with 1 parameters*/
 #define FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0){ \
         FUNCNAME##_arg0_val = arg0; \
         if(FUNCNAME##_call_count < FUNCNAME##_arg_history_len){\
@@ -1375,13 +1248,9 @@ static void RESET_HISTORY() {
 
 /* Defining a void function with 2 parameters*/
 #define FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1408,15 +1277,10 @@ static void RESET_HISTORY() {
 
 /* Defining a void function with 3 parameters*/
 #define FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1449,17 +1313,11 @@ static void RESET_HISTORY() {
 
 /* Defining a void function with 4 parameters*/
 #define FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1498,19 +1356,12 @@ static void RESET_HISTORY() {
 
 /* Defining a void function with 5 parameters*/
 #define FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1555,21 +1406,13 @@ static void RESET_HISTORY() {
 
 /* Defining a void function with 6 parameters*/
 #define FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1620,23 +1463,14 @@ static void RESET_HISTORY() {
 
 /* Defining a void function with 7 parameters*/
 #define FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1693,25 +1527,15 @@ static void RESET_HISTORY() {
 
 /* Defining a void function with 8 parameters*/
 #define FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static ARG7_TYPE FUNCNAME##_arg7_val; \
-    static ARG7_TYPE FUNCNAME##_arg7_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1774,27 +1598,16 @@ static void RESET_HISTORY() {
 
 /* Defining a void function with 9 parameters*/
 #define FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static ARG7_TYPE FUNCNAME##_arg7_val; \
-    static ARG7_TYPE FUNCNAME##_arg7_history[FFF_ARG_HISTORY_LEN];\
-    static ARG8_TYPE FUNCNAME##_arg8_val; \
-    static ARG8_TYPE FUNCNAME##_arg8_history[FFF_ARG_HISTORY_LEN];\
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
+    DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1867,9 +1680,7 @@ static void RESET_HISTORY() {
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(){ \
         if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
             FUNCNAME##_arg_histories_dropped++;\
@@ -1895,15 +1706,12 @@ static void RESET_HISTORY() {
 
 /* Defining a function returning a value with 1 parameters*/
 #define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
         FUNCNAME##_arg0_val = arg0; \
         if(FUNCNAME##_call_count < FUNCNAME##_arg_history_len){\
@@ -1935,17 +1743,13 @@ static void RESET_HISTORY() {
 
 /* Defining a function returning a value with 2 parameters*/
 #define FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -1983,19 +1787,14 @@ static void RESET_HISTORY() {
 
 /* Defining a function returning a value with 3 parameters*/
 #define FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -2039,21 +1838,15 @@ static void RESET_HISTORY() {
 
 /* Defining a function returning a value with 4 parameters*/
 #define FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -2103,23 +1896,16 @@ static void RESET_HISTORY() {
 
 /* Defining a function returning a value with 5 parameters*/
 #define FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -2175,25 +1961,17 @@ static void RESET_HISTORY() {
 
 /* Defining a function returning a value with 6 parameters*/
 #define FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -2255,27 +2033,18 @@ static void RESET_HISTORY() {
 
 /* Defining a function returning a value with 7 parameters*/
 #define FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -2343,29 +2112,19 @@ static void RESET_HISTORY() {
 
 /* Defining a function returning a value with 8 parameters*/
 #define FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static ARG7_TYPE FUNCNAME##_arg7_val; \
-    static ARG7_TYPE FUNCNAME##_arg7_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
@@ -2439,31 +2198,20 @@ static void RESET_HISTORY() {
 
 /* Defining a function returning a value with 9 parameters*/
 #define FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    static ARG0_TYPE FUNCNAME##_arg0_val; \
-    static ARG0_TYPE FUNCNAME##_arg0_history[FFF_ARG_HISTORY_LEN];\
-    static ARG1_TYPE FUNCNAME##_arg1_val; \
-    static ARG1_TYPE FUNCNAME##_arg1_history[FFF_ARG_HISTORY_LEN];\
-    static ARG2_TYPE FUNCNAME##_arg2_val; \
-    static ARG2_TYPE FUNCNAME##_arg2_history[FFF_ARG_HISTORY_LEN];\
-    static ARG3_TYPE FUNCNAME##_arg3_val; \
-    static ARG3_TYPE FUNCNAME##_arg3_history[FFF_ARG_HISTORY_LEN];\
-    static ARG4_TYPE FUNCNAME##_arg4_val; \
-    static ARG4_TYPE FUNCNAME##_arg4_history[FFF_ARG_HISTORY_LEN];\
-    static ARG5_TYPE FUNCNAME##_arg5_val; \
-    static ARG5_TYPE FUNCNAME##_arg5_history[FFF_ARG_HISTORY_LEN];\
-    static ARG6_TYPE FUNCNAME##_arg6_val; \
-    static ARG6_TYPE FUNCNAME##_arg6_history[FFF_ARG_HISTORY_LEN];\
-    static ARG7_TYPE FUNCNAME##_arg7_val; \
-    static ARG7_TYPE FUNCNAME##_arg7_history[FFF_ARG_HISTORY_LEN];\
-    static ARG8_TYPE FUNCNAME##_arg8_val; \
-    static ARG8_TYPE FUNCNAME##_arg8_history[FFF_ARG_HISTORY_LEN];\
+    DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
+    DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
+    DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
+    DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
+    DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
+    DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
+    DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
+    DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
+    DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
     static RETURN_TYPE FUNCNAME##_return_val; \
     static int FUNCNAME##_return_val_seq_len = 0; \
     static int FUNCNAME##_return_val_seq_idx = 0; \
     static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
-    static unsigned int FUNCNAME##_call_count = 0; \
-    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\
-    static unsigned int FUNCNAME##_arg_histories_dropped = 0; \
+    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         FUNCNAME##_arg0_val = arg0; \
         FUNCNAME##_arg1_val = arg1; \
