@@ -18,6 +18,10 @@ def output_constants
   puts "#endif"
 end
 
+
+
+
+
 # ------  Helper macros to use internally ------ #
 def output_internal_helper_macros
   puts "/* -- INTERNAL HELPER MACROS -- */"
@@ -25,7 +29,9 @@ def output_internal_helper_macros
   define_return_sequence_helper
   define_reset_fake_helper
   define_declare_arg_helper
-  define_declare_all_func_common
+  define_declare_all_func_common_helper
+  define_save_arg_helper
+  define_room_for_more_history
   
   puts "/* -- END INTERNAL HELPER MACROS -- */"
 end
@@ -54,14 +60,30 @@ def define_declare_arg_helper
   #puts "type arg##n##_history[FFF_ARG_HISTORY_LEN];"
 end
 
-def define_declare_all_func_common
+def define_declare_all_func_common_helper
   puts ""
   puts "#define DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
   puts "    static unsigned int FUNCNAME##_call_count = 0; \\"
   puts "    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\\"
   puts "    static unsigned int FUNCNAME##_arg_histories_dropped = 0;"
 end
+
+def define_save_arg_helper
+  puts ""
+  puts "#define SAVE_ARG(FUNCNAME, n) \\"
+  puts "    FUNCNAME##_arg##n##_val = arg##n"
+end
+
+def define_room_for_more_history
+  puts ""
+  puts "#define ROOM_FOR_MORE_HISTORY(FUNCNAME) \\"
+  puts "  FUNCNAME##_call_count < FFF_ARG_HISTORY_LEN"
+end
 # ------  End Helper macros ------ #
+
+
+
+
 
 def output_macro(arg_count, is_value_function)
 
@@ -158,8 +180,8 @@ end
 
 def output_variables(arg_count, is_value_function)
   arg_count.times { |i| output_argument_capture_variables(i) }
-  output_variables_for_value_function unless not is_value_function
   puts "    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
+  output_variables_for_value_function unless not is_value_function
 end
 
 def output_function_signature(args_count, is_value_function)
@@ -189,10 +211,10 @@ end
 
 def output_function_body(arg_count, is_value_function)
   # capture arguments
-  arg_count.times { |i| puts "        FUNCNAME##_arg#{i}_val = arg#{i}; \\" }
+  arg_count.times { |i| puts "        SAVE_ARG(FUNCNAME, #{i}); \\" }
   # store in argument history
   arg_count.times { |i|
-    puts "        if(FUNCNAME##_call_count < FUNCNAME##_arg_history_len){\\"
+    puts "        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\\"
     puts "            FUNCNAME##_arg#{i}_history[FUNCNAME##_call_count] = arg#{i}; \\"
     puts "        }\\"
   }
