@@ -276,7 +276,8 @@ def output_c_and_cpp
 
   include_guard {
     output_constants
-
+    define_reset_fake
+    
     puts "#ifdef __cplusplus"
     $cpp_output = true
     yield
@@ -293,7 +294,6 @@ end
 
 # lets generate!!
 output_c_and_cpp{
-  define_reset_fake
   define_call_history
   define_return_sequence
   output_cpp_reset_code if $cpp_output
