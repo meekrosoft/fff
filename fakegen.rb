@@ -36,6 +36,8 @@ def output_internal_helper_macros
   define_history_dropped_helper
   define_value_function_variables_helper
   define_increment_call_count_helper
+  define_return_fake_result_helper
+  define_reset_fake_result_helper
   
   puts "/* -- END INTERNAL HELPER MACROS -- */"
   puts ""
@@ -110,6 +112,27 @@ def define_increment_call_count_helper
   puts ""
   puts "#define INCREMENT_CALL_COUNT(FUNCNAME) \\"
   puts "    FUNCNAME##_call_count++"
+end
+
+def define_return_fake_result_helper
+  puts ""
+  puts "#define RETURN_FAKE_RESULT(FUNCNAME) \\"
+  puts "    if (FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \\"
+  puts "        if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) { \\"
+  puts "            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++]; \\"
+  puts "        } \\"
+  puts "        return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */ \\"
+  puts "    } \\"
+  puts "    return FUNCNAME##_return_val; \\"
+end
+
+def define_reset_fake_result_helper
+  puts ""
+  puts "#define RESET_FAKE_RESULT(FUNCNAME) \\"
+  puts "        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \\"
+  puts "        FUNCNAME##_return_val_seq_len = 0; \\"
+  puts "        FUNCNAME##_return_val_seq_idx = 0; \\"
+  puts "        FUNCNAME##_return_val_seq = 0; \\"
 end
 # ------  End Helper macros ------ #
 
@@ -199,9 +222,6 @@ def output_argument_capture_variables(argN)
   puts "    DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
 end
 
-def output_declare_capture_variable
-end
-
 def output_variables_for_value_function
   puts "    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\" 
 end
@@ -227,43 +247,21 @@ def output_function_signature(args_count, is_value_function)
   print ")"
 end
 
-def output_function_body_return
-  # return something if value function
-  puts "        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \\"
-  puts "            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\\"
-  puts "                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\\"
-  puts "            }\\"
-  puts "            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\\"
-  puts "        } \\"
-  puts "        return FUNCNAME##_return_val; \\"
-end
-
 def output_function_body(arg_count, is_value_function)
-  # capture arguments
   arg_count.times { |i| puts "        SAVE_ARG(FUNCNAME, #{i}); \\" }
-  # store in argument history
   puts "        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\\"
   arg_count.times { |i| puts "            SAVE_ARG_HISTORY(FUNCNAME, #{i}); \\" }
   puts "        }\\"
-
-  # update dropped argument history counts
   puts "        else{\\"
   puts "            HISTORY_DROPPED(FUNCNAME);\\"
   puts "        }\\"
-
-  # update call count
   puts "        INCREMENT_CALL_COUNT(FUNCNAME); \\"
-  #register call
   puts "        REGISTER_CALL(FUNCNAME); \\"
-  
-  output_function_body_return if is_value_function
+  puts "        RETURN_FAKE_RESULT(FUNCNAME)  \\" if is_value_function
 end
 
 def output_reset_function_return
-  puts "        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \\"
-  puts "        FUNCNAME##_return_val_seq_len = 0; \\"
-  puts "        FUNCNAME##_return_val_seq_idx = 0; \\"
-  puts "        FUNCNAME##_return_val_seq = 0; \\"
+  puts "        RESET_FAKE_RESULT(FUNCNAME) \\"
 end
 
 def output_reset_function(arg_count, is_value_function)

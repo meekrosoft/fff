@@ -48,6 +48,21 @@
 
 #define INCREMENT_CALL_COUNT(FUNCNAME) \
     FUNCNAME##_call_count++
+
+#define RETURN_FAKE_RESULT(FUNCNAME) \
+    if (FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
+        if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) { \
+            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++]; \
+        } \
+        return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */ \
+    } \
+    return FUNCNAME##_return_val; \
+
+#define RESET_FAKE_RESULT(FUNCNAME) \
+        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
+        FUNCNAME##_return_val_seq_len = 0; \
+        FUNCNAME##_return_val_seq_idx = 0; \
+        FUNCNAME##_return_val_seq = 0; \
 /* -- END INTERNAL HELPER MACROS -- */
 
 #ifdef __cplusplus
@@ -521,20 +536,11 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -556,22 +562,13 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
         memset(FUNCNAME##_arg0_history, 0, sizeof(FUNCNAME##_arg0_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -596,13 +593,7 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -610,10 +601,7 @@ extern "C"{ \
         FUNCNAME##_arg1_val = (ARG1_TYPE) 0; \
         memset(FUNCNAME##_arg1_history, 0, sizeof(FUNCNAME##_arg1_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -641,13 +629,7 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -657,10 +639,7 @@ extern "C"{ \
         FUNCNAME##_arg2_val = (ARG2_TYPE) 0; \
         memset(FUNCNAME##_arg2_history, 0, sizeof(FUNCNAME##_arg2_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -691,13 +670,7 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -709,10 +682,7 @@ extern "C"{ \
         FUNCNAME##_arg3_val = (ARG3_TYPE) 0; \
         memset(FUNCNAME##_arg3_history, 0, sizeof(FUNCNAME##_arg3_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -746,13 +716,7 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -766,10 +730,7 @@ extern "C"{ \
         FUNCNAME##_arg4_val = (ARG4_TYPE) 0; \
         memset(FUNCNAME##_arg4_history, 0, sizeof(FUNCNAME##_arg4_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -806,13 +767,7 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -828,10 +783,7 @@ extern "C"{ \
         FUNCNAME##_arg5_val = (ARG5_TYPE) 0; \
         memset(FUNCNAME##_arg5_history, 0, sizeof(FUNCNAME##_arg5_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -871,13 +823,7 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -895,10 +841,7 @@ extern "C"{ \
         FUNCNAME##_arg6_val = (ARG6_TYPE) 0; \
         memset(FUNCNAME##_arg6_history, 0, sizeof(FUNCNAME##_arg6_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -941,13 +884,7 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -967,10 +904,7 @@ extern "C"{ \
         FUNCNAME##_arg7_val = (ARG7_TYPE) 0; \
         memset(FUNCNAME##_arg7_history, 0, sizeof(FUNCNAME##_arg7_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -1016,13 +950,7 @@ extern "C"{ \
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -1044,10 +972,7 @@ extern "C"{ \
         FUNCNAME##_arg8_val = (ARG8_TYPE) 0; \
         memset(FUNCNAME##_arg8_history, 0, sizeof(FUNCNAME##_arg8_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -1468,20 +1393,11 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1500,22 +1416,13 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
         memset(FUNCNAME##_arg0_history, 0, sizeof(FUNCNAME##_arg0_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1537,13 +1444,7 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -1551,10 +1452,7 @@ static void RESET_HISTORY() {
         FUNCNAME##_arg1_val = (ARG1_TYPE) 0; \
         memset(FUNCNAME##_arg1_history, 0, sizeof(FUNCNAME##_arg1_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1579,13 +1477,7 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -1595,10 +1487,7 @@ static void RESET_HISTORY() {
         FUNCNAME##_arg2_val = (ARG2_TYPE) 0; \
         memset(FUNCNAME##_arg2_history, 0, sizeof(FUNCNAME##_arg2_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1626,13 +1515,7 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -1644,10 +1527,7 @@ static void RESET_HISTORY() {
         FUNCNAME##_arg3_val = (ARG3_TYPE) 0; \
         memset(FUNCNAME##_arg3_history, 0, sizeof(FUNCNAME##_arg3_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1678,13 +1558,7 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -1698,10 +1572,7 @@ static void RESET_HISTORY() {
         FUNCNAME##_arg4_val = (ARG4_TYPE) 0; \
         memset(FUNCNAME##_arg4_history, 0, sizeof(FUNCNAME##_arg4_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1735,13 +1606,7 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -1757,10 +1622,7 @@ static void RESET_HISTORY() {
         FUNCNAME##_arg5_val = (ARG5_TYPE) 0; \
         memset(FUNCNAME##_arg5_history, 0, sizeof(FUNCNAME##_arg5_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1797,13 +1659,7 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -1821,10 +1677,7 @@ static void RESET_HISTORY() {
         FUNCNAME##_arg6_val = (ARG6_TYPE) 0; \
         memset(FUNCNAME##_arg6_history, 0, sizeof(FUNCNAME##_arg6_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1864,13 +1717,7 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -1890,10 +1737,7 @@ static void RESET_HISTORY() {
         FUNCNAME##_arg7_val = (ARG7_TYPE) 0; \
         memset(FUNCNAME##_arg7_history, 0, sizeof(FUNCNAME##_arg7_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1936,13 +1780,7 @@ static void RESET_HISTORY() {
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
-        if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
-            if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
-                return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++];\
-            }\
-            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */\
-        } \
-        return FUNCNAME##_return_val; \
+        RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
         FUNCNAME##_arg0_val = (ARG0_TYPE) 0; \
@@ -1964,10 +1802,7 @@ static void RESET_HISTORY() {
         FUNCNAME##_arg8_val = (ARG8_TYPE) 0; \
         memset(FUNCNAME##_arg8_history, 0, sizeof(FUNCNAME##_arg8_history)); \
         FUNCNAME##_call_count = 0; \
-        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \
-        FUNCNAME##_return_val_seq_len = 0; \
-        FUNCNAME##_return_val_seq_idx = 0; \
-        FUNCNAME##_return_val_seq = 0; \
+        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 #endif  /* cpp/ansi c */
