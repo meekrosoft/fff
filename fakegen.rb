@@ -32,8 +32,13 @@ def output_internal_helper_macros
   define_declare_all_func_common_helper
   define_save_arg_helper
   define_room_for_more_history
+  define_save_arg_history_helper
+  define_history_dropped_helper
+  define_value_function_variables_helper
+  define_increment_call_count_helper
   
   puts "/* -- END INTERNAL HELPER MACROS -- */"
+  puts ""
 end
 
 def define_return_sequence_helper
@@ -78,6 +83,33 @@ def define_room_for_more_history
   puts ""
   puts "#define ROOM_FOR_MORE_HISTORY(FUNCNAME) \\"
   puts "  FUNCNAME##_call_count < FFF_ARG_HISTORY_LEN"
+end
+
+def define_save_arg_history_helper
+  puts ""
+  puts "#define SAVE_ARG_HISTORY(FUNCNAME, ARGN) \\"
+  puts "    FUNCNAME##_arg##ARGN##_history[FUNCNAME##_call_count] = arg##ARGN"
+end
+
+def define_history_dropped_helper
+  puts ""
+  puts "#define HISTORY_DROPPED(FUNCNAME) \\"
+  puts "    FUNCNAME##_arg_histories_dropped++"
+end
+
+def define_value_function_variables_helper
+  puts ""
+  puts "#define DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\"
+  puts "    static RETURN_TYPE FUNCNAME##_return_val; \\" 
+  puts "    static int FUNCNAME##_return_val_seq_len = 0; \\" 
+  puts "    static int FUNCNAME##_return_val_seq_idx = 0; \\" 
+  puts "    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \\" 
+end
+
+def define_increment_call_count_helper
+  puts ""
+  puts "#define INCREMENT_CALL_COUNT(FUNCNAME) \\"
+  puts "    FUNCNAME##_call_count++"
 end
 # ------  End Helper macros ------ #
 
@@ -171,10 +203,7 @@ def output_declare_capture_variable
 end
 
 def output_variables_for_value_function
-  puts "    static RETURN_TYPE FUNCNAME##_return_val; \\" 
-  puts "    static int FUNCNAME##_return_val_seq_len = 0; \\" 
-  puts "    static int FUNCNAME##_return_val_seq_idx = 0; \\" 
-  puts "    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \\" 
+  puts "    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\" 
 end
 
 
@@ -213,19 +242,17 @@ def output_function_body(arg_count, is_value_function)
   # capture arguments
   arg_count.times { |i| puts "        SAVE_ARG(FUNCNAME, #{i}); \\" }
   # store in argument history
-  arg_count.times { |i|
-    puts "        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\\"
-    puts "            FUNCNAME##_arg#{i}_history[FUNCNAME##_call_count] = arg#{i}; \\"
-    puts "        }\\"
-  }
+  puts "        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\\"
+  arg_count.times { |i| puts "            SAVE_ARG_HISTORY(FUNCNAME, #{i}); \\" }
+  puts "        }\\"
 
   # update dropped argument history counts
-  puts "        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\\"
-  puts "            FUNCNAME##_arg_histories_dropped++;\\"
+  puts "        else{\\"
+  puts "            HISTORY_DROPPED(FUNCNAME);\\"
   puts "        }\\"
 
   # update call count
-  puts "        FUNCNAME##_call_count++; \\"
+  puts "        INCREMENT_CALL_COUNT(FUNCNAME); \\"
   #register call
   puts "        REGISTER_CALL(FUNCNAME); \\"
   

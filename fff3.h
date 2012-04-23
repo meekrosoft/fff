@@ -33,7 +33,23 @@
 
 #define ROOM_FOR_MORE_HISTORY(FUNCNAME) \
   FUNCNAME##_call_count < FFF_ARG_HISTORY_LEN
+
+#define SAVE_ARG_HISTORY(FUNCNAME, ARGN) \
+    FUNCNAME##_arg##ARGN##_history[FUNCNAME##_call_count] = arg##ARGN
+
+#define HISTORY_DROPPED(FUNCNAME) \
+    FUNCNAME##_arg_histories_dropped++
+
+#define DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    static RETURN_TYPE FUNCNAME##_return_val; \
+    static int FUNCNAME##_return_val_seq_len = 0; \
+    static int FUNCNAME##_return_val_seq_idx = 0; \
+    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+
+#define INCREMENT_CALL_COUNT(FUNCNAME) \
+    FUNCNAME##_call_count++
 /* -- END INTERNAL HELPER MACROS -- */
+
 #ifdef __cplusplus
 static void * call_history[FFF_CALL_HISTORY_LEN];
 static unsigned int call_history_idx;
@@ -72,10 +88,12 @@ static StaticInitializer_##FUNCNAME staticInitializer_##FUNCNAME; \
 extern "C"{ \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(){ \
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
+        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
         }\
-        FUNCNAME##_call_count++; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
+        }\
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -93,12 +111,12 @@ extern "C"{ \
     void FUNCNAME(ARG0_TYPE arg0){ \
         SAVE_ARG(FUNCNAME, 0); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
         }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -120,15 +138,13 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -154,18 +170,14 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 1); \
         SAVE_ARG(FUNCNAME, 2); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -195,21 +207,15 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 2); \
         SAVE_ARG(FUNCNAME, 3); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -243,24 +249,16 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 3); \
         SAVE_ARG(FUNCNAME, 4); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -298,27 +296,17 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 4); \
         SAVE_ARG(FUNCNAME, 5); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -360,30 +348,18 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 5); \
         SAVE_ARG(FUNCNAME, 6); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -429,33 +405,19 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 6); \
         SAVE_ARG(FUNCNAME, 7); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            SAVE_ARG_HISTORY(FUNCNAME, 7); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg7_history[FUNCNAME##_call_count] = arg7; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -505,36 +467,20 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 7); \
         SAVE_ARG(FUNCNAME, 8); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            SAVE_ARG_HISTORY(FUNCNAME, 7); \
+            SAVE_ARG_HISTORY(FUNCNAME, 8); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg7_history[FUNCNAME##_call_count] = arg7; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg8_history[FUNCNAME##_call_count] = arg8; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -566,15 +512,14 @@ STATIC_INIT(FUNCNAME) \
 #define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
 extern "C"{ \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(){ \
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
+        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
         }\
-        FUNCNAME##_call_count++; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
+        }\
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -600,19 +545,16 @@ STATIC_INIT(FUNCNAME) \
 extern "C"{ \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
         SAVE_ARG(FUNCNAME, 0); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
         }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -641,23 +583,18 @@ extern "C"{ \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -689,27 +626,20 @@ extern "C"{ \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
         SAVE_ARG(FUNCNAME, 2); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -744,31 +674,22 @@ extern "C"{ \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
         SAVE_ARG(FUNCNAME, 2); \
         SAVE_ARG(FUNCNAME, 3); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -806,10 +727,7 @@ extern "C"{ \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -817,24 +735,16 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 3); \
         SAVE_ARG(FUNCNAME, 4); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -875,10 +785,7 @@ extern "C"{ \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -887,27 +794,17 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 4); \
         SAVE_ARG(FUNCNAME, 5); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -951,10 +848,7 @@ extern "C"{ \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -964,30 +858,18 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 5); \
         SAVE_ARG(FUNCNAME, 6); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -1034,10 +916,7 @@ extern "C"{ \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -1048,33 +927,19 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 6); \
         SAVE_ARG(FUNCNAME, 7); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            SAVE_ARG_HISTORY(FUNCNAME, 7); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg7_history[FUNCNAME##_call_count] = arg7; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -1124,10 +989,7 @@ extern "C"{ \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -1139,36 +1001,20 @@ extern "C"{ \
         SAVE_ARG(FUNCNAME, 7); \
         SAVE_ARG(FUNCNAME, 8); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            SAVE_ARG_HISTORY(FUNCNAME, 7); \
+            SAVE_ARG_HISTORY(FUNCNAME, 8); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg7_history[FUNCNAME##_call_count] = arg7; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg8_history[FUNCNAME##_call_count] = arg8; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -1219,10 +1065,12 @@ static void RESET_HISTORY() {
 #define FAKE_VOID_FUNC0(FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
     void FUNCNAME(){ \
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
+        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
         }\
-        FUNCNAME##_call_count++; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
+        }\
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1237,12 +1085,12 @@ static void RESET_HISTORY() {
     void FUNCNAME(ARG0_TYPE arg0){ \
         SAVE_ARG(FUNCNAME, 0); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
         }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1261,15 +1109,13 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1292,18 +1138,14 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 1); \
         SAVE_ARG(FUNCNAME, 2); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1330,21 +1172,15 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 2); \
         SAVE_ARG(FUNCNAME, 3); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1375,24 +1211,16 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 3); \
         SAVE_ARG(FUNCNAME, 4); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1427,27 +1255,17 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 4); \
         SAVE_ARG(FUNCNAME, 5); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1486,30 +1304,18 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 5); \
         SAVE_ARG(FUNCNAME, 6); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1552,33 +1358,19 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 6); \
         SAVE_ARG(FUNCNAME, 7); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            SAVE_ARG_HISTORY(FUNCNAME, 7); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg7_history[FUNCNAME##_call_count] = arg7; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1625,36 +1417,20 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 7); \
         SAVE_ARG(FUNCNAME, 8); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            SAVE_ARG_HISTORY(FUNCNAME, 7); \
+            SAVE_ARG_HISTORY(FUNCNAME, 8); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg7_history[FUNCNAME##_call_count] = arg7; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg8_history[FUNCNAME##_call_count] = arg8; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1683,15 +1459,14 @@ static void RESET_HISTORY() {
 /* Defining a function returning a value with 0 parameters*/
 #define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(){ \
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
+        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
         }\
-        FUNCNAME##_call_count++; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
+        }\
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -1714,19 +1489,16 @@ static void RESET_HISTORY() {
 #define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
         SAVE_ARG(FUNCNAME, 0); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
         }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -1752,23 +1524,18 @@ static void RESET_HISTORY() {
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -1797,27 +1564,20 @@ static void RESET_HISTORY() {
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
         SAVE_ARG(FUNCNAME, 2); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -1849,31 +1609,22 @@ static void RESET_HISTORY() {
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
         SAVE_ARG(FUNCNAME, 2); \
         SAVE_ARG(FUNCNAME, 3); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -1908,10 +1659,7 @@ static void RESET_HISTORY() {
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -1919,24 +1667,16 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 3); \
         SAVE_ARG(FUNCNAME, 4); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -1974,10 +1714,7 @@ static void RESET_HISTORY() {
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -1986,27 +1723,17 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 4); \
         SAVE_ARG(FUNCNAME, 5); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -2047,10 +1774,7 @@ static void RESET_HISTORY() {
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -2060,30 +1784,18 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 5); \
         SAVE_ARG(FUNCNAME, 6); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -2127,10 +1839,7 @@ static void RESET_HISTORY() {
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -2141,33 +1850,19 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 6); \
         SAVE_ARG(FUNCNAME, 7); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            SAVE_ARG_HISTORY(FUNCNAME, 7); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg7_history[FUNCNAME##_call_count] = arg7; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
@@ -2214,10 +1909,7 @@ static void RESET_HISTORY() {
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
     DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    static RETURN_TYPE FUNCNAME##_return_val; \
-    static int FUNCNAME##_return_val_seq_len = 0; \
-    static int FUNCNAME##_return_val_seq_idx = 0; \
-    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \
+    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
         SAVE_ARG(FUNCNAME, 0); \
         SAVE_ARG(FUNCNAME, 1); \
@@ -2229,36 +1921,20 @@ static void RESET_HISTORY() {
         SAVE_ARG(FUNCNAME, 7); \
         SAVE_ARG(FUNCNAME, 8); \
         if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg0_history[FUNCNAME##_call_count] = arg0; \
+            SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            SAVE_ARG_HISTORY(FUNCNAME, 7); \
+            SAVE_ARG_HISTORY(FUNCNAME, 8); \
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg1_history[FUNCNAME##_call_count] = arg1; \
+        else{\
+            HISTORY_DROPPED(FUNCNAME);\
         }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg2_history[FUNCNAME##_call_count] = arg2; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg3_history[FUNCNAME##_call_count] = arg3; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg4_history[FUNCNAME##_call_count] = arg4; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg5_history[FUNCNAME##_call_count] = arg5; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg6_history[FUNCNAME##_call_count] = arg6; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg7_history[FUNCNAME##_call_count] = arg7; \
-        }\
-        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            FUNCNAME##_arg8_history[FUNCNAME##_call_count] = arg8; \
-        }\
-        if(FUNCNAME##_call_count >= FUNCNAME##_arg_history_len){\
-            FUNCNAME##_arg_histories_dropped++;\
-        }\
-        FUNCNAME##_call_count++; \
+        INCREMENT_CALL_COUNT(FUNCNAME); \
         REGISTER_CALL(FUNCNAME); \
         if(FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \
             if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) {\
