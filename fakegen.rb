@@ -222,15 +222,10 @@ def output_argument_capture_variables(argN)
   puts "    DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
 end
 
-def output_variables_for_value_function
-  puts "    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\" 
-end
-
-
 def output_variables(arg_count, is_value_function)
   arg_count.times { |i| output_argument_capture_variables(i) }
   puts "    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
-  output_variables_for_value_function unless not is_value_function
+  puts "    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\" unless not is_value_function
 end
 
 def output_function_signature(args_count, is_value_function)
