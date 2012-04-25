@@ -45,8 +45,8 @@ end
 
 def define_return_sequence_helper
   puts "#define SET_RETURN_SEQ( FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
-  puts "                        FUNCNAME##_return_val_seq = ARRAY_POINTER; \\"
-  puts "                        FUNCNAME##_return_val_seq_len = ARRAY_LEN;"
+  puts "                        FUNCNAME##_fake.return_val_seq = ARRAY_POINTER; \\"
+  puts "                        FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;"
 end
 
 def define_reset_fake_helper
@@ -60,79 +60,78 @@ end
 
 def define_declare_arg_helper
   puts ""
-  puts "#define DECLARE_ARG(type, argN, FUNCNAME) \\"
-  puts "    static type FUNCNAME##_arg##argN##_val; \\"
-  puts "    static type FUNCNAME##_arg##argN##_history[FFF_ARG_HISTORY_LEN];"
-  #puts "type arg##n##_val; \\"
-  #puts "type arg##n##_history[FFF_ARG_HISTORY_LEN];"
+  puts "#define DECLARE_ARG(type, n, FUNCNAME) \\"
+  puts "    type arg##n##_val; \\"
+  puts "    type arg##n##_history[FFF_ARG_HISTORY_LEN];"
 end
 
 def define_declare_all_func_common_helper
   puts ""
   puts "#define DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
-  puts "    static unsigned int FUNCNAME##_call_count = 0; \\"
-  puts "    static unsigned int FUNCNAME##_arg_history_len = FFF_ARG_HISTORY_LEN;\\"
-  puts "    static unsigned int FUNCNAME##_arg_histories_dropped = 0;"
+  puts "    unsigned int call_count; \\"
+  puts "    unsigned int arg_history_len;\\"
+  puts "    unsigned int arg_histories_dropped;"
 end
 
 def define_save_arg_helper
   puts ""
   puts "#define SAVE_ARG(FUNCNAME, n) \\"
-  puts "    FUNCNAME##_arg##n##_val = arg##n"
+  puts "    FUNCNAME##_fake.arg##n##_val = arg##n"
 end
 
 def define_room_for_more_history
   puts ""
   puts "#define ROOM_FOR_MORE_HISTORY(FUNCNAME) \\"
-  puts "  FUNCNAME##_call_count < FFF_ARG_HISTORY_LEN"
+  puts "  FUNCNAME##_fake.call_count < FFF_ARG_HISTORY_LEN"
 end
 
 def define_save_arg_history_helper
   puts ""
   puts "#define SAVE_ARG_HISTORY(FUNCNAME, ARGN) \\"
-  puts "    FUNCNAME##_arg##ARGN##_history[FUNCNAME##_call_count] = arg##ARGN"
+  puts "    FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count] = arg##ARGN"
 end
 
 def define_history_dropped_helper
   puts ""
   puts "#define HISTORY_DROPPED(FUNCNAME) \\"
-  puts "    FUNCNAME##_arg_histories_dropped++"
+  puts "    FUNCNAME##_fake.arg_histories_dropped++"
 end
 
 def define_value_function_variables_helper
   puts ""
   puts "#define DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\"
-  puts "    static RETURN_TYPE FUNCNAME##_return_val; \\" 
-  puts "    static int FUNCNAME##_return_val_seq_len = 0; \\" 
-  puts "    static int FUNCNAME##_return_val_seq_idx = 0; \\" 
-  puts "    static RETURN_TYPE * FUNCNAME##_return_val_seq = 0; \\" 
+  puts "    RETURN_TYPE return_val; \\" 
+  puts "    int return_val_seq_len; \\" 
+  puts "    int return_val_seq_idx; \\" 
+  puts "    RETURN_TYPE * return_val_seq; \\" 
 end
 
 def define_increment_call_count_helper
   puts ""
   puts "#define INCREMENT_CALL_COUNT(FUNCNAME) \\"
-  puts "    FUNCNAME##_call_count++"
+  puts "    FUNCNAME##_fake.call_count++"
 end
 
 def define_return_fake_result_helper
   puts ""
   puts "#define RETURN_FAKE_RESULT(FUNCNAME) \\"
-  puts "    if (FUNCNAME##_return_val_seq_len){ /* then its a sequence */ \\"
-  puts "        if(FUNCNAME##_return_val_seq_idx < FUNCNAME##_return_val_seq_len) { \\"
-  puts "            return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_idx++]; \\"
+  puts "    if (FUNCNAME##_fake.return_val_seq_len){ /* then its a sequence */ \\"
+  puts "        if(FUNCNAME##_fake.return_val_seq_idx < FUNCNAME##_fake.return_val_seq_len) { \\"
+  puts "            return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_idx++]; \\"
   puts "        } \\"
-  puts "        return FUNCNAME##_return_val_seq[FUNCNAME##_return_val_seq_len-1]; /* return last element */ \\"
+  puts "        return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]; /* return last element */ \\"
   puts "    } \\"
-  puts "    return FUNCNAME##_return_val; \\"
+  puts "    return FUNCNAME##_fake.return_val; \\"
 end
 
 def define_reset_fake_result_helper
   puts ""
   puts "#define RESET_FAKE_RESULT(FUNCNAME) \\"
-  puts "        memset(&FUNCNAME##_return_val, 0, sizeof(FUNCNAME##_return_val)); \\"
-  puts "        FUNCNAME##_return_val_seq_len = 0; \\"
-  puts "        FUNCNAME##_return_val_seq_idx = 0; \\"
-  puts "        FUNCNAME##_return_val_seq = 0; \\"
+  puts "        memset(&FUNCNAME##_fake.return_val, 0, sizeof(FUNCNAME##_fake.return_val)); \\"
+  puts "        FUNCNAME##_fake.return_val_seq_len = 0; \\"
+  puts "        FUNCNAME##_fake.return_val_seq_idx = 0; \\"
+  puts "        FUNCNAME##_fake.return_val_seq = 0; \\"
+#  puts "        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
 end
 # ------  End Helper macros ------ #
 
@@ -222,10 +221,22 @@ def output_argument_capture_variables(argN)
   puts "    DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
 end
 
+
+def in_struct
+  puts "typedef struct FUNCNAME##_Fake { \\"
+  yield
+  puts "} FUNCNAME##_Fake;\\"
+end
+
 def output_variables(arg_count, is_value_function)
-  arg_count.times { |i| output_argument_capture_variables(i) }
-  puts "    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
-  puts "    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\" unless not is_value_function
+  in_struct{
+    arg_count.times { |argN| 
+      puts "    DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
+    }
+    puts "    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
+    puts "    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\" unless not is_value_function
+  }
+  puts "FUNCNAME##_Fake FUNCNAME##_fake;\\"
 end
 
 def output_function_signature(args_count, is_value_function)
@@ -262,10 +273,11 @@ end
 def output_reset_function(arg_count, is_value_function)
   puts "    void FUNCNAME##_reset(){ \\"
   arg_count.times { |i|
-    puts "        FUNCNAME##_arg#{i}_val = (ARG#{i}_TYPE) 0; \\"
-    puts "        memset(FUNCNAME##_arg#{i}_history, 0, sizeof(FUNCNAME##_arg#{i}_history)); \\"
+    puts "        FUNCNAME##_fake.arg#{i}_val = (ARG#{i}_TYPE) 0; \\"
+    puts "        memset(FUNCNAME##_fake.arg#{i}_history, 0, sizeof(FUNCNAME##_fake.arg#{i}_history)); \\"
   }
-  puts "        FUNCNAME##_call_count = 0; \\"
+  puts "        FUNCNAME##_fake.call_count = 0; \\"
+  puts "        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
   output_reset_function_return if is_value_function
   puts "    } \\"
 end
