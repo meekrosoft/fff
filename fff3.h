@@ -57,12 +57,6 @@
         return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]; /* return last element */ \
     } \
     return FUNCNAME##_fake.return_val; \
-
-#define RESET_FAKE_RESULT(FUNCNAME) \
-        memset(&FUNCNAME##_fake.return_val, 0, sizeof(FUNCNAME##_fake.return_val)); \
-        FUNCNAME##_fake.return_val_seq_len = 0; \
-        FUNCNAME##_fake.return_val_seq_idx = 0; \
-        FUNCNAME##_fake.return_val_seq = 0; \
 /* -- END INTERNAL HELPER MACROS -- */
 
 #ifdef __cplusplus
@@ -115,7 +109,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -142,9 +136,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -174,11 +166,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -211,13 +199,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -253,15 +235,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -300,17 +274,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -352,19 +316,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -409,21 +361,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -471,23 +409,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.arg7_val = (ARG7_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg7_history, 0, sizeof(FUNCNAME##_fake.arg7_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -538,25 +460,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.arg7_val = (ARG7_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg7_history, 0, sizeof(FUNCNAME##_fake.arg7_history)); \
-        FUNCNAME##_fake.arg8_val = (ARG8_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg8_history, 0, sizeof(FUNCNAME##_fake.arg8_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 } \
@@ -582,9 +486,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -612,11 +515,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -647,13 +547,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -687,15 +582,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -732,17 +620,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -782,19 +661,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -837,21 +705,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -897,23 +752,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -962,25 +802,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.arg7_val = (ARG7_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg7_history, 0, sizeof(FUNCNAME##_fake.arg7_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -1032,27 +855,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.arg7_val = (ARG7_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg7_history, 0, sizeof(FUNCNAME##_fake.arg7_history)); \
-        FUNCNAME##_fake.arg8_val = (ARG8_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg8_history, 0, sizeof(FUNCNAME##_fake.arg8_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 } \
 STATIC_INIT(FUNCNAME) \
@@ -1082,7 +886,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1106,9 +910,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1135,11 +937,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1169,13 +967,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1208,15 +1000,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1252,17 +1036,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1301,19 +1075,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1355,21 +1117,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1414,23 +1162,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.arg7_val = (ARG7_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg7_history, 0, sizeof(FUNCNAME##_fake.arg7_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1478,25 +1210,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.arg7_val = (ARG7_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg7_history, 0, sizeof(FUNCNAME##_fake.arg7_history)); \
-        FUNCNAME##_fake.arg8_val = (ARG8_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg8_history, 0, sizeof(FUNCNAME##_fake.arg8_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     } \
 
@@ -1519,9 +1233,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1546,11 +1259,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1578,13 +1288,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1615,15 +1320,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1657,17 +1355,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1704,19 +1393,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1756,21 +1434,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1813,23 +1478,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1875,25 +1525,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.arg7_val = (ARG7_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg7_history, 0, sizeof(FUNCNAME##_fake.arg7_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 
@@ -1942,27 +1575,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
     void FUNCNAME##_reset(){ \
-        FUNCNAME##_fake.arg0_val = (ARG0_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg0_history, 0, sizeof(FUNCNAME##_fake.arg0_history)); \
-        FUNCNAME##_fake.arg1_val = (ARG1_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg1_history, 0, sizeof(FUNCNAME##_fake.arg1_history)); \
-        FUNCNAME##_fake.arg2_val = (ARG2_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg2_history, 0, sizeof(FUNCNAME##_fake.arg2_history)); \
-        FUNCNAME##_fake.arg3_val = (ARG3_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg3_history, 0, sizeof(FUNCNAME##_fake.arg3_history)); \
-        FUNCNAME##_fake.arg4_val = (ARG4_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg4_history, 0, sizeof(FUNCNAME##_fake.arg4_history)); \
-        FUNCNAME##_fake.arg5_val = (ARG5_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg5_history, 0, sizeof(FUNCNAME##_fake.arg5_history)); \
-        FUNCNAME##_fake.arg6_val = (ARG6_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg6_history, 0, sizeof(FUNCNAME##_fake.arg6_history)); \
-        FUNCNAME##_fake.arg7_val = (ARG7_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg7_history, 0, sizeof(FUNCNAME##_fake.arg7_history)); \
-        FUNCNAME##_fake.arg8_val = (ARG8_TYPE) 0; \
-        memset(FUNCNAME##_fake.arg8_history, 0, sizeof(FUNCNAME##_fake.arg8_history)); \
-        FUNCNAME##_fake.call_count = 0; \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        RESET_FAKE_RESULT(FUNCNAME) \
     } \
 
 #endif  /* cpp/ansi c */

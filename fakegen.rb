@@ -37,7 +37,6 @@ def output_internal_helper_macros
   define_value_function_variables_helper
   define_increment_call_count_helper
   define_return_fake_result_helper
-  define_reset_fake_result_helper
   
   puts "/* -- END INTERNAL HELPER MACROS -- */"
   puts ""
@@ -124,15 +123,6 @@ def define_return_fake_result_helper
   puts "    return FUNCNAME##_fake.return_val; \\"
 end
 
-def define_reset_fake_result_helper
-  puts ""
-  puts "#define RESET_FAKE_RESULT(FUNCNAME) \\"
-  puts "        memset(&FUNCNAME##_fake.return_val, 0, sizeof(FUNCNAME##_fake.return_val)); \\"
-  puts "        FUNCNAME##_fake.return_val_seq_len = 0; \\"
-  puts "        FUNCNAME##_fake.return_val_seq_idx = 0; \\"
-  puts "        FUNCNAME##_fake.return_val_seq = 0; \\"
-#  puts "        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
-end
 # ------  End Helper macros ------ #
 
 
@@ -266,19 +256,10 @@ def output_function_body(arg_count, is_value_function)
   puts "        RETURN_FAKE_RESULT(FUNCNAME)  \\" if is_value_function
 end
 
-def output_reset_function_return
-  puts "        RESET_FAKE_RESULT(FUNCNAME) \\"
-end
-
 def output_reset_function(arg_count, is_value_function)
   puts "    void FUNCNAME##_reset(){ \\"
-  arg_count.times { |i|
-    puts "        FUNCNAME##_fake.arg#{i}_val = (ARG#{i}_TYPE) 0; \\"
-    puts "        memset(FUNCNAME##_fake.arg#{i}_history, 0, sizeof(FUNCNAME##_fake.arg#{i}_history)); \\"
-  }
-  puts "        FUNCNAME##_fake.call_count = 0; \\"
+  puts "        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
   puts "        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
-  output_reset_function_return if is_value_function
   puts "    } \\"
 end
 
