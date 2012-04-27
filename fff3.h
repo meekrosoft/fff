@@ -23,10 +23,10 @@
     type arg##n##_val; \
     type arg##n##_history[FFF_ARG_HISTORY_LEN];
 
-#define DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+#define DECLARE_ALL_FUNC_COMMON \
     unsigned int call_count; \
     unsigned int arg_history_len;\
-    unsigned int arg_histories_dropped;
+    unsigned int arg_histories_dropped; \
 
 #define SAVE_ARG(FUNCNAME, n) \
     FUNCNAME##_fake.arg##n##_val = arg##n
@@ -40,7 +40,7 @@
 #define HISTORY_DROPPED(FUNCNAME) \
     FUNCNAME##_fake.arg_histories_dropped++
 
-#define DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+#define DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
     RETURN_TYPE return_val; \
     int return_val_seq_len; \
     int return_val_seq_idx; \
@@ -96,7 +96,8 @@ static StaticInitializer_##FUNCNAME staticInitializer_##FUNCNAME; \
 #define FAKE_VOID_FUNC0(FUNCNAME) \
 extern "C"{ \
 typedef struct FUNCNAME##_Fake { \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(){ \
@@ -106,6 +107,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -121,7 +123,8 @@ STATIC_INIT(FUNCNAME) \
 extern "C"{ \
 typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0){ \
@@ -133,6 +136,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -149,7 +153,8 @@ extern "C"{ \
 typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
@@ -163,6 +168,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -180,7 +186,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
@@ -196,6 +203,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -214,7 +222,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
@@ -232,6 +241,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -251,7 +261,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
@@ -271,6 +282,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -291,7 +303,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
@@ -313,6 +326,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -334,7 +348,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
@@ -358,6 +373,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -380,7 +396,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
@@ -406,6 +423,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -429,7 +447,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
@@ -457,6 +476,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -471,8 +491,9 @@ STATIC_INIT(FUNCNAME) \
 #define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
 extern "C"{ \
 typedef struct FUNCNAME##_Fake { \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(){ \
@@ -482,6 +503,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -498,8 +520,9 @@ STATIC_INIT(FUNCNAME) \
 extern "C"{ \
 typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
@@ -511,6 +534,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -528,8 +552,9 @@ extern "C"{ \
 typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
@@ -543,6 +568,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -561,8 +587,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
@@ -578,6 +605,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -597,8 +625,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
@@ -616,6 +645,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -636,8 +666,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
@@ -657,6 +688,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -678,8 +710,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
@@ -701,6 +734,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -723,8 +757,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
@@ -748,6 +783,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -771,8 +807,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
@@ -798,6 +835,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -822,8 +860,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
@@ -851,6 +890,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -873,7 +913,8 @@ static void RESET_HISTORY() {
 /* Defining a void function with 0 parameters*/
 #define FAKE_VOID_FUNC0(FUNCNAME) \
 typedef struct FUNCNAME##_Fake { \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(){ \
@@ -883,6 +924,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -895,7 +937,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
 #define FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
 typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0){ \
@@ -907,6 +950,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -920,7 +964,8 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
 typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
@@ -934,6 +979,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -948,7 +994,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
@@ -964,6 +1011,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -979,7 +1027,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
@@ -997,6 +1046,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1013,7 +1063,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
@@ -1033,6 +1084,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1050,7 +1102,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
@@ -1072,6 +1125,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1090,7 +1144,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
@@ -1114,6 +1169,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1133,7 +1189,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
@@ -1159,6 +1216,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1179,7 +1237,8 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
+    DECLARE_ALL_FUNC_COMMON \
+    void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
@@ -1207,6 +1266,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
         REGISTER_CALL(FUNCNAME); \
 	} \
     void FUNCNAME##_reset(){ \
@@ -1218,8 +1278,9 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
 /* Defining a function returning a value with 0 parameters*/
 #define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
 typedef struct FUNCNAME##_Fake { \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(){ \
@@ -1229,6 +1290,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -1242,8 +1304,9 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
 #define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
 typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
@@ -1255,6 +1318,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -1269,8 +1333,9 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
 typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
@@ -1284,6 +1349,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -1299,8 +1365,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
@@ -1316,6 +1383,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -1332,8 +1400,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
@@ -1351,6 +1420,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -1368,8 +1438,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
@@ -1389,6 +1460,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -1407,8 +1479,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
@@ -1430,6 +1503,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -1449,8 +1523,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
@@ -1474,6 +1549,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -1494,8 +1570,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
@@ -1521,6 +1598,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \
@@ -1542,8 +1620,9 @@ typedef struct FUNCNAME##_Fake { \
     DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
     DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
     DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
-    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \
-    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \
+    DECLARE_ALL_FUNC_COMMON \
+    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+    RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
 } FUNCNAME##_Fake;\
 FUNCNAME##_Fake FUNCNAME##_fake;\
     RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
@@ -1571,6 +1650,7 @@ FUNCNAME##_Fake FUNCNAME##_fake;\
             HISTORY_DROPPED(FUNCNAME);\
         }\
         INCREMENT_CALL_COUNT(FUNCNAME); \
+        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
         REGISTER_CALL(FUNCNAME); \
         RETURN_FAKE_RESULT(FUNCNAME)  \
 	} \

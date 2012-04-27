@@ -254,6 +254,18 @@ TEST_F(FFFTestSuite, default_constants_can_be_overridden)
     ASSERT_EQ(OVERRIDE_ARG_HIST_LEN, voidfunc2_fake.arg_history_len);
 }
 
+static int my_custom_fake_called = 0;
+void my_custom_fake(char a, char b)
+{
+    my_custom_fake_called++;
+}
+
+TEST_F(FFFTestSuite, can_register_custom_fake)
+{
+    voidfunc2_fake.custom_fake = my_custom_fake;
+    voidfunc2('a', 'b');
+    ASSERT_EQ(1, my_custom_fake_called);
+}
 
 int main()
 {
@@ -292,6 +304,8 @@ int main()
     RUN_TEST(FFFTestSuite, return_value_sequences_not_exhausted);
     RUN_TEST(FFFTestSuite, return_value_sequences_exhausted);
     RUN_TEST(FFFTestSuite, default_constants_can_be_overridden);
+
+    RUN_TEST(FFFTestSuite, can_register_custom_fake);
 
     printf("\n-------------\n");
     printf("Complete\n");

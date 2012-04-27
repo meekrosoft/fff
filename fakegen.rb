@@ -66,11 +66,18 @@ end
 
 def define_declare_all_func_common_helper
   puts ""
-  puts "#define DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
+  # todo remove funcname
+  puts "#define DECLARE_ALL_FUNC_COMMON \\"
   puts "    unsigned int call_count; \\"
   puts "    unsigned int arg_history_len;\\"
-  puts "    unsigned int arg_histories_dropped;"
+  puts "    unsigned int arg_histories_dropped; \\"
 end
+
+#def define_declare_custom_fake_helper
+#  puts ""
+#  puts "#define DECLARE_CUSTOM_FAKE("
+#  puts "    unsigned int custom_fake; "
+#end
 
 def define_save_arg_helper
   puts ""
@@ -98,7 +105,7 @@ end
 
 def define_value_function_variables_helper
   puts ""
-  puts "#define DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\"
+  puts "#define DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \\"
   puts "    RETURN_TYPE return_val; \\" 
   puts "    int return_val_seq_len; \\" 
   puts "    int return_val_seq_idx; \\" 
@@ -223,23 +230,47 @@ def output_variables(arg_count, is_value_function)
     arg_count.times { |argN| 
       puts "    DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
     }
-    puts "    DECLARE_ALL_FUNC_COMMON(FUNCNAME) \\"
-    puts "    DECLARE_VALUE_FUNCTION_VARIABLES(FUNCNAME, RETURN_TYPE) \\" unless not is_value_function
+    puts "    DECLARE_ALL_FUNC_COMMON \\"
+    puts "    DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \\" unless not is_value_function
+    output_custom_function_signature(arg_count, is_value_function)
   }
   puts "FUNCNAME##_Fake FUNCNAME##_fake;\\"
 end
 
-def output_function_signature(args_count, is_value_function)
+def arg_val_list(args_count)
+  arguments = []
+  args_count.times { |i| arguments << "ARG#{i}_TYPE arg#{i}" }
+  arguments.join(", ")
+end
+
+def arg_list(args_count)
+  arguments = []
+  args_count.times { |i| arguments << "arg#{i}" }
+  arguments.join(", ")
+end
+
+# RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0);\
+# void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2);\
+def output_custom_function_signature(arg_count, is_value_function)
+  if is_value_function
+    print "    RETURN_TYPE "
+  else
+    print "    void "
+  end
+
+  print "(*custom_fake)("
+  print arg_val_list(arg_count)
+  print "); \\\n"
+end
+
+def output_function_signature(arg_count, is_value_function)
   if is_value_function
     print "    RETURN_TYPE FUNCNAME("
   else
     print "    void FUNCNAME("
   end
 
-  arguments = []
-  args_count.times { |i| arguments << "ARG#{i}_TYPE arg#{i}" }
-  print arguments.join(", ")
-
+  print arg_val_list(arg_count)
   print ")"
 end
 
@@ -252,6 +283,7 @@ def output_function_body(arg_count, is_value_function)
   puts "            HISTORY_DROPPED(FUNCNAME);\\"
   puts "        }\\"
   puts "        INCREMENT_CALL_COUNT(FUNCNAME); \\"
+  puts "        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
   puts "        REGISTER_CALL(FUNCNAME); \\"
   puts "        RETURN_FAKE_RESULT(FUNCNAME)  \\" if is_value_function
 end
