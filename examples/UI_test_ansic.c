@@ -12,6 +12,8 @@ void setup();
 #define TEST_F(SUITE, NAME) void NAME()
 #define RUN_TEST(SUITE, TESTNAME) printf(" Running %s.%s: \n", #SUITE, #TESTNAME); setup(); TESTNAME(); printf(" SUCCESS\n");
 
+DEFINE_FFF_GLOBALS;
+
 /* SYSTEM.h */
 FAKE_VOID_FUNC2(SYSTEM_register_irq, irq_func_t, unsigned int);
 /* DISPLAY.h */
