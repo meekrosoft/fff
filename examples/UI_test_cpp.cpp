@@ -7,6 +7,7 @@ extern "C"{
 
 #include <gtest/gtest.h>
 
+DEFINE_FFF_GLOBALS;
 
 /* SYSTEM.h */
 FAKE_VOID_FUNC2(SYSTEM_register_irq, irq_func_t, unsigned int);
@@ -27,7 +28,16 @@ public:
 	void SetUp()
 	{
 		// Register resets
-		RESET_FAKES();
+	    RESET_FAKE(SYSTEM_register_irq);
+
+	    RESET_FAKE(DISPLAY_init)
+	    RESET_FAKE(DISPLAY_clear)
+	    RESET_FAKE(DISPLAY_output)
+	    RESET_FAKE(DISPLAY_get_line_capacity)
+	    RESET_FAKE(DISPLAY_get_line_insert_index);
+
+	    RESET_FAKE(button_press_cbk);
+
 		RESET_HISTORY();
 		// non default init
 		DISPLAY_get_line_capacity_fake.return_val = 2;
