@@ -126,7 +126,7 @@ end
 
 # ------  End Helper macros ------ #
 
-#fakegen helpers
+#fakegen helpers to print at levels of indentation
 $current_depth = 0
 def putd(str)
   $current_depth.times {|not_used| print " "}
@@ -171,7 +171,7 @@ def output_macro(arg_count, is_value_function)
     }
   popd
   
-  putd "STATIC_INIT(FUNCNAME) \\" if $cpp_output
+#  putd "STATIC_INIT(FUNCNAME) \\" if $cpp_output
   putd ""
   
   output_macro_header(fake_macro_name, arg_count, return_type)
@@ -318,12 +318,17 @@ end
 
 
 def define_call_history
-  putd "static void * call_history[FFF_CALL_HISTORY_LEN];"
-  putd "static unsigned int call_history_idx;"
-  putd "static void RESET_HISTORY() { "
-  putd "    call_history_idx = 0; "
-  putd "}"
-
+  putd "extern void * call_history[FFF_CALL_HISTORY_LEN];"
+  putd "extern unsigned int call_history_idx;"
+  putd "void RESET_HISTORY();"
+  putd ""
+  putd "#define DEFINE_FFF_GLOBALS \\"
+  putd "    void * call_history[FFF_CALL_HISTORY_LEN]; \\"
+  putd "    unsigned int call_history_idx; \\"
+  putd "    void RESET_HISTORY() { \\"
+  putd "        call_history_idx = 0; \\"
+  putd "    } \\"
+  putd ""
   putd "#define REGISTER_CALL(function) \\"
   putd "   if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;"
 end
@@ -422,8 +427,8 @@ end
 output_c_and_cpp{
   define_call_history
   
-  output_cpp_reset_code if $cpp_output
-  output_cpp_static_initializer if $cpp_output
+#  output_cpp_reset_code if $cpp_output
+#  output_cpp_static_initializer if $cpp_output
   $MAX_ARGS.times {|arg_count| output_macro(arg_count, false)}
   $MAX_ARGS.times {|arg_count| output_macro(arg_count, true)}
 }
