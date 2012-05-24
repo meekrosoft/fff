@@ -60,37 +60,19 @@
 /* -- END INTERNAL HELPER MACROS -- */
 
 #ifdef __cplusplus
-static void * call_history[FFF_CALL_HISTORY_LEN];
-static unsigned int call_history_idx;
-static void RESET_HISTORY() { 
-    call_history_idx = 0; 
-}
+extern void * call_history[FFF_CALL_HISTORY_LEN];
+extern unsigned int call_history_idx;
+void RESET_HISTORY();
+
+#define DEFINE_FFF_GLOBALS \
+    void * call_history[FFF_CALL_HISTORY_LEN]; \
+    unsigned int call_history_idx; \
+    void RESET_HISTORY() { \
+        call_history_idx = 0; \
+    } \
+
 #define REGISTER_CALL(function) \
    if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;
-#include <vector>
-typedef void (*void_fptr)();
-std::vector<void_fptr> reset_functions;
-static void RESET_FAKES()
-{
-	std::vector<void_fptr>::iterator it = reset_functions.begin();
-	for( ; it != reset_functions.end(); ++it)
-	{
-		void_fptr ptr = *it;
-		ptr();
-	}
-
-}
-#define STATIC_INIT(FUNCNAME) \
-class StaticInitializer_##FUNCNAME \
-{ \
-public: \
-	StaticInitializer_##FUNCNAME() \
-	{ \
-		reset_functions.push_back(FUNCNAME##_reset); \
-	} \
-}; \
-static StaticInitializer_##FUNCNAME staticInitializer_##FUNCNAME; \
-
 
 #define DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
     extern "C"{ \
@@ -120,7 +102,6 @@ static StaticInitializer_##FUNCNAME staticInitializer_##FUNCNAME; \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC0(FUNCNAME) \
     DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
@@ -158,7 +139,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
     DECLARE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
@@ -199,7 +179,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
     DECLARE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -243,7 +222,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
     DECLARE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -290,7 +268,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
     DECLARE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -340,7 +317,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
     DECLARE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -393,7 +369,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
     DECLARE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -449,7 +424,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
     DECLARE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -508,7 +482,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
     DECLARE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -570,7 +543,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     DECLARE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
@@ -607,7 +579,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
     DECLARE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
@@ -647,7 +618,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
     DECLARE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
@@ -690,7 +660,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
     DECLARE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -736,7 +705,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
     DECLARE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -785,7 +753,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
     DECLARE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -837,7 +804,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
     DECLARE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -892,7 +858,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
     DECLARE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -950,7 +915,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
     DECLARE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -1011,7 +975,6 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
     DECLARE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -1075,18 +1038,23 @@ STATIC_INIT(FUNCNAME) \
                 FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
             } \
     } \
-STATIC_INIT(FUNCNAME) \
 
 #define FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     DECLARE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     DEFINE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     
 #else  /* ansi c */
-static void * call_history[FFF_CALL_HISTORY_LEN];
-static unsigned int call_history_idx;
-static void RESET_HISTORY() { 
-    call_history_idx = 0; 
-}
+extern void * call_history[FFF_CALL_HISTORY_LEN];
+extern unsigned int call_history_idx;
+void RESET_HISTORY();
+
+#define DEFINE_FFF_GLOBALS \
+    void * call_history[FFF_CALL_HISTORY_LEN]; \
+    unsigned int call_history_idx; \
+    void RESET_HISTORY() { \
+        call_history_idx = 0; \
+    } \
+
 #define REGISTER_CALL(function) \
    if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;
 
