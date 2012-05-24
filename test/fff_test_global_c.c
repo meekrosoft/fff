@@ -1,52 +1,24 @@
 
 #include "global_fakes.h"
-
-#include <assert.h>
-#include <stdio.h>
-#include <string.h>
-
-/* Test Framework :-) */
-void setup();
-#define TEST_F(SUITE, NAME) void NAME()
-#define RUN_TEST(SUITE, TESTNAME) printf(" Running %s.%s: \n", #SUITE, #TESTNAME); setup(); TESTNAME(); printf(" SUCCESS\n");
-#define ASSERT_EQ(A, B) assert((A) == (B))
-#define ASSERT(A) assert((A))
+#include "c_test_framework.h"
 
 
-// DECLARE_GLOBAL_FAKE_VOID_FUNC(global_void_func, int);
 
-// Let's see if I can define a fake here
-#define MY_FACE_VOID_FUNC0(FUNCNAME) \
-        DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
-        DEFINE_FAKE_VOID_FUNC0(FUNCNAME)
-
-MY_FACE_VOID_FUNC0(test_func);
+DEFINE_FFF_GLOBALS;
 
 void setup()
 {
-    RESET_FAKE(global_void_func);
-    RESET_FAKE(test_func);
+    RESET_FAKE(voidfunc1);
+    RESET_FAKE(voidfunc2);
+    RESET_FAKE(longfunc0);
+    RESET_FAKE(enumfunc0);
+    RESET_FAKE(structfunc0);
+
     RESET_HISTORY();
 }
 
 
-TEST_F(FFFGlobalTestSuite, when_global_void_func_never_called_then_callcount_is_zero)
-{
-    ASSERT_EQ(global_void_func_fake.call_count, 0);
-}
-
-TEST_F(FFFGlobalTestSuite, when_global_void_func_called_once_then_callcount_is_one)
-{
-    global_void_func();
-    ASSERT_EQ(global_void_func_fake.call_count, 1);
-}
-
-TEST_F(FFFTestSuite, when_void_func_called_once_and_reset_then_callcount_is_zero)
-{
-    global_void_func();
-    RESET_FAKE(global_void_func);
-    ASSERT_EQ(global_void_func_fake.call_count, 0);
-}
+#include "test_cases.include"
 
 
 int main()
@@ -58,8 +30,35 @@ int main()
     fflush(0);
 
     /* Run tests */
-    RUN_TEST(FFFGlobalTestSuite, when_global_void_func_never_called_then_callcount_is_zero);
-    RUN_TEST(FFFGlobalTestSuite, when_global_void_func_called_once_then_callcount_is_one);
+    RUN_TEST(FFFTestSuite, when_void_func_never_called_then_callcount_is_zero);
+    RUN_TEST(FFFTestSuite, when_void_func_called_once_then_callcount_is_one);
+    RUN_TEST(FFFTestSuite, when_void_func_called_once_and_reset_then_callcount_is_zero);
+    RUN_TEST(FFFTestSuite, when_void_func_with_1_integer_arg_called_then_last_arg_captured);
+    RUN_TEST(FFFTestSuite, when_void_func_with_1_integer_arg_called_twice_then_last_arg_captured);
+    RUN_TEST(FFFTestSuite, when_void_func_with_1_integer_arg_called_and_reset_then_captured_arg_is_zero);
+    RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_then_last_args_captured);
+    RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_twice_then_last_args_captured);
+    RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_and_reset_then_captured_arg_is_zero);
+
+    RUN_TEST(FFFTestSuite, when_fake_func_created_default_history_is_fifty_calls);
+    RUN_TEST(FFFTestSuite, when_fake_func_called_then_arguments_captured_in_history);
+    RUN_TEST(FFFTestSuite, argument_history_is_reset_when_RESET_FAKE_called);
+    RUN_TEST(FFFTestSuite, when_fake_func_called_max_times_then_no_argument_histories_dropped);
+    RUN_TEST(FFFTestSuite, when_fake_func_called_max_times_plus_one_then_one_argument_history_dropped);
+
+    RUN_TEST(FFFTestSuite, value_func_will_return_zero_by_default);
+    RUN_TEST(FFFTestSuite, value_func_will_return_value_given);
+    RUN_TEST(FFFTestSuite, value_func_will_return_zero_after_reset);
+    RUN_TEST(FFFTestSuite, register_call_macro_registers_one_call);
+    RUN_TEST(FFFTestSuite, register_call_macro_registers_two_calls);
+    RUN_TEST(FFFTestSuite, reset_call_history_resets_call_history);
+    RUN_TEST(FFFTestSuite, call_history_will_not_write_past_array_bounds);
+    RUN_TEST(FFFTestSuite, calling_fake_registers_one_call);
+
+    RUN_TEST(FFFTestSuite, return_value_sequences_not_exhausted);
+    RUN_TEST(FFFTestSuite, return_value_sequences_exhausted);
+
+    RUN_TEST(FFFTestSuite, can_register_custom_fake);
 
     printf("\n-------------\n");
     printf("Complete\n");
