@@ -1,25 +1,31 @@
 
 BUILD_DIR = ../build
 
-CPP_OBJS += \
+FFF_TEST_CPP_OBJS += \
 $(BUILD_DIR)/fff_test_cpp.o \
 $(BUILD_DIR)/gtest-all.o \
 $(BUILD_DIR)/gtest-main.o
 
-CTEST_OBJS = $(BUILD_DIR)/fff_test_c.o
+FFF_TEST_GLOBAL_CPP_OBJS += \
+$(BUILD_DIR)/fff_test_global_cpp.o \
+$(BUILD_DIR)/global_fakes.o \
+$(BUILD_DIR)/gtest-all.o \
+$(BUILD_DIR)/gtest-main.o
 
-GLOBAL_C_OBJS += \
+FFF_TEST_C_OBJS = $(BUILD_DIR)/fff_test_c.o
+
+FFF_TEST_GLOBAL_C_OBJS += \
 $(BUILD_DIR)/global_fakes.o \
 $(BUILD_DIR)/fff_test_global_c.o
 
+FFF_TEST_CPP_TARGET = $(BUILD_DIR)/fff_test_cpp
+FFF_TEST_C_TARGET = $(BUILD_DIR)/fff_test_c
+FFF_TEST_GLOBAL_C_TARGET = $(BUILD_DIR)/fff_test_glob_c
+FFF_TEST_GLOBAL_CPP_TARGET = $(BUILD_DIR)/fff_test_glob_cpp
+
 LIBS := -lpthread
-
-CPPNAME = $(BUILD_DIR)/fff_test_cpp
-CNAME = $(BUILD_DIR)/fff_test_c
-GLOBALCNAME = $(BUILD_DIR)/fff_test_glob_c
-
 # All Target
-all: $(CPPNAME) $(CNAME) $(GLOBALCNAME)
+all: $(FFF_TEST_CPP_TARGET) $(FFF_TEST_C_TARGET) $(FFF_TEST_GLOBAL_C_TARGET) $(FFF_TEST_GLOBAL_CPP_TARGET)
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -38,30 +44,37 @@ $(BUILD_DIR)/%.o: %.c
 	@echo ' '
 
 
-# Tool invocations
-$(CPPNAME): $(CPP_OBJS) 
+# Link targets
+$(FFF_TEST_CPP_TARGET): $(FFF_TEST_CPP_OBJS) 
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -o "$(CPPNAME)" $(CPP_OBJS) $(LIBS)
+	g++ -o "$(FFF_TEST_CPP_TARGET)" $(FFF_TEST_CPP_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-$(CNAME): $(CTEST_OBJS) 
+$(FFF_TEST_C_TARGET): $(FFF_TEST_C_OBJS) 
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc  -o "$(CNAME)" $(CTEST_OBJS) $(LIBS)
+	gcc  -o "$(FFF_TEST_C_TARGET)" $(FFF_TEST_C_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-$(GLOBALCNAME): $(GLOBAL_C_OBJS) 
+$(FFF_TEST_GLOBAL_C_TARGET): $(FFF_TEST_GLOBAL_C_OBJS) 
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "$(GLOBALCNAME)" $(GLOBAL_C_OBJS) $(LIBS)
+	g++  -o "$(FFF_TEST_GLOBAL_C_TARGET)" $(FFF_TEST_GLOBAL_C_OBJS) $(LIBS)
+	@echo 'Finished building target: $@'
+	@echo ' '
+
+$(FFF_TEST_GLOBAL_CPP_TARGET): $(FFF_TEST_GLOBAL_CPP_OBJS) 
+	@echo 'Building target: $@'
+	@echo 'Invoking: GCC C++ Linker'
+	g++  -o "$(FFF_TEST_GLOBAL_CPP_TARGET)" $(FFF_TEST_GLOBAL_CPP_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(CPP_OBJS) $(GLOBAL_C_OBJS) $(C_OBJS) $(CPPNAME) $(CNAME) $(GLOBALCNAME)
+	-$(RM) $(FFF_TEST_CPP_OBJS) $(FFF_TEST_GLOBAL_C_OBJS) $(FFF_TEST_C_OBJS) $(FFF_TEST_CPP_TARGET) $(FFF_TEST_C_TARGET) $(FFF_TEST_GLOBAL_C_TARGET)
 	-@echo ' '
 
