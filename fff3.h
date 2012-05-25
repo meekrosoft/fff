@@ -87,20 +87,20 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC0(FUNCNAME) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(){ \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(){ \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC0(FUNCNAME) \
@@ -122,22 +122,22 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
@@ -160,24 +160,24 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -201,26 +201,26 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -245,28 +245,28 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -292,30 +292,30 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -342,32 +342,32 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -395,34 +395,34 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -451,36 +451,36 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                SAVE_ARG(FUNCNAME, 7); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            SAVE_ARG(FUNCNAME, 7); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+                SAVE_ARG_HISTORY(FUNCNAME, 7); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -510,38 +510,38 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                SAVE_ARG(FUNCNAME, 7); \
-                SAVE_ARG(FUNCNAME, 8); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 8); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            SAVE_ARG(FUNCNAME, 7); \
+            SAVE_ARG(FUNCNAME, 8); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+                SAVE_ARG_HISTORY(FUNCNAME, 7); \
+                SAVE_ARG_HISTORY(FUNCNAME, 8); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
@@ -563,21 +563,21 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(){ \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(){ \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
@@ -600,23 +600,23 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
@@ -640,25 +640,25 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -683,27 +683,27 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -729,29 +729,29 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -778,31 +778,31 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -830,33 +830,33 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -885,35 +885,35 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -943,37 +943,37 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                SAVE_ARG(FUNCNAME, 7); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            SAVE_ARG(FUNCNAME, 7); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+                SAVE_ARG_HISTORY(FUNCNAME, 7); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -1004,39 +1004,39 @@ void RESET_HISTORY();
 #define DEFINE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     extern "C"{ \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                SAVE_ARG(FUNCNAME, 7); \
-                SAVE_ARG(FUNCNAME, 8); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 8); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            SAVE_ARG(FUNCNAME, 7); \
+            SAVE_ARG(FUNCNAME, 8); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+                SAVE_ARG_HISTORY(FUNCNAME, 7); \
+                SAVE_ARG_HISTORY(FUNCNAME, 8); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
     } \
 
 #define FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
@@ -1068,20 +1068,20 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC0(FUNCNAME) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(){ \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(){ \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC0(FUNCNAME) \
     DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
@@ -1099,22 +1099,22 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
     DECLARE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
@@ -1133,24 +1133,24 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
     DECLARE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -1170,26 +1170,26 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
     DECLARE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -1210,28 +1210,28 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
     DECLARE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -1253,30 +1253,30 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
     DECLARE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -1299,32 +1299,32 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
     DECLARE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -1348,34 +1348,34 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
     DECLARE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -1400,36 +1400,36 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                SAVE_ARG(FUNCNAME, 7); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            SAVE_ARG(FUNCNAME, 7); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+                SAVE_ARG_HISTORY(FUNCNAME, 7); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
     DECLARE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -1455,38 +1455,38 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                SAVE_ARG(FUNCNAME, 7); \
-                SAVE_ARG(FUNCNAME, 8); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 8); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
-                REGISTER_CALL(FUNCNAME); \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            SAVE_ARG(FUNCNAME, 7); \
+            SAVE_ARG(FUNCNAME, 8); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+                SAVE_ARG_HISTORY(FUNCNAME, 7); \
+                SAVE_ARG_HISTORY(FUNCNAME, 8); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+            REGISTER_CALL(FUNCNAME); \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     DECLARE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
@@ -1504,21 +1504,21 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(){ \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(){ \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
     DECLARE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
@@ -1537,23 +1537,23 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
     DECLARE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
@@ -1573,25 +1573,25 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
     DECLARE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -1612,27 +1612,27 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
     DECLARE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -1654,29 +1654,29 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
     DECLARE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -1699,31 +1699,31 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
     DECLARE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -1747,33 +1747,33 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
     DECLARE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -1798,35 +1798,35 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
     DECLARE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -1852,37 +1852,37 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                SAVE_ARG(FUNCNAME, 7); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            SAVE_ARG(FUNCNAME, 7); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+                SAVE_ARG_HISTORY(FUNCNAME, 7); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
     DECLARE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -1909,39 +1909,39 @@ void RESET_HISTORY();
 
 #define DEFINE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-            RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
-                SAVE_ARG(FUNCNAME, 0); \
-                SAVE_ARG(FUNCNAME, 1); \
-                SAVE_ARG(FUNCNAME, 2); \
-                SAVE_ARG(FUNCNAME, 3); \
-                SAVE_ARG(FUNCNAME, 4); \
-                SAVE_ARG(FUNCNAME, 5); \
-                SAVE_ARG(FUNCNAME, 6); \
-                SAVE_ARG(FUNCNAME, 7); \
-                SAVE_ARG(FUNCNAME, 8); \
-                if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                    SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                    SAVE_ARG_HISTORY(FUNCNAME, 8); \
-                }\
-                else{\
-                    HISTORY_DROPPED(FUNCNAME);\
-                }\
-                INCREMENT_CALL_COUNT(FUNCNAME); \
-                if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
-                REGISTER_CALL(FUNCNAME); \
-                RETURN_FAKE_RESULT(FUNCNAME)  \
-        	} \
-            void FUNCNAME##_reset(){ \
-                memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-                FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-            } \
+        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
+            SAVE_ARG(FUNCNAME, 0); \
+            SAVE_ARG(FUNCNAME, 1); \
+            SAVE_ARG(FUNCNAME, 2); \
+            SAVE_ARG(FUNCNAME, 3); \
+            SAVE_ARG(FUNCNAME, 4); \
+            SAVE_ARG(FUNCNAME, 5); \
+            SAVE_ARG(FUNCNAME, 6); \
+            SAVE_ARG(FUNCNAME, 7); \
+            SAVE_ARG(FUNCNAME, 8); \
+            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
+                SAVE_ARG_HISTORY(FUNCNAME, 0); \
+                SAVE_ARG_HISTORY(FUNCNAME, 1); \
+                SAVE_ARG_HISTORY(FUNCNAME, 2); \
+                SAVE_ARG_HISTORY(FUNCNAME, 3); \
+                SAVE_ARG_HISTORY(FUNCNAME, 4); \
+                SAVE_ARG_HISTORY(FUNCNAME, 5); \
+                SAVE_ARG_HISTORY(FUNCNAME, 6); \
+                SAVE_ARG_HISTORY(FUNCNAME, 7); \
+                SAVE_ARG_HISTORY(FUNCNAME, 8); \
+            }\
+            else{\
+                HISTORY_DROPPED(FUNCNAME);\
+            }\
+            INCREMENT_CALL_COUNT(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+            REGISTER_CALL(FUNCNAME); \
+            RETURN_FAKE_RESULT(FUNCNAME)  \
+        } \
+        void FUNCNAME##_reset(){ \
+            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+        } \
 
 #define FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     DECLARE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
