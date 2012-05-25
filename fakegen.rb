@@ -165,8 +165,10 @@ def output_macro(arg_count, is_value_function)
     extern_c {
       putd "FUNCNAME##_Fake FUNCNAME##_fake;\\"
       putd function_signature(arg_count, is_value_function) + "{ \\"
+      pushd
         output_function_body(arg_count, is_value_function)
-      putd "	} \\"
+      popd
+      putd "} \\"
       output_reset_function(arg_count, is_value_function)
     }
   popd
@@ -291,28 +293,28 @@ end
 def function_signature(arg_count, is_value_function)
   # example: RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
-  "    #{return_type} FUNCNAME(#{arg_val_list(arg_count)})"
+  "#{return_type} FUNCNAME(#{arg_val_list(arg_count)})"
 end
 
 def output_function_body(arg_count, is_value_function)
-  arg_count.times { |i| putd "        SAVE_ARG(FUNCNAME, #{i}); \\" }
-  putd "        if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\\"
-  arg_count.times { |i| putd "            SAVE_ARG_HISTORY(FUNCNAME, #{i}); \\" }
-  putd "        }\\"
-  putd "        else{\\"
-  putd "            HISTORY_DROPPED(FUNCNAME);\\"
-  putd "        }\\"
-  putd "        INCREMENT_CALL_COUNT(FUNCNAME); \\"
-  putd "        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
-  putd "        REGISTER_CALL(FUNCNAME); \\"
-  putd "        RETURN_FAKE_RESULT(FUNCNAME)  \\" if is_value_function
+  arg_count.times { |i| putd "SAVE_ARG(FUNCNAME, #{i}); \\" }
+  putd "if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\\"
+  arg_count.times { |i| putd "    SAVE_ARG_HISTORY(FUNCNAME, #{i}); \\" }
+  putd "}\\"
+  putd "else{\\"
+  putd "    HISTORY_DROPPED(FUNCNAME);\\"
+  putd "}\\"
+  putd "INCREMENT_CALL_COUNT(FUNCNAME); \\"
+  putd "if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
+  putd "REGISTER_CALL(FUNCNAME); \\"
+  putd "RETURN_FAKE_RESULT(FUNCNAME)  \\" if is_value_function
 end
 
 def output_reset_function(arg_count, is_value_function)
-  putd "    void FUNCNAME##_reset(){ \\"
-  putd "        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
-  putd "        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
-  putd "    } \\"
+  putd "void FUNCNAME##_reset(){ \\"
+  putd "    memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
+  putd "    FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
+  putd "} \\"
 end
 
 
