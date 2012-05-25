@@ -37,6 +37,7 @@ def output_internal_helper_macros
   define_value_function_variables_helper
   define_increment_call_count_helper
   define_return_fake_result_helper
+  define_extern_c_helper
   
   putd "/* -- END INTERNAL HELPER MACROS -- */"
   putd ""
@@ -124,6 +125,16 @@ def define_return_fake_result_helper
   putd "    return FUNCNAME##_fake.return_val; \\"
 end
 
+def define_extern_c_helper
+  putd ""
+  putd "#ifdef __cplusplus"
+  putd "    #define EXTERN_C extern \"C\"{" 
+  putd "    #define END_EXTERN_C } " 
+  putd "#else  /* ansi c */"
+  putd "    #define EXTERN_C "
+  putd "    #define END_EXTERN_C "
+  putd "#endif  /* cpp/ansi c */"
+end
 # ------  End Helper macros ------ #
 
 #fakegen helpers to print at levels of indentation
@@ -338,11 +349,11 @@ end
 
 
 def extern_c
-  putd "extern \"C\"{ \\" unless !$cpp_output
-  pushd
-  yield
+  putd "EXTERN_C \\"
+  pushd 
+    yield
   popd
-  putd "} \\" unless !$cpp_output
+  putd "END_EXTERN_C \\"
 end
 
 def include_guard
@@ -410,17 +421,7 @@ def output_c_and_cpp
   include_guard {
     output_constants
     output_internal_helper_macros
-    
-    putd "#ifdef __cplusplus"
-    $cpp_output = true
     yield
-
-    putd "#else  /* ansi c */"
-
-    $cpp_output = false
-    yield
-    putd "#endif  /* cpp/ansi c */"
-
     output_macro_counting_shortcuts
   }
 end

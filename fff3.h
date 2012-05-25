@@ -57,993 +57,16 @@
         return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]; /* return last element */ \
     } \
     return FUNCNAME##_fake.return_val; \
-/* -- END INTERNAL HELPER MACROS -- */
 
 #ifdef __cplusplus
-extern void * call_history[FFF_CALL_HISTORY_LEN];
-extern unsigned int call_history_idx;
-void RESET_HISTORY();
-
-#define DEFINE_FFF_GLOBALS \
-    void * call_history[FFF_CALL_HISTORY_LEN]; \
-    unsigned int call_history_idx; \
-    void RESET_HISTORY() { \
-        call_history_idx = 0; \
-    } \
-
-#define REGISTER_CALL(function) \
-   if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;
-
-#define DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC0(FUNCNAME) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(){ \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC0(FUNCNAME) \
-    DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
-    DEFINE_FAKE_VOID_FUNC0(FUNCNAME) \
-    
-
-#define DECLARE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(ARG0_TYPE arg0){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
-    DECLARE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
-    DEFINE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
-    
-
-#define DECLARE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    DECLARE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    DEFINE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    
-
-#define DECLARE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    DECLARE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    DEFINE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    
-
-#define DECLARE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    DECLARE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    DEFINE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    
-
-#define DECLARE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    DECLARE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    DEFINE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    
-
-#define DECLARE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            SAVE_ARG(FUNCNAME, 5); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                SAVE_ARG_HISTORY(FUNCNAME, 5); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    DECLARE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    DEFINE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    
-
-#define DECLARE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-            DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            SAVE_ARG(FUNCNAME, 5); \
-            SAVE_ARG(FUNCNAME, 6); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                SAVE_ARG_HISTORY(FUNCNAME, 6); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    DECLARE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    DEFINE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    
-
-#define DECLARE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-            DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-            DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            SAVE_ARG(FUNCNAME, 5); \
-            SAVE_ARG(FUNCNAME, 6); \
-            SAVE_ARG(FUNCNAME, 7); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                SAVE_ARG_HISTORY(FUNCNAME, 7); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    DECLARE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    DEFINE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    
-
-#define DECLARE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-            DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-            DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
-            DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            SAVE_ARG(FUNCNAME, 5); \
-            SAVE_ARG(FUNCNAME, 6); \
-            SAVE_ARG(FUNCNAME, 7); \
-            SAVE_ARG(FUNCNAME, 8); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                SAVE_ARG_HISTORY(FUNCNAME, 8); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
-            REGISTER_CALL(FUNCNAME); \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    DECLARE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    DEFINE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(){ \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
-    DECLARE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
-    DEFINE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
-    DECLARE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
-    DEFINE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    DECLARE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    DEFINE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    DECLARE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    DEFINE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    DECLARE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    DEFINE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    DECLARE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    DEFINE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            SAVE_ARG(FUNCNAME, 5); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                SAVE_ARG_HISTORY(FUNCNAME, 5); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    DECLARE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    DEFINE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-            DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            SAVE_ARG(FUNCNAME, 5); \
-            SAVE_ARG(FUNCNAME, 6); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                SAVE_ARG_HISTORY(FUNCNAME, 6); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    DECLARE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    DEFINE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-            DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-            DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            SAVE_ARG(FUNCNAME, 5); \
-            SAVE_ARG(FUNCNAME, 6); \
-            SAVE_ARG(FUNCNAME, 7); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                SAVE_ARG_HISTORY(FUNCNAME, 7); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    DECLARE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    DEFINE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
-    
-
-#define DECLARE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    extern "C"{ \
-        typedef struct FUNCNAME##_Fake { \
-            DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
-            DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
-            DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
-            DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
-            DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
-            DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
-            DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
-            DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
-            DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
-            DECLARE_ALL_FUNC_COMMON \
-            DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
-        } FUNCNAME##_Fake;\
-        extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-    } \
-
-#define DEFINE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    extern "C"{ \
-        FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
-            SAVE_ARG(FUNCNAME, 0); \
-            SAVE_ARG(FUNCNAME, 1); \
-            SAVE_ARG(FUNCNAME, 2); \
-            SAVE_ARG(FUNCNAME, 3); \
-            SAVE_ARG(FUNCNAME, 4); \
-            SAVE_ARG(FUNCNAME, 5); \
-            SAVE_ARG(FUNCNAME, 6); \
-            SAVE_ARG(FUNCNAME, 7); \
-            SAVE_ARG(FUNCNAME, 8); \
-            if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
-                SAVE_ARG_HISTORY(FUNCNAME, 0); \
-                SAVE_ARG_HISTORY(FUNCNAME, 1); \
-                SAVE_ARG_HISTORY(FUNCNAME, 2); \
-                SAVE_ARG_HISTORY(FUNCNAME, 3); \
-                SAVE_ARG_HISTORY(FUNCNAME, 4); \
-                SAVE_ARG_HISTORY(FUNCNAME, 5); \
-                SAVE_ARG_HISTORY(FUNCNAME, 6); \
-                SAVE_ARG_HISTORY(FUNCNAME, 7); \
-                SAVE_ARG_HISTORY(FUNCNAME, 8); \
-            }\
-            else{\
-                HISTORY_DROPPED(FUNCNAME);\
-            }\
-            INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
-            REGISTER_CALL(FUNCNAME); \
-            RETURN_FAKE_RESULT(FUNCNAME)  \
-        } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
-    } \
-
-#define FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    DECLARE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    DEFINE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
-    
+    #define EXTERN_C extern "C"{
+    #define END_EXTERN_C } 
 #else  /* ansi c */
+    #define EXTERN_C 
+    #define END_EXTERN_C 
+#endif  /* cpp/ansi c */
+/* -- END INTERNAL HELPER MACROS -- */
+
 extern void * call_history[FFF_CALL_HISTORY_LEN];
 extern unsigned int call_history_idx;
 void RESET_HISTORY();
@@ -1059,14 +82,17 @@ void RESET_HISTORY();
    if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;
 
 #define DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ALL_FUNC_COMMON \
             void(*custom_fake)(); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC0(FUNCNAME) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(){ \
             if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
@@ -1082,6 +108,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC0(FUNCNAME) \
     DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
@@ -1089,6 +116,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
@@ -1096,8 +124,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(ARG0_TYPE arg0){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1115,6 +145,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
     DECLARE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
@@ -1122,6 +153,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1130,8 +162,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1151,6 +185,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
     DECLARE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -1158,6 +193,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1167,8 +203,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1190,6 +228,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
     DECLARE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -1197,6 +236,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1207,8 +247,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1232,6 +274,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
     DECLARE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -1239,6 +282,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1250,8 +294,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1277,6 +323,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
     DECLARE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -1284,6 +331,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1296,8 +344,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1325,6 +375,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
     DECLARE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -1332,6 +383,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1345,8 +397,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1376,6 +430,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
     DECLARE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -1383,6 +438,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1397,8 +453,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1430,6 +488,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
     DECLARE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -1437,6 +496,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1452,8 +512,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1487,6 +549,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     DECLARE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
@@ -1494,6 +557,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
@@ -1501,8 +565,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(){ \
             if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
@@ -1519,6 +585,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
     DECLARE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
@@ -1526,6 +593,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
@@ -1534,8 +602,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1554,6 +624,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
     DECLARE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
@@ -1561,6 +632,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1570,8 +642,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1592,6 +666,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
     DECLARE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -1599,6 +674,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1609,8 +685,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1633,6 +711,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
     DECLARE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -1640,6 +719,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1651,8 +731,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1677,6 +759,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
     DECLARE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -1684,6 +767,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1696,8 +780,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1724,6 +810,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
     DECLARE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -1731,6 +818,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1744,8 +832,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1774,6 +864,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
     DECLARE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -1781,6 +872,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1795,8 +887,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1827,6 +921,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
     DECLARE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -1834,6 +929,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1849,8 +945,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1883,6 +981,7 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
     DECLARE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -1890,6 +989,7 @@ void RESET_HISTORY();
     
 
 #define DECLARE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
+    EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
@@ -1906,8 +1006,10 @@ void RESET_HISTORY();
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
+    END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
+    EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8){ \
             SAVE_ARG(FUNCNAME, 0); \
@@ -1942,12 +1044,12 @@ void RESET_HISTORY();
             memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
             FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
         } \
+    END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     DECLARE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     DEFINE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
     
-#endif  /* cpp/ansi c */
 
 #define PP_NARG_MINUS2(...)     PP_NARG_MINUS2_(__VA_ARGS__, PP_RSEQ_N_MINUS2())
 
