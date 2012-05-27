@@ -184,7 +184,6 @@ def output_macro(arg_count, is_value_function)
     }
   popd
   
-#  putd "STATIC_INIT(FUNCNAME) \\" if $cpp_output
   putd ""
   
   output_macro_header(fake_macro_name, arg_count, return_type)
@@ -281,12 +280,14 @@ def output_variables(arg_count, is_value_function)
   putd "void FUNCNAME##_reset(); \\"
 end
 
+#example: ARG0_TYPE arg0, ARG1_TYPE arg1
 def arg_val_list(args_count)
   arguments = []
   args_count.times { |i| arguments << "ARG#{i}_TYPE arg#{i}" }
   arguments.join(", ")
 end
 
+#example: arg0, arg1
 def arg_list(args_count)
   arguments = []
   args_count.times { |i| arguments << "arg#{i}" }
@@ -301,8 +302,8 @@ def output_custom_function_signature(arg_count, is_value_function)
   putd return_type + signature
 end
 
+# example: RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1)
 def function_signature(arg_count, is_value_function)
-  # example: RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
   "#{return_type} FUNCNAME(#{arg_val_list(arg_count)})"
 end
@@ -330,7 +331,7 @@ end
 
 
 
-def define_call_history
+def define_fff_globals
   putd "extern void * call_history[FFF_CALL_HISTORY_LEN];"
   putd "extern unsigned int call_history_idx;"
   putd "void RESET_HISTORY();"
@@ -428,10 +429,7 @@ end
 
 # lets generate!!
 output_c_and_cpp{
-  define_call_history
-  
-#  output_cpp_reset_code if $cpp_output
-#  output_cpp_static_initializer if $cpp_output
+  define_fff_globals
   $MAX_ARGS.times {|arg_count| output_macro(arg_count, false)}
   $MAX_ARGS.times {|arg_count| output_macro(arg_count, true)}
 }
