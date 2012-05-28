@@ -1,10 +1,4 @@
-#include <assert.h>
-#include <stdio.h>
-
-void setup();
-#define TEST_F(SUITE, NAME) void NAME()
-#define RUN_TEST(TESTNAME) printf(" Running %s: ", #TESTNAME); fflush(0); setup(); TESTNAME(); printf(" SUCCESS\n");
-
+#include "../test/c_test_framework.h"
 
 /* Initialializers called for every test */
 void setup()
@@ -29,7 +23,7 @@ int main()
     fflush(0);
 
 	/* Run tests */
-    RUN_TEST(hello_world);
+    RUN_TEST(GreeterTests, hello_world);
 
 
     printf("\n-------------\n");

@@ -1,10 +1,3 @@
-/*
- * UI.h
- *
- *  Created on: Dec 17, 2010
- *      Author: mlong
- */
-
 #ifndef UI_H_
 #define UI_H_
 

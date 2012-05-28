@@ -67,7 +67,6 @@ end
 
 def define_declare_all_func_common_helper
   putd ""
-  # todo remove funcname
   putd "#define DECLARE_ALL_FUNC_COMMON \\"
   putd "    unsigned int call_count; \\"
   putd "    unsigned int arg_history_len;\\"
@@ -332,19 +331,38 @@ end
 
 
 def define_fff_globals
-  putd "extern void * call_history[FFF_CALL_HISTORY_LEN];"
-  putd "extern unsigned int call_history_idx;"
-  putd "void RESET_HISTORY();"
+  
+  
+  putd "typedef struct { "
+  putd "    void * call_history[FFF_CALL_HISTORY_LEN];"
+  putd "    unsigned int call_history_idx;"
+  putd "} fff_globals_t;"
+  putd ""
+  putd "EXTERN_C \\"
+  putd "extern fff_globals_t fff;"
+  putd "END_EXTERN_C \\"
   putd ""
   putd "#define DEFINE_FFF_GLOBALS \\"
-  putd "    void * call_history[FFF_CALL_HISTORY_LEN]; \\"
-  putd "    unsigned int call_history_idx; \\"
-  putd "    void RESET_HISTORY() { \\"
-  putd "        call_history_idx = 0; \\"
-  putd "    } \\"
-  putd ""
+  putd "    EXTERN_C \\"
+  putd "        fff_globals_t fff; \\"
+  putd "    END_EXTERN_C"
+  putd "#define FFF_RESET_HISTORY() fff.call_history_idx = 0;"
+  
+  
+#  putd "extern void * call_history[FFF_CALL_HISTORY_LEN];"
+#  putd "extern unsigned int call_history_idx;"
+#  putd "void RESET_HISTORY();"
+#  putd ""
+#  putd "#define DEFINE_FFF_GLOBALS \\"
+#  putd "    void * call_history[FFF_CALL_HISTORY_LEN]; \\"
+#  putd "    unsigned int call_history_idx; \\"
+#  putd "    void RESET_HISTORY() { \\"
+#  putd "        call_history_idx = 0; \\"
+#  putd "    } \\"
+#  putd ""
   putd "#define REGISTER_CALL(function) \\"
-  putd "   if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;"
+  putd "   if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \\"
+  putd "       fff.call_history[fff.call_history_idx++] = (void *)function;"
 end
 
 

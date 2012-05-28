@@ -14,7 +14,7 @@ void setup()
     RESET_FAKE(enumfunc0);
     RESET_FAKE(structfunc0);
 
-    RESET_HISTORY();
+    FFF_RESET_HISTORY();
 }
 
 

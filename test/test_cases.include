@@ -135,7 +135,7 @@ TEST_F(FFFTestSuite, value_func_will_return_zero_after_reset)
 TEST_F(FFFTestSuite, register_call_macro_registers_one_call)
 {
     REGISTER_CALL(longfunc0);
-    ASSERT_EQ(call_history[0], (void *)longfunc0);
+    ASSERT_EQ(fff.call_history[0], (void *)longfunc0);
 }
 
 TEST_F(FFFTestSuite, register_call_macro_registers_two_calls)
@@ -143,18 +143,18 @@ TEST_F(FFFTestSuite, register_call_macro_registers_two_calls)
     REGISTER_CALL(longfunc0);
     REGISTER_CALL(voidfunc2);
 
-    ASSERT_EQ(call_history[0], (void *)longfunc0);
-    ASSERT_EQ(call_history[1], (void *)voidfunc2);
+    ASSERT_EQ(fff.call_history[0], (void *)longfunc0);
+    ASSERT_EQ(fff.call_history[1], (void *)voidfunc2);
 }
 
 TEST_F(FFFTestSuite, reset_call_history_resets_call_history)
 {
     REGISTER_CALL(longfunc0);
-    RESET_HISTORY();
+    FFF_RESET_HISTORY();
     REGISTER_CALL(voidfunc2);
 
-    ASSERT_EQ(1u, call_history_idx);
-    ASSERT_EQ(call_history[0], (void *)voidfunc2);
+    ASSERT_EQ(1u, fff.call_history_idx);
+    ASSERT_EQ(fff.call_history[0], (void *)voidfunc2);
 }
 
 TEST_F(FFFTestSuite, call_history_will_not_write_past_array_bounds)
@@ -163,14 +163,14 @@ TEST_F(FFFTestSuite, call_history_will_not_write_past_array_bounds)
     {
         REGISTER_CALL(longfunc0);
     }
-    ASSERT_EQ(FFF_CALL_HISTORY_LEN, call_history_idx);
+    ASSERT_EQ(FFF_CALL_HISTORY_LEN, fff.call_history_idx);
 }
 
 TEST_F(FFFTestSuite, calling_fake_registers_one_call)
 {
     longfunc0();
-    ASSERT_EQ(call_history_idx, 1u);
-    ASSERT_EQ(call_history[0], (void *)longfunc0);
+    ASSERT_EQ(fff.call_history_idx, 1u);
+    ASSERT_EQ(fff.call_history[0], (void *)longfunc0);
 }
 
 TEST_F(FFFTestSuite, return_value_sequences_not_exhausted)

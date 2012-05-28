@@ -1,10 +1,3 @@
-/*
- * UI.c
- *
- *  Created on: Dec 17, 2010
- *      Author: mlong
- */
-
 #include "UI.h"
 #include "DISPLAY.h"
 #include "SYSTEM.h"

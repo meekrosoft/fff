@@ -38,7 +38,7 @@ public:
 
 	    RESET_FAKE(button_press_cbk);
 
-		RESET_HISTORY();
+		FFF_RESET_HISTORY();
 		// non default init
 		DISPLAY_get_line_capacity_fake.return_val = 2;
 	}
@@ -106,9 +106,9 @@ TEST_F(UITests, when_no_empty_lines_write_line_clears_screen_and_outputs_lines_t
 	ASSERT_EQ(DISPLAY_output_fake.call_count, 1);
 	// Check the order of the calls:  Don't care about the first two:
 	// DISPLAY_get_line_capacity and DISPLAY_get_line_insert_index
-	ASSERT_EQ(call_history_idx, 4);
-	ASSERT_EQ(call_history[2], (void *) DISPLAY_clear);
-	ASSERT_EQ(call_history[3], (void *) DISPLAY_output);
+	ASSERT_EQ(fff.call_history_idx, 4);
+	ASSERT_EQ(fff.call_history[2], (void *) DISPLAY_clear);
+	ASSERT_EQ(fff.call_history[3], (void *) DISPLAY_output);
 }
 
 TEST_F(UITests, when_empty_lines_write_line_doesnt_clear_screen)

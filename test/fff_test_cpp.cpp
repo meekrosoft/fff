@@ -29,7 +29,7 @@ public:
         RESET_FAKE(voidfunc1);
         RESET_FAKE(voidfunc2);
         RESET_FAKE(longfunc0);
-        RESET_HISTORY();
+        FFF_RESET_HISTORY();
     }
 };
 
@@ -37,7 +37,7 @@ public:
 
 TEST_F(FFFTestSuite, default_constants_can_be_overridden)
 {
-    unsigned sizeCallHistory = (sizeof call_history) / (sizeof call_history[0]);
+    unsigned sizeCallHistory = (sizeof fff.call_history) / (sizeof fff.call_history[0]);
     ASSERT_EQ(OVERRIDE_CALL_HIST_LEN, sizeCallHistory);
     ASSERT_EQ(OVERRIDE_ARG_HIST_LEN, voidfunc2_fake.arg_history_len);
 }

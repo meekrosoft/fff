@@ -67,19 +67,23 @@
 #endif  /* cpp/ansi c */
 /* -- END INTERNAL HELPER MACROS -- */
 
-extern void * call_history[FFF_CALL_HISTORY_LEN];
-extern unsigned int call_history_idx;
-void RESET_HISTORY();
+typedef struct { 
+    void * call_history[FFF_CALL_HISTORY_LEN];
+    unsigned int call_history_idx;
+} fff_globals_t;
+
+EXTERN_C \
+extern fff_globals_t fff;
+END_EXTERN_C \
 
 #define DEFINE_FFF_GLOBALS \
-    void * call_history[FFF_CALL_HISTORY_LEN]; \
-    unsigned int call_history_idx; \
-    void RESET_HISTORY() { \
-        call_history_idx = 0; \
-    } \
-
+    EXTERN_C \
+        fff_globals_t fff; \
+    END_EXTERN_C
+#define FFF_RESET_HISTORY() fff.call_history_idx = 0;
 #define REGISTER_CALL(function) \
-   if(call_history_idx < FFF_CALL_HISTORY_LEN) call_history[call_history_idx++] = (void *)function;
+   if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \
+       fff.call_history[fff.call_history_idx++] = (void *)function;
 
 #define DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
     EXTERN_C \
