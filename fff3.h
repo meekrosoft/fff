@@ -80,7 +80,9 @@ END_EXTERN_C \
     EXTERN_C \
         fff_globals_t fff; \
     END_EXTERN_C
+
 #define FFF_RESET_HISTORY() fff.call_history_idx = 0;
+
 #define REGISTER_CALL(function) \
    if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \
        fff.call_history[fff.call_history_idx++] = (void *)function;

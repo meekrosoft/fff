@@ -44,7 +44,7 @@ def output_internal_helper_macros
 end
 
 def define_return_sequence_helper
-  putd "#define SET_RETURN_SEQ( FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
+  putd "#define SET_RETURN_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
   putd "                        FUNCNAME##_fake.return_val_seq = ARRAY_POINTER; \\"
   putd "                        FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;"
 end
@@ -151,8 +151,6 @@ def popd
   $current_depth = $current_depth - 4
 end
 
-
-
 def output_macro(arg_count, is_value_function)
 
   fake_macro_name = is_value_function ? "FAKE_VALUE_FUNC#{arg_count}" : "FAKE_VOID_FUNC#{arg_count}";
@@ -193,40 +191,6 @@ def output_macro(arg_count, is_value_function)
   popd
 end
 
-def output_cpp_reset_code
-  putd <<-REGISTRATION
-#include <vector>
-typedef void (*void_fptr)();
-std::vector<void_fptr> reset_functions;
-static void RESET_FAKES()
-{
-	std::vector<void_fptr>::iterator it = reset_functions.begin();
-	for( ; it != reset_functions.end(); ++it)
-	{
-		void_fptr ptr = *it;
-		ptr();
-	}
-
-}
-  REGISTRATION
-end
-
-def output_cpp_static_initializer
-  putd <<-MY_STATIC_INITIALIZER
-#define STATIC_INIT(FUNCNAME) \\
-class StaticInitializer_##FUNCNAME \\
-{ \\
-public: \\
-	StaticInitializer_##FUNCNAME() \\
-	{ \\
-		reset_functions.push_back(FUNCNAME##_reset); \\
-	} \\
-}; \\
-static StaticInitializer_##FUNCNAME staticInitializer_##FUNCNAME; \\
-
-  MY_STATIC_INITIALIZER
-end
-
 def output_macro_header(macro_name, arg_count, return_type)
   output_macro_name(macro_name, arg_count, return_type)
 end
@@ -252,18 +216,8 @@ def macro_signature_for(macro_name, arg_count, return_type)
   parameter_list
 end
 
-
 def output_argument_capture_variables(argN)
   putd "    DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
-end
-
-
-def in_struct
-  putd "typedef struct FUNCNAME##_Fake { \\"
-  pushd
-  yield
-  popd
-  putd "} FUNCNAME##_Fake;\\"
 end
 
 def output_variables(arg_count, is_value_function)
@@ -328,11 +282,7 @@ def output_reset_function(arg_count, is_value_function)
   putd "} \\"
 end
 
-
-
 def define_fff_globals
-  
-  
   putd "typedef struct { "
   putd "    void * call_history[FFF_CALL_HISTORY_LEN];"
   putd "    unsigned int call_history_idx;"
@@ -346,26 +296,13 @@ def define_fff_globals
   putd "    EXTERN_C \\"
   putd "        fff_globals_t fff; \\"
   putd "    END_EXTERN_C"
+  putd ""
   putd "#define FFF_RESET_HISTORY() fff.call_history_idx = 0;"
-  
-  
-#  putd "extern void * call_history[FFF_CALL_HISTORY_LEN];"
-#  putd "extern unsigned int call_history_idx;"
-#  putd "void RESET_HISTORY();"
-#  putd ""
-#  putd "#define DEFINE_FFF_GLOBALS \\"
-#  putd "    void * call_history[FFF_CALL_HISTORY_LEN]; \\"
-#  putd "    unsigned int call_history_idx; \\"
-#  putd "    void RESET_HISTORY() { \\"
-#  putd "        call_history_idx = 0; \\"
-#  putd "    } \\"
-#  putd ""
+  putd ""
   putd "#define REGISTER_CALL(function) \\"
   putd "   if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \\"
   putd "       fff.call_history[fff.call_history_idx++] = (void *)function;"
 end
-
-
 
 def extern_c
   putd "EXTERN_C \\"
@@ -373,6 +310,14 @@ def extern_c
     yield
   popd
   putd "END_EXTERN_C \\"
+end
+
+def in_struct
+  putd "typedef struct FUNCNAME##_Fake { \\"
+  pushd
+  yield
+  popd
+  putd "} FUNCNAME##_Fake;\\"
 end
 
 def include_guard
