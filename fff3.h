@@ -9,7 +9,7 @@
   #define FFF_CALL_HISTORY_LEN (50u)
 #endif
 /* -- INTERNAL HELPER MACROS -- */
-#define SET_RETURN_SEQ( FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
+#define SET_RETURN_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
                         FUNCNAME##_fake.return_val_seq = ARRAY_POINTER; \
                         FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;
 
@@ -65,6 +65,12 @@
     #define EXTERN_C 
     #define END_EXTERN_C 
 #endif  /* cpp/ansi c */
+
+#define DEFINE_RESET_FUNCTION(FUNCNAME) \
+    void FUNCNAME##_reset(){ \
+        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
+        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
+    }
 /* -- END INTERNAL HELPER MACROS -- */
 
 typedef struct { 
@@ -110,10 +116,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC0(FUNCNAME) \
@@ -147,10 +150,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
@@ -187,10 +187,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -230,10 +227,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -276,10 +270,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -325,10 +316,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -377,10 +365,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -432,10 +417,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -490,10 +472,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -551,10 +530,7 @@ END_EXTERN_C \
             if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
             REGISTER_CALL(FUNCNAME); \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
@@ -587,10 +563,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
@@ -626,10 +599,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
@@ -668,10 +638,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -713,10 +680,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -761,10 +725,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -812,10 +773,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -866,10 +824,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -923,10 +878,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -983,10 +935,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -1046,10 +995,7 @@ END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
-        void FUNCNAME##_reset(){ \
-            memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
-            FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
-        } \
+        DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
 
 #define FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \

@@ -27,7 +27,7 @@ def output_internal_helper_macros
   putd "/* -- INTERNAL HELPER MACROS -- */"
   
   define_return_sequence_helper
-  define_reset_fake_helper
+  define_reset_fake_macro
   define_declare_arg_helper
   define_declare_all_func_common_helper
   define_save_arg_helper
@@ -38,6 +38,7 @@ def output_internal_helper_macros
   define_increment_call_count_helper
   define_return_fake_result_helper
   define_extern_c_helper
+  define_reset_fake_helper
   
   putd "/* -- END INTERNAL HELPER MACROS -- */"
   putd ""
@@ -49,7 +50,7 @@ def define_return_sequence_helper
   putd "                        FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;"
 end
 
-def define_reset_fake_helper
+def define_reset_fake_macro
   putd ""
   putd "/* Defining a function to reset a fake function */"
   putd "#define RESET_FAKE(FUNCNAME) { \\"
@@ -134,6 +135,15 @@ def define_extern_c_helper
   putd "    #define END_EXTERN_C "
   putd "#endif  /* cpp/ansi c */"
 end
+
+def define_reset_fake_helper
+  putd ""
+  putd "#define DEFINE_RESET_FUNCTION(FUNCNAME) \\"
+  putd "    void FUNCNAME##_reset(){ \\"
+  putd "        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
+  putd "        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
+  putd "    }"
+end
 # ------  End Helper macros ------ #
 
 #fakegen helpers to print at levels of indentation
@@ -177,7 +187,7 @@ def output_macro(arg_count, is_value_function)
         output_function_body(arg_count, is_value_function)
       popd
       putd "} \\"
-      output_reset_function(arg_count, is_value_function)
+      putd "DEFINE_RESET_FUNCTION(FUNCNAME) \\"
     }
   popd
   
