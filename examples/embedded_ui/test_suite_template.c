@@ -1,4 +1,4 @@
-#include "../test/c_test_framework.h"
+#include "../../test/c_test_framework.h"
 
 /* Initialializers called for every test */
 void setup()
