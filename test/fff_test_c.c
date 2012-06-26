@@ -21,7 +21,7 @@ struct MyStruct {
     int y;
 };
 
-DEFINE_FFF_GLOBALS;
+
 FAKE_VOID_FUNC(voidfunc1, int);
 FAKE_VOID_FUNC(voidfunc2, char, char);
 FAKE_VALUE_FUNC(long, longfunc0);
@@ -49,6 +49,7 @@ TEST_F(FFFTestSuite, default_constants_can_be_overridden)
     ASSERT_EQ(OVERRIDE_ARG_HIST_LEN, voidfunc2_fake.arg_history_len);
 }
 
+DEFINE_FFF_GLOBALS;
 int main()
 {
     setbuf(stdout, NULL);

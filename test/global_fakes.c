@@ -1,5 +1,5 @@
 #include "global_fakes.h"
-#include <string.h>
+#include <string.h> // for memcpy
 
 DEFINE_FAKE_VOID_FUNC1(voidfunc1, int);
 DEFINE_FAKE_VOID_FUNC2(voidfunc2, char, char);
