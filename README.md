@@ -24,6 +24,7 @@ Here's how you would define a fake function for this in your test suite:
 
     // test.c(pp)
     #include "fff.h"
+    DEFINE_FFF_GLOBALS;
     FAKE_VOID_FUNC(DISPLAY_init);
 
 And the unit test might look something like this:
@@ -31,7 +32,7 @@ And the unit test might look something like this:
     TEST_F(GreeterTests, init_initialises_display)
     {
 	    UI_init();
-	    ASSERT_EQ(1, DISPLAY_init_call_count);
+	    ASSERT_EQ(DISPLAY_init_fake.call_count, 1);
     }
 
 So what has happened here?  The first thing to note is that the framework is 
@@ -40,16 +41,20 @@ it in your test suite.
 
 The magic is in the <tt>FAKE_VOID_FUNC</tt>.  This 
 expands a macro that defines a function returning <tt>void</tt> 
-which has zero arguments.  It also defines a variable 
-<tt>"function_name"_call_count</tt> which is incremented every time the faked 
+which has zero arguments.  It also defines a struct 
+<tt>"function_name"_fake</tt> which contains all the information about the fake.
+For instance, <tt>DISPLAY_init_fake.call_count</tt>is incremented every time the faked 
 function is called.
 
-Under the hood it generates some code that looks like this:
+Under the hood it generates a struct that looks like this:
 
-    static int DISPLAY_init_call_count = 0;
-    void DISPLAY_init(){
-        DISPLAY_init_call_count++;
-	}
+    typedef struct DISPLAY_init_Fake { 
+        unsigned int call_count; 
+        unsigned int arg_history_len;
+        unsigned int arg_histories_dropped; 
+        void(*custom_fake)(); 
+    } DISPLAY_init_Fake;
+    DISPLAY_init_Fake DISPLAY_init_fake;
 
 
 
@@ -61,22 +66,23 @@ Ok, enough with the toy examples.  What about faking functions with arguments?
 
     // UI.c
     ...
-    void DISPLAY_output_message(char * message);
+    void DISPLAY_output(char * message);
     ...
 
 Here's how you would define a fake function for this in your test suite:
 
-    FAKE_VOID_FUNC(DISPLAY_output_message, const char*);
+    FAKE_VOID_FUNC(DISPLAY_output, char *);
 
 And the unit test might look something like this:
 
-    TEST_F(GreeterTests, given_name_when_greet_called_outputs_name)
+    TEST_F(UITests, write_line_outputs_lines_to_display)
     {
-	    char name[] = "mike";
-    	UI_greet(name);
-    	ASSERT_EQ(1, DISPLAY_output_message_call_count);
-    	ASSERT_EQ(name, DISPLAY_output_message_arg0_val);
+        char msg[] = "helloworld";
+        UI_write_line(msg);
+        ASSERT_EQ(DISPLAY_output_fake.call_count, 1);
+        ASSERT_EQ(strncmp(DISPLAY_output_fake.arg0_val, msg, 26), 0);
     }
+
 
 There is no more magic here, the <tt>FAKE_VOID_FUNC</tt> works as in the 
 previous example.  The number of arguments that the function takes is calculated,
@@ -84,39 +90,37 @@ previous example.  The number of arguments that the function takes is calculated
 type (a char pointer in this example).
 
 A variable is created for every argument in the form 
-<tt>"function_name"_argN_val</tt>
+<tt>"function_name"fake.argN_val</tt>
 
 
 
 ## Return values
 
 When you want to define a fake function that returns a value, you should use the
-<tt>FAKE_VOID_FUNC</tt> macro.  For instance:
+<tt>FAKE_VALUE_FUNC</tt> macro.  For instance:
 
     // UI.c
     ...
-    int DISPLAY_get_line_capacity();
-    int DISPLAY_get_line_insert_index();
+    unsigned int DISPLAY_get_line_capacity();
+    unsigned int DISPLAY_get_line_insert_index();
     ...
 
-Here's how you would define a fake functions for these in your test suite:
+Here's how you would define fake functions for these in your test suite:
 
-    FAKE_VALUE_FUNC(int, DISPLAY_get_line_insert_index);
-    FAKE_VALUE_FUNC(int, DISPLAY_get_line_capacity);
+    FAKE_VALUE_FUNC(unsigned int, DISPLAY_get_line_capacity);
+    FAKE_VALUE_FUNC(unsigned int, DISPLAY_get_line_insert_index);
 
 And the unit test might look something like this:
     
-    TEST_F(GreeterTests, given_non_full_screen_will_not_reset_display)
+    TEST_F(UITests, when_empty_lines_write_line_doesnt_clear_screen)
     {
-    	char name[] = "mike";
-    	// given
-    	DISPLAY_get_line_capacity_return_val = 10;
-    	DISPLAY_get_line_insert_index_return_val = 0;
-    	// when
-    	UI_greet(name);
-    	// then
-    	ASSERT_EQ(0, DISPLAY_clear_call_count);
-    	ASSERT_EQ(1, DISPLAY_output_message_call_count);
+        // given
+        DISPLAY_get_line_insert_index_fake.return_val = 1;
+        char msg[] = "helloworld";
+        // when
+        UI_write_line(msg);
+        // then
+        ASSERT_EQ(DISPLAY_clear_fake.call_count, 0);
     }
 
 Of course you can mix and match these macros to define a value function with 
@@ -147,14 +151,6 @@ fakes in the setup function of your test suite.
         RESET_FAKE(DISPLAY_get_line_insert_index);
     }
     
-This can be a bit of work if you have many fakes, but luckily if you are testing
-in a C++ environment there is a shortcut using static initialization 
-registration:
-
-    void SetUp()
-	{
-        RESET_FAKES(); // resets all fakes
-    }
 
 ## Call history
 Say you want to test that a function calls functionA, then functionB, then 
@@ -172,12 +168,12 @@ Here's how it works:
     	voidfunc2();
     	longfunc0();
 
-    	ASSERT_EQ(call_history[0], (void *)longfunc0);
-    	ASSERT_EQ(call_history[1], (void *)voidfunc2);
-    	ASSERT_EQ(call_history[2], (void *)longfunc0);
+    	ASSERT_EQ(fff.call_history[0], (void *)longfunc0);
+    	ASSERT_EQ(fff.call_history[1], (void *)voidfunc2);
+    	ASSERT_EQ(fff.call_history[2], (void *)longfunc0);
     }
     
-They are reset by calling <tt>RESET_HISTORY();</tt>
+They are reset by calling <tt>FFF_RESET_HISTORY();</tt>
 
 
 ## Default Argument History
@@ -189,10 +185,10 @@ to a fake function.
     {
         voidfunc2('g', 'h');
         voidfunc2('i', 'j');
-        ASSERT_EQ('g', voidfunc2_arg0_history[0]);
-        ASSERT_EQ('h', voidfunc2_arg1_history[0]);
-        ASSERT_EQ('i', voidfunc2_arg0_history[1]);
-        ASSERT_EQ('j', voidfunc2_arg1_history[1]);
+        ASSERT_EQ('g', voidfunc2_fake.arg0_history[0]);
+        ASSERT_EQ('h', voidfunc2_fake.arg1_history[0]);
+        ASSERT_EQ('i', voidfunc2_fake.arg0_history[1]);
+        ASSERT_EQ('j', voidfunc2_fake.arg1_history[1]);
     }
 
 There are two ways to find out if calls have been dropped.  The first is to 
@@ -206,12 +202,12 @@ check the dropped histories counter:
             voidfunc2('1'+i, '2'+i);
         }
         voidfunc2('1', '2');
-        ASSERT_EQ(1u, voidfunc2_arg_histories_dropped);
+        ASSERT_EQ(1u, voidfunc2_fake.arg_histories_dropped);
     }
 
 The other is to check if the call count is greater than the history size:
 
-    ASSERT(voidfunc2_arg_history_len < voidfunc2_call_count);
+    ASSERT(voidfunc2_fake.arg_history_len < voidfunc2_fake.call_count);
     
 The argument histories for a fake function are reset when the RESET_FAKE 
 function is called
@@ -219,7 +215,7 @@ function is called
 ## User Defined Argument History
 
 If you wish to control how many calls to capture for argument history you can
-overide the default by defining it before include the <tt>fff.h</tt> like this:
+override the default by defining it before include the <tt>fff.h</tt> like this:
 
     // Want to keep the argument history for 13 calls
     #define FFF_ARG_HISTORY_LEN 13
@@ -260,9 +256,6 @@ value in the sequence indefinitely.
 Look under the examlples directory for full length examples in both C and C++.
 There is also a test suite for the framework under the test directory.
 
-## Brief Introduction, Powerpoint Style!
-<div style="width:425px" id="__ss_7642816"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/meekrosoft/unit-testing-legacy-c" title="Unit Testing Legacy C">Unit Testing Legacy C</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7642816?rel=0" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/meekrosoft">Michael Long</a> </div> </div>
-
 -------------------------
 
 ## Benefits
@@ -283,11 +276,7 @@ So whats the point?
  * The fff.h header file is generated by a ruby script
  * There are tests under src/test
  * There are examples for testing an embedded UI under src/examples
-
-## Still Todo:
- * Capture argument history
- * Function return value sequences
- * Proper mock syntax - setting expectations, etc   
+  
 
 ## Cheat Sheet
 <table>
@@ -310,10 +299,5 @@ So whats the point?
         <td>RESET_FAKE(fn);</td>
         <td>Reset the state of fake function called fn</td>
         <td>RESET_FAKE(DISPLAY_init);</td>
-    </tr>
-    <tr>
-        <td>RESET_FAKES();</td>
-        <td>Reset all defined fakes</td>
-        <td>RESET_FAKES();</td>
     </tr>
 </table>
