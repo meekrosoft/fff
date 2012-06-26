@@ -17,11 +17,11 @@ DEFINE_FFF_GLOBALS;
 /* SYSTEM.h */
 FAKE_VOID_FUNC2(SYSTEM_register_irq, irq_func_t, unsigned int);
 /* DISPLAY.h */
-FAKE_VOID_FUNC0(DISPLAY_init);
-FAKE_VOID_FUNC0(DISPLAY_clear);
-FAKE_VOID_FUNC1(DISPLAY_output, char *);
-FAKE_VALUE_FUNC0(unsigned int, DISPLAY_get_line_capacity);
-FAKE_VALUE_FUNC0(unsigned int, DISPLAY_get_line_insert_index);
+FAKE_VOID_FUNC(DISPLAY_init);
+FAKE_VOID_FUNC(DISPLAY_clear);
+FAKE_VOID_FUNC(DISPLAY_output, char *);
+FAKE_VALUE_FUNC(unsigned int, DISPLAY_get_line_capacity);
+FAKE_VALUE_FUNC(unsigned int, DISPLAY_get_line_insert_index);
 
 FAKE_VOID_FUNC0(button_press_cbk);
 
