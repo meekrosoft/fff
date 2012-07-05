@@ -89,6 +89,7 @@ int main()
     RUN_TEST(FFFTestSuite, default_constants_can_be_overridden);
 
     RUN_TEST(FFFTestSuite, can_register_custom_fake);
+    RUN_TEST(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return_value);
 
     printf("\n-------------\n");
     printf("Complete\n");
