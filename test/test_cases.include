@@ -217,5 +217,15 @@ TEST_F(FFFTestSuite, can_register_custom_fake)
     ASSERT_EQ(1, my_custom_fake_called);
 }
 
-
-
+//DECLARE_FAKE_VALUE_FUNC0(long, longfunc0);
+#define MEANING_OF_LIFE 42
+long my_custom_value_fake(void)
+{
+    return MEANING_OF_LIFE;
+}
+TEST_F(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return_value)
+{
+    longfunc0_fake.custom_fake = my_custom_value_fake;
+    long retval = longfunc0();
+    ASSERT_EQ(MEANING_OF_LIFE, retval);
+}
