@@ -280,8 +280,11 @@ def output_function_body(arg_count, is_value_function)
   putd "    HISTORY_DROPPED(FUNCNAME);\\"
   putd "}\\"
   putd "INCREMENT_CALL_COUNT(FUNCNAME); \\"
-  putd "if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
   putd "REGISTER_CALL(FUNCNAME); \\"
+  
+  return_type = is_value_function ? "return" : ""
+  putd "if (FUNCNAME##_fake.custom_fake) #{return_type} FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
+  
   putd "RETURN_FAKE_RESULT(FUNCNAME)  \\" if is_value_function
 end
 

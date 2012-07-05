@@ -113,8 +113,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -147,8 +147,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -184,8 +184,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -224,8 +224,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -267,8 +267,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -313,8 +313,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -362,8 +362,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -414,8 +414,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -469,8 +469,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -527,8 +527,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     END_EXTERN_C \
@@ -559,8 +559,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -595,8 +595,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -634,8 +634,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -676,8 +676,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -721,8 +721,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -769,8 +769,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -820,8 +820,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -874,8 +874,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -931,8 +931,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -991,8 +991,8 @@ END_EXTERN_C \
                 HISTORY_DROPPED(FUNCNAME);\
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
             REGISTER_CALL(FUNCNAME); \
+            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
