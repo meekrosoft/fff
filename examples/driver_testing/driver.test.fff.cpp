@@ -10,7 +10,7 @@ DEFINE_FFF_GLOBALS;
 FAKE_VOID_FUNC(IO_MEM_WR8, uint32_t, uint8_t);
 FAKE_VALUE_FUNC(uint8_t, IO_MEM_RD8, uint32_t);
 
-class DriverTest : public testing::Test
+class DriverTestFFF : public testing::Test
 {
 public:
     void SetUp()
@@ -22,7 +22,7 @@ public:
 
 };
 
-TEST_F(DriverTest, When_writing_Then_writes_data_to_DRIVER_OUTPUT_REGISTER)
+TEST_F(DriverTestFFF, When_writing_Then_writes_data_to_DRIVER_OUTPUT_REGISTER)
 {
     driver_write(0x34);
     ASSERT_EQ(1u, IO_MEM_WR8_fake.call_count);
@@ -31,7 +31,7 @@ TEST_F(DriverTest, When_writing_Then_writes_data_to_DRIVER_OUTPUT_REGISTER)
 }
 
 
-TEST_F(DriverTest, When_reading_data_Then_reads_from_DRIVER_INPUT_REGISTER)
+TEST_F(DriverTestFFF, When_reading_data_Then_reads_from_DRIVER_INPUT_REGISTER)
 {
     IO_MEM_RD8_fake.return_val = 0x55;
     uint8_t returnedValue = driver_read();
@@ -40,10 +40,14 @@ TEST_F(DriverTest, When_reading_data_Then_reads_from_DRIVER_INPUT_REGISTER)
     ASSERT_EQ(IO_MEM_RD8_fake.arg0_val, DRIVER_INPUT_REGISTER);
 }
 
-TEST_F(DriverTest, Given_revisionB_device_When_initialize_Then_enable_peripheral_before_initializing_it)
+TEST_F(DriverTestFFF, Given_revisionB_device_When_initialize_Then_enable_peripheral_before_initializing_it)
 {
+    // Given
     IO_MEM_RD8_fake.return_val = HARDWARE_REV_B;
+    // When
     driver_init_device();
+
+    //Then
     // Gets the hardware revision
     ASSERT_EQ((void*) IO_MEM_RD8, fff.call_history[0]);
     ASSERT_EQ(HARDWARE_VERSION_REGISTER, IO_MEM_RD8_fake.arg0_history[0]);

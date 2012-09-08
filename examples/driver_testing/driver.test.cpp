@@ -1,4 +1,3 @@
-#if 1
 extern "C"
 {
 #include "driver.h"
@@ -49,4 +48,3 @@ TEST(Driver, When_reading_data_Then_reads_from_DRIVER_INPUT_REGISTER)
     ASSERT_EQ(readRegister, DRIVER_INPUT_REGISTER);
 }
 
-#endif
