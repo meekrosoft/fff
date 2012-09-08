@@ -3,10 +3,10 @@ extern "C"{
 #include "SYSTEM.h"
 #include "DISPLAY.h"
 }
-#include "../../fff.h"
-
 #include <gtest/gtest.h>
 
+
+#include "../../fff.h"
 DEFINE_FFF_GLOBALS;
 
 /* SYSTEM.h */
@@ -18,7 +18,7 @@ FAKE_VOID_FUNC(DISPLAY_output, char *);
 FAKE_VALUE_FUNC(unsigned int, DISPLAY_get_line_capacity);
 FAKE_VALUE_FUNC(unsigned int, DISPLAY_get_line_insert_index);
 
-FAKE_VOID_FUNC0(button_press_cbk);
+FAKE_VOID_FUNC(button_press_cbk);
 
 
 class UITests : public testing::Test
