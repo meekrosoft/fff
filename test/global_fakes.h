@@ -24,5 +24,6 @@ DECLARE_FAKE_VOID_FUNC2(voidfunc2, char, char);
 DECLARE_FAKE_VALUE_FUNC0(long, longfunc0);
 DECLARE_FAKE_VALUE_FUNC0(enum MYBOOL, enumfunc0);
 DECLARE_FAKE_VALUE_FUNC0(struct MyStruct, structfunc0);
+DECLARE_FAKE_VALUE_FUNC3(int, strlcpy3, char* const, const char* const, const size_t);
 
 #endif /* GLOBAL_FAKES_H_ */

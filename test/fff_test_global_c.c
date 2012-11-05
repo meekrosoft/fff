@@ -13,6 +13,7 @@ void setup()
     RESET_FAKE(longfunc0);
     RESET_FAKE(enumfunc0);
     RESET_FAKE(structfunc0);
+    RESET_FAKE(strlcpy3);
 
     FFF_RESET_HISTORY();
 }
@@ -39,6 +40,7 @@ int main()
     RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_then_last_args_captured);
     RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_twice_then_last_args_captured);
     RUN_TEST(FFFTestSuite, when_void_func_with_2_char_args_called_and_reset_then_captured_arg_is_zero);
+    RUN_TEST(FFFTestSuite, when_fake_func_called_then_const_arguments_captured);
 
     RUN_TEST(FFFTestSuite, when_fake_func_created_default_history_is_fifty_calls);
     RUN_TEST(FFFTestSuite, when_fake_func_called_then_arguments_captured_in_history);
