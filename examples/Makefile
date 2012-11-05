@@ -1,7 +1,7 @@
 all: 
-	cd embedded_ui; make all
-	cd driver_testing; make all
+	cd embedded_ui; $(MAKE) all
+	cd driver_testing; $(MAKE) all
 
 clean: 
-	cd embedded_ui; make clean
-	cd driver_testing; make clean
+	cd embedded_ui; $(MAKE) clean
+	cd driver_testing; $(MAKE) clean

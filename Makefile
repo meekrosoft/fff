@@ -1,10 +1,10 @@
-all: 
+all:
 	mkdir -p build
-	cd gtest; make all
-	cd test; make all
-	cd examples; make all
+	cd gtest; $(MAKE) all
+	cd test; $(MAKE) all
+	cd examples; $(MAKE) all
 
 clean: 
-	cd gtest; make clean
-	cd test; make clean
-	cd examples; make clean
+	cd gtest; $(MAKE) clean
+	cd test; $(MAKE) clean
+	cd examples; $(MAKE) clean

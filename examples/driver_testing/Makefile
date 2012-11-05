@@ -30,10 +30,8 @@ clean:
 	@echo "    rm -f     *~"
 	rm -f *~
 	@echo "Removing programs"
-	@echo "    rm -f     "$(C_PROGNAME)
-	rm -f $(C_PROGNAME)
-	@echo "    rm -f     "$(CPP_PROGNAME) $(TEMPLATE_PROGNAME)
-	rm -f $(CPP_PROGNAME) $(TEMPLATE_PROGNAME)
+	@echo "    rm -f     $(CPP_PROGNAME_NOFFF) $(CPP_PROGNAME_FFF) $(TEMPLATE_PROGNAME)"
+	rm -f $(CPP_PROGNAME_NOFFF) $(CPP_PROGNAME_FFF) $(TEMPLATE_PROGNAME)
 
 
 $(BUILD_DIR)/%.o: %.c

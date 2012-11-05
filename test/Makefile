@@ -32,14 +32,14 @@ all: $(FFF_TEST_CPP_TARGET) $(FFF_TEST_C_TARGET) $(FFF_TEST_GLOBAL_C_TARGET) $(F
 $(BUILD_DIR)/%.o: %.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -I../ -O0 -g3 -Wall -c -o"$@" "$<"
+	g++ -I../ -O0 -g3 -Wall -c -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
 $(BUILD_DIR)/%.o: %.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
-	gcc -I../ -O0 -g3 -Wall -std=c99 -c -o"$@" "$<"
+	gcc -I../ -O0 -g3 -Wall -std=c99 -c -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -75,6 +75,7 @@ $(FFF_TEST_GLOBAL_CPP_TARGET): $(FFF_TEST_GLOBAL_CPP_OBJS)
 
 # Other Targets
 clean:
-	-$(RM) $(FFF_TEST_CPP_OBJS) $(FFF_TEST_GLOBAL_C_OBJS) $(FFF_TEST_C_OBJS) $(FFF_TEST_CPP_TARGET) $(FFF_TEST_C_TARGET) $(FFF_TEST_GLOBAL_C_TARGET)
+	-$(RM) $(FFF_TEST_CPP_OBJS) $(FFF_TEST_GLOBAL_C_OBJS) $(FFF_TEST_C_OBJS) \
+		$(FFF_TEST_CPP_TARGET) $(FFF_TEST_C_TARGET) $(FFF_TEST_GLOBAL_CPP_TARGET) $(FFF_TEST_GLOBAL_C_TARGET)
 	-@echo ' '
 
