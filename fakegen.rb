@@ -161,9 +161,10 @@ def popd
   $current_depth = $current_depth - 4
 end
 
-def output_macro(arg_count, is_value_function)
+def output_macro(arg_count, is_value_function, is_vararg)
 
-  fake_macro_name = is_value_function ? "FAKE_VALUE_FUNC#{arg_count}" : "FAKE_VOID_FUNC#{arg_count}";
+  vararg_name = is_vararg ? "_VARARG" : ""
+  fake_macro_name = is_value_function ? "FAKE_VALUE_FUNC#{arg_count}#{vararg_name}" : "FAKE_VOID_FUNC#{arg_count}#{vararg_name}";
   declare_macro_name = "DECLARE_#{fake_macro_name}"
   define_macro_name = "DEFINE_#{fake_macro_name}"
     
@@ -406,6 +407,8 @@ end
 # lets generate!!
 output_c_and_cpp{
   define_fff_globals
-  $MAX_ARGS.times {|arg_count| output_macro(arg_count, false)}
-  $MAX_ARGS.times {|arg_count| output_macro(arg_count, true)}
+  $MAX_ARGS.times {|arg_count| output_macro(arg_count, false, false)}
+  $MAX_ARGS.times {|arg_count| output_macro(arg_count, true, false)}
+  $MAX_ARGS.times {|arg_count| output_macro(arg_count, false, true)}
+  $MAX_ARGS.times {|arg_count| output_macro(arg_count, true, true)}
 }
