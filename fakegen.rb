@@ -77,7 +77,7 @@ end
 def define_save_arg_helper
   putd ""
   putd "#define SAVE_ARG(FUNCNAME, n) \\"
-  putd "    FUNCNAME##_fake.arg##n##_val = arg##n"
+  putd "    memcpy((void*)&FUNCNAME##_fake.arg##n##_val, (void*)&arg##n, sizeof(arg##n));"
 end
 
 def define_room_for_more_history
@@ -89,7 +89,7 @@ end
 def define_save_arg_history_helper
   putd ""
   putd "#define SAVE_ARG_HISTORY(FUNCNAME, ARGN) \\"
-  putd "    FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count] = arg##ARGN"
+  putd "    memcpy((void*)&FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count], (void*)&arg##ARGN, sizeof(arg##ARGN));"
 end
 
 def define_history_dropped_helper

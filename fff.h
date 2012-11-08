@@ -29,13 +29,13 @@
     unsigned int arg_histories_dropped; \
 
 #define SAVE_ARG(FUNCNAME, n) \
-    FUNCNAME##_fake.arg##n##_val = arg##n
+    memcpy((void*)&FUNCNAME##_fake.arg##n##_val, (void*)&arg##n, sizeof(arg##n));
 
 #define ROOM_FOR_MORE_HISTORY(FUNCNAME) \
   FUNCNAME##_fake.call_count < FFF_ARG_HISTORY_LEN
 
 #define SAVE_ARG_HISTORY(FUNCNAME, ARGN) \
-    FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count] = arg##ARGN
+    memcpy((void*)&FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count], (void*)&arg##ARGN, sizeof(arg##ARGN));
 
 #define HISTORY_DROPPED(FUNCNAME) \
     FUNCNAME##_fake.arg_histories_dropped++

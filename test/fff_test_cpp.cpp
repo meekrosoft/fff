@@ -20,7 +20,6 @@ DEFINE_FFF_GLOBALS
 FAKE_VOID_FUNC(voidfunc1, int);
 FAKE_VOID_FUNC(voidfunc2, char, char);
 FAKE_VALUE_FUNC(long, longfunc0);
-FAKE_VALUE_FUNC(int, strlcpy3, char* const, const char* const, const size_t);
 
 class FFFTestSuite: public testing::Test
 {
@@ -30,7 +29,6 @@ public:
         RESET_FAKE(voidfunc1);
         RESET_FAKE(voidfunc2);
         RESET_FAKE(longfunc0);
-        RESET_FAKE(strlcpy3);
         FFF_RESET_HISTORY();
     }
 };
