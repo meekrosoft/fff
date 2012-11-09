@@ -27,6 +27,7 @@ FAKE_VOID_FUNC(voidfunc2, char, char);
 FAKE_VALUE_FUNC(long, longfunc0);
 FAKE_VALUE_FUNC(enum MYBOOL, enumfunc0);
 FAKE_VALUE_FUNC(struct MyStruct, structfunc0);
+FAKE_VOID_FUNC3_VARARG(voidfunc3var, char *, int, ...);
 
 
 void setup()
@@ -36,6 +37,7 @@ void setup()
     RESET_FAKE(longfunc0);
     RESET_FAKE(enumfunc0);
     RESET_FAKE(structfunc0);
+    RESET_FAKE(voidfunc3var);
     FFF_RESET_HISTORY();
 }
 
@@ -90,6 +92,8 @@ int main()
 
     RUN_TEST(FFFTestSuite, can_register_custom_fake);
     RUN_TEST(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return_value);
+
+    RUN_TEST(FFFTestSuite, use_vararg_fake_with_different_number_of_arguments);
 
     printf("\n-------------\n");
     printf("Complete\n");

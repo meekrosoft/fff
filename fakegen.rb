@@ -161,31 +161,31 @@ def popd
   $current_depth = $current_depth - 4
 end
 
-def output_macro(arg_count, is_value_function, is_vararg)
+def output_macro(arg_count, has_varargs, is_value_function)
 
-  vararg_name = is_vararg ? "_VARARG" : ""
-  fake_macro_name = is_value_function ? "FAKE_VALUE_FUNC#{arg_count}#{vararg_name}" : "FAKE_VOID_FUNC#{arg_count}#{vararg_name}";
+  vararg_name = has_varargs ? "_VARARG" : ""
+  fake_macro_name = is_value_function ? "FAKE_VALUE_FUNC#{arg_count}#{vararg_name}" : "FAKE_VOID_FUNC#{arg_count}#{vararg_name}"
   declare_macro_name = "DECLARE_#{fake_macro_name}"
   define_macro_name = "DEFINE_#{fake_macro_name}"
-    
+  saved_arg_count = arg_count - (has_varargs ? 1 : 0)
   return_type = is_value_function ? "RETURN_TYPE" : ""
 
   putd ""
-  output_macro_header(declare_macro_name, arg_count, return_type)
+  output_macro_header(declare_macro_name, saved_arg_count, has_varargs, return_type)
   pushd
     extern_c {  # define argument capture variables
-      output_variables(arg_count, is_value_function)
+      output_variables(saved_arg_count, has_varargs, is_value_function)
     }
   popd
   
   putd ""
-  output_macro_header(define_macro_name, arg_count, return_type)
+  output_macro_header(define_macro_name, saved_arg_count, has_varargs, return_type)
   pushd
     extern_c {
       putd "FUNCNAME##_Fake FUNCNAME##_fake;\\"
-      putd function_signature(arg_count, is_value_function) + "{ \\"
+      putd function_signature(saved_arg_count, has_varargs, is_value_function) + "{ \\"
       pushd
-        output_function_body(arg_count, is_value_function)
+        output_function_body(saved_arg_count, has_varargs, is_value_function)
       popd
       putd "} \\"
       putd "DEFINE_RESET_FUNCTION(FUNCNAME) \\"
@@ -194,25 +194,25 @@ def output_macro(arg_count, is_value_function, is_vararg)
   
   putd ""
   
-  output_macro_header(fake_macro_name, arg_count, return_type)
+  output_macro_header(fake_macro_name, saved_arg_count, has_varargs, return_type)
   pushd
-    putd macro_signature_for(declare_macro_name, arg_count, return_type)
-    putd macro_signature_for(define_macro_name, arg_count, return_type)
+    putd macro_signature_for(declare_macro_name, saved_arg_count, has_varargs, return_type)
+    putd macro_signature_for(define_macro_name, saved_arg_count, has_varargs, return_type)
     putd ""
   popd
 end
 
-def output_macro_header(macro_name, arg_count, return_type)
-  output_macro_name(macro_name, arg_count, return_type)
+def output_macro_header(macro_name, arg_count, has_varargs, return_type)
+  output_macro_name(macro_name, arg_count, has_varargs, return_type)
 end
 
 # #define #macro_name(RETURN_TYPE, FUNCNAME, ARG0,...)
-def output_macro_name(macro_name, arg_count, return_type)
-  putd "#define " + macro_signature_for(macro_name, arg_count, return_type)
+def output_macro_name(macro_name, arg_count, has_varargs, return_type)
+  putd "#define " + macro_signature_for(macro_name, arg_count, has_varargs, return_type)
 end
 
 # #macro_name(RETURN_TYPE, FUNCNAME, ARG0,...)
-def macro_signature_for(macro_name, arg_count, return_type)
+def macro_signature_for(macro_name, arg_count, has_varargs, return_type)
   parameter_list = "#{macro_name}("
   if return_type != ""
     parameter_list += return_type
@@ -221,6 +221,8 @@ def macro_signature_for(macro_name, arg_count, return_type)
   parameter_list += "FUNCNAME"
 
   arg_count.times { |i| parameter_list += ", ARG#{i}_TYPE" }
+
+  parameter_list += ", ..." if has_varargs
 
   parameter_list +=  ") \\"
   
@@ -231,14 +233,14 @@ def output_argument_capture_variables(argN)
   putd "    DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
 end
 
-def output_variables(arg_count, is_value_function)
+def output_variables(arg_count, has_varargs, is_value_function)
   in_struct{
     arg_count.times { |argN| 
       putd "DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
     }
     putd "DECLARE_ALL_FUNC_COMMON \\"
     putd "DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \\" unless not is_value_function
-    output_custom_function_signature(arg_count, is_value_function)
+    output_custom_function_signature(arg_count, has_varargs, is_value_function)
   }
   putd "extern FUNCNAME##_Fake FUNCNAME##_fake;\\"
   putd "void FUNCNAME##_reset(); \\"
@@ -260,19 +262,20 @@ end
 
 # RETURN_TYPE (*custom_fake)(ARG0_TYPE arg0);\
 # void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2);\
-def output_custom_function_signature(arg_count, is_value_function)
+def output_custom_function_signature(arg_count, has_varargs, is_value_function)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
   signature = "(*custom_fake)(#{arg_val_list(arg_count)}); \\"
   putd return_type + signature
 end
 
 # example: RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1)
-def function_signature(arg_count, is_value_function)
+def function_signature(arg_count, has_varargs, is_value_function)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
-  "#{return_type} FUNCNAME(#{arg_val_list(arg_count)})"
+  varargs = has_varargs ? ", ..." : ""
+  "#{return_type} FUNCNAME(#{arg_val_list(arg_count)}#{varargs})"
 end
 
-def output_function_body(arg_count, is_value_function)
+def output_function_body(arg_count, has_varargs, is_value_function)
   arg_count.times { |i| putd "SAVE_ARG(FUNCNAME, #{i}); \\" }
   putd "if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\\"
   arg_count.times { |i| putd "    SAVE_ARG_HISTORY(FUNCNAME, #{i}); \\" }
@@ -408,7 +411,8 @@ end
 output_c_and_cpp{
   define_fff_globals
   $MAX_ARGS.times {|arg_count| output_macro(arg_count, false, false)}
-  $MAX_ARGS.times {|arg_count| output_macro(arg_count, true, false)}
   $MAX_ARGS.times {|arg_count| output_macro(arg_count, false, true)}
-  $MAX_ARGS.times {|arg_count| output_macro(arg_count, true, true)}
+  # generate the varargs variants
+  (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, false)}
+  (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, true)}
 }
