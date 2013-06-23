@@ -63,6 +63,14 @@ TEST_F(FFFTestSuite, when_void_func_with_2_char_args_called_and_reset_then_captu
     ASSERT_EQ(voidfunc2_fake.arg1_val, 0);
 }
 
+#ifndef __cplusplus
+TEST_F(FFFTestSuite, when_fake_func_called_then_const_arguments_captured)
+{
+    char dst[80];
+    strlcpy3(dst, __FUNCTION__, sizeof(__FUNCTION__));
+}
+#endif /* __cplusplus */
+
 // Argument history
 TEST_F(FFFTestSuite, when_fake_func_created_default_history_is_fifty_calls)
 {
