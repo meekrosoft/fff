@@ -4,7 +4,7 @@
 
 
 $cpp_output = true
-$MAX_ARGS = 10
+$MAX_ARGS = 20
 $DEFAULT_ARG_HISTORY = 50
 $MAX_CALL_HISTORY = 50
 
@@ -357,10 +357,10 @@ def output_macro_counting_shortcuts
 #define PP_NARG_MINUS2_(...) \
     PP_ARG_MINUS2_N(__VA_ARGS__)
 
-#define PP_ARG_MINUS2_N(returnVal, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, N, ...)   N
+#define PP_ARG_MINUS2_N(returnVal, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, N, ...)   N
 
 #define PP_RSEQ_N_MINUS2() \
-    9,8,7,6,5,4,3,2,1,0
+    19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
 
 
 #define FAKE_VALUE_FUNC(...) \
@@ -380,10 +380,10 @@ def output_macro_counting_shortcuts
 #define PP_NARG_MINUS1_(...) \
     PP_ARG_MINUS1_N(__VA_ARGS__)
 
-#define PP_ARG_MINUS1_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, N, ...)   N
+#define PP_ARG_MINUS1_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, N, ...)   N
 
 #define PP_RSEQ_N_MINUS1() \
-    9,8,7,6,5,4,3,2,1,0
+    20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
 
 #define FAKE_VOID_FUNC(...) \
     FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
@@ -410,8 +410,10 @@ end
 # lets generate!!
 output_c_and_cpp{
   define_fff_globals
-  $MAX_ARGS.times {|arg_count| output_macro(arg_count, false, false)}
-  $MAX_ARGS.times {|arg_count| output_macro(arg_count, false, true)}
+  # Create fake generators for 0..MAX_ARGS
+  num_fake_generators = $MAX_ARGS + 1
+  num_fake_generators.times {|arg_count| output_macro(arg_count, false, false)}
+  num_fake_generators.times {|arg_count| output_macro(arg_count, false, true)}
   # generate the varargs variants
   (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, false)}
   (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, true)}

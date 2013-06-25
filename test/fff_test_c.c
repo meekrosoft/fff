@@ -29,7 +29,7 @@ FAKE_VALUE_FUNC(enum MYBOOL, enumfunc0);
 FAKE_VALUE_FUNC(struct MyStruct, structfunc0);
 FAKE_VOID_FUNC3_VARARG(voidfunc3var, char *, int, ...);
 FAKE_VALUE_FUNC(int, strlcpy3, char* const, const char* const, const size_t);
-
+FAKE_VOID_FUNC(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 
 void setup()
 {
@@ -97,6 +97,8 @@ int main()
     RUN_TEST(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return_value);
 
     RUN_TEST(FFFTestSuite, use_vararg_fake_with_different_number_of_arguments);
+
+    RUN_TEST(FFFTestSuite, can_capture_upto_20_arguments_correctly);
 
     printf("\n-------------\n");
     printf("Complete\n");
