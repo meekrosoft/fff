@@ -10,7 +10,7 @@ fff is a micro-framework for creating fake C functions for tests.  Because life
 is too short to spend time hand-writing fake functions for testing.
 
 
-## Hello fake world
+## Hello fake world!
 
 Say you are testing an embedded user interface and you have a function that 
 you want to create a fake for:
@@ -267,6 +267,42 @@ is done by setting the custom_fake member of the fake.  Here's an example:
         ASSERT_EQ(MEANING_OF_LIFE, retval);
     }
 
+## How do I fake a function that returns a value by reference?
+The basic mechanism that FFF provides you in this case is the custom_fake field described in the *Custom Return Value Delegate* example above.
+ 
+You need to create a custom function (e.g. getTime_custom_fake) to produce the output optionally by use of a helper variable (e.g. getTime_custom_now) to retrieve that output from. Then some creativity to tie it all together. The most important part (IMHO) is to keep your test case readable and maintainable. 
+
+In case your project uses a C99 compliant C compiler you can even combine all this in a single unit test function so you can easily oversee all details of the test. See the example below.
+
+    /* The time structure */
+    typedef struct {
+       int hour, min;
+    } Time;
+    
+    /* Our fake function */
+    FAKE_VOID_FUNC(getTime, Time*);
+    
+    /* A test using the getTime fake function */
+    TEST_F(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_output)
+    {
+        Time t;
+        Time getTime_custom_now;
+        void getTime_custom_fake(Time *now) {
+            *now = getTime_custom_now;
+        }
+        getTime_fake.custom_fake = getTime_custom_fake;
+    
+        /* given a specific time */
+        getTime_custom_now.hour = 13;
+        getTime_custom_now.min  = 05;
+    
+        /* when getTime is called */
+        getTime(&t);
+    
+        /* then the specific time must be produced */
+        ASSERT_EQ(t.hour, 13);
+        ASSERT_EQ(t.min,  05);
+    }
 
 ## Find out more...
 
