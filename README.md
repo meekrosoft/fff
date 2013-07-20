@@ -150,7 +150,27 @@ fakes in the setup function of your test suite.
         RESET_FAKE(DISPLAY_get_line_capacity);
         RESET_FAKE(DISPLAY_get_line_insert_index);
     }
-    
+
+You might want to define a macro to do this:
+
+``` 
+/* List of fakes used by this unit tester */
+#define FFF_FAKES_LIST(FAKE)            \
+  FAKE(DISPLAY_init)                    \
+  FAKE(DISPLAY_clear)                   \
+  FAKE(DISPLAY_output_message)          \
+  FAKE(DISPLAY_get_line_capacity)       \
+  FAKE(DISPLAY_get_line_insert_index)
+
+void setup()
+{
+  /* Register resets */
+  FFF_FAKES_LIST(RESET_FAKE);
+
+  /* reset common FFF internal structures */
+  FFF_RESET_HISTORY();
+}
+```
 
 ## Call history
 Say you want to test that a function calls functionA, then functionB, then 
@@ -303,6 +323,90 @@ In case your project uses a C99 compliant C compiler you can even combine all th
         ASSERT_EQ(t.hour, 13);
         ASSERT_EQ(t.min,  05);
     }
+
+## How do I fake a function with a function pointer parameter?
+Using FFF to stub functions that have function pointer parameter can cause problems when trying to stub them. Presented here is an example how to deal with this situation.
+
+If you need to stub a function that has a function pointer parameter, e.g. something like:
+
+```
+/* timer.h */
+typedef int timer_handle;
+extern int timer_start(timer_handle handle, long delay, void (*cb_function) (int arg), int arg);
+```
+
+Then creating a fake like below will horribly fail when trying to compile because the FFF macro will internally expand into an illegal variable ```int (*)(int) arg2_val```.
+
+```
+/* The fake, attempt one */
+FAKE_VALUE_FUNC(int,
+                timer_start,
+                timer_handle,
+                long,
+                void (*) (int argument),
+                int);
+```
+
+The solution to this problem is to create a bridging type that needs only to be visible in the unit tester. The fake will use that intermediate type. This way the compiler will not complain because the types match.
+
+```
+/* Additional type needed to be able to use callback in FFF */
+typedef void (*timer_cb) (int argument);
+
+/* The fake, attempt two */
+FAKE_VALUE_FUNC(int,
+                timer_start,
+                timer_handle,
+                long,
+                timer_cb,
+                int);
+```
+
+Here are some ideas how to create a test case with callbacks.
+
+```
+/* Unit test */
+TEST_F(FFFTestSuite, test_fake_with_function_pointer)
+{
+    int cb_timeout_called = 0;
+    int result = 0;
+    
+    void cb_timeout(int argument)
+    {
+      cb_timeout_called++;     
+    }
+    
+    int timer_start_custom_fake(timer_handle handle,
+                          long delay,
+                          void (*cb_function) (int arg),
+                          int arg)
+    {
+      if (cb_function) cb_function(arg);
+      return timer_start_fake.return_val;
+    }
+    
+    /* given the custom fake for timer_start */
+    timer_start_fake.return_val = 33;
+    timer_start_fake.custom_fake = timer_start_custom_fake;
+    
+    /* when timer_start is called 
+     * (actually you would call your own function-under-test
+     *  that would then call the fake function)
+     */
+    result = timer_start(10, 100, cb_timeout, 55);
+    
+    /* then the timer_start fake must have been called correctly */
+    ASSERT_EQ(result, 33);
+    ASSERT_EQ(timer_start_fake.call_count, 1);
+    ASSERT_EQ(timer_start_fake.arg0_val,   10);
+    ASSERT_EQ(timer_start_fake.arg1_val,   100);
+    ASSERT_EQ(timer_start_fake.arg2_val,   cb_timeout); /* callback provided by unit tester */
+    ASSERT_EQ(timer_start_fake.arg3_val,   55);
+    
+    /* and ofcourse our custom fake correctly calls the registered callback */
+    ASSERT_EQ(cb_timeout_called, 1);
+}
+```
 
 ## Find out more...
 
