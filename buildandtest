@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-ruby fakegen.rb > fff.h
+cat LICENSE > fff.h
+ruby fakegen.rb >> fff.h
 make clean
 make all
 build/fff_test_c 

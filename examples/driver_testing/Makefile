@@ -42,7 +42,7 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/%.o: %.cpp
 	@echo "Compiling "$@
 	@echo "    CPP       "$<
-	$(CPP) -I../.. -o $@ $< -DTESTING
+	$(CPP) -DGTEST_USE_OWN_TR1_TUPLE=1 -I../.. -o $@ $< -DTESTING
 
 $(TEMPLATE_PROGNAME): $(TEMPLATE_OBJFILES)
 	@echo "Linking "$@

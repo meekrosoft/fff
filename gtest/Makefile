@@ -10,7 +10,7 @@ SOURCES=gtest-all.cc gtest-main.cc
 $(BUILD_DIR)/%.o: %.cc
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -I../ -O0 -g3 -Wall -c -o "$@" "$<"
+	g++ -I../ -O0 -g3 -Wall -DGTEST_USE_OWN_TR1_TUPLE=1 -c -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
