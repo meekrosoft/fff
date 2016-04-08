@@ -345,7 +345,7 @@ def include_guard
   yield
 
   putd ""
-  putd "#endif // FAKE_FUNCTIONS"
+  putd "#endif /* FAKE_FUNCTIONS */"
 end
 
 def output_macro_counting_shortcuts
