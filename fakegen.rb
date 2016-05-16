@@ -128,11 +128,11 @@ end
 def define_extern_c_helper
   putd ""
   putd "#ifdef __cplusplus"
-  putd "    #define EXTERN_C extern \"C\"{" 
-  putd "    #define END_EXTERN_C } " 
+  putd "    #define FFF_EXTERN_C extern \"C\"{" 
+  putd "    #define FFF_END_EXTERN_C } " 
   putd "#else  /* ansi c */"
-  putd "    #define EXTERN_C "
-  putd "    #define END_EXTERN_C "
+  putd "    #define FFF_EXTERN_C "
+  putd "    #define FFF_END_EXTERN_C "
   putd "#endif  /* cpp/ansi c */"
 end
 
@@ -305,14 +305,14 @@ def define_fff_globals
   putd "    unsigned int call_history_idx;"
   putd "} fff_globals_t;"
   putd ""
-  putd "EXTERN_C \\"
+  putd "FFF_EXTERN_C \\"
   putd "extern fff_globals_t fff;"
-  putd "END_EXTERN_C \\"
+  putd "FFF_END_EXTERN_C \\"
   putd ""
   putd "#define DEFINE_FFF_GLOBALS \\"
-  putd "    EXTERN_C \\"
+  putd "    FFF_EXTERN_C \\"
   putd "        fff_globals_t fff; \\"
-  putd "    END_EXTERN_C"
+  putd "    FFF_END_EXTERN_C"
   putd ""
   putd "#define FFF_RESET_HISTORY() fff.call_history_idx = 0;"
   putd ""
@@ -322,11 +322,11 @@ def define_fff_globals
 end
 
 def extern_c
-  putd "EXTERN_C \\"
+  putd "FFF_EXTERN_C \\"
   pushd 
     yield
   popd
-  putd "END_EXTERN_C \\"
+  putd "FFF_END_EXTERN_C \\"
 end
 
 def in_struct
@@ -345,7 +345,7 @@ def include_guard
   yield
 
   putd ""
-  putd "#endif // FAKE_FUNCTIONS"
+  putd "#endif /* FAKE_FUNCTIONS */"
 end
 
 def output_macro_counting_shortcuts
