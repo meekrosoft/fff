@@ -8,6 +8,10 @@ $MAX_ARGS = 20
 $DEFAULT_ARG_HISTORY = 50
 $MAX_CALL_HISTORY = 50
 
+def include_dependencies
+  putd "#include <stdarg.h>"
+end
+
 def output_constants
   putd "#define FFF_MAX_ARGS (#{$MAX_ARGS}u)"
   putd "#ifndef FFF_ARG_HISTORY_LEN"
@@ -264,7 +268,8 @@ end
 # void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2);\
 def output_custom_function_signature(arg_count, has_varargs, is_value_function)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
-  signature = "(*custom_fake)(#{arg_val_list(arg_count)}); \\"
+  ap_list = has_varargs ? ", va_list ap" : ""
+  signature = "(*custom_fake)(#{arg_val_list(arg_count)}#{ap_list}); \\"
   putd return_type + signature
 end
 
@@ -285,10 +290,26 @@ def output_function_body(arg_count, has_varargs, is_value_function)
   putd "}\\"
   putd "INCREMENT_CALL_COUNT(FUNCNAME); \\"
   putd "REGISTER_CALL(FUNCNAME); \\"
-  
-  return_type = is_value_function ? "return" : ""
-  putd "if (FUNCNAME##_fake.custom_fake) #{return_type} FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
-  
+
+  if has_varargs
+    putd "if(FUNCNAME##_fake.custom_fake){\\"
+    putd "    RETURN_TYPE ret;\\" if is_value_function
+    putd "    va_list ap;\\"
+    putd "    va_start(ap, arg#{arg_count-1});\\"
+    custom_fake_call = "FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}, ap);"
+    if is_value_function
+      putd "    ret = #{custom_fake_call}\\"
+    else
+      putd "  #{custom_fake_call}\\"
+    end
+    putd "    va_end(ap);\\"
+    putd "    return ret;\\" if is_value_function
+    putd "}\\"
+  else
+    return_type = is_value_function ? "return " : ""
+    putd "if (FUNCNAME##_fake.custom_fake) #{return_type}FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
+  end
+
   putd "RETURN_FAKE_RESULT(FUNCNAME)  \\" if is_value_function
 end
 
@@ -400,6 +421,7 @@ end
 def output_c_and_cpp
 
   include_guard {
+    include_dependencies
     output_constants
     output_internal_helper_macros
     yield
