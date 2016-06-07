@@ -239,12 +239,20 @@ TEST_F(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return
 }
 
 #ifndef __cplusplus
-TEST_F(FFFTestSuite, use_vararg_fake_with_different_number_of_arguments)
+TEST_F(FFFTestSuite, use_void_vararg_fake_with_different_number_of_arguments)
 {
    voidfunc3var("0 parameters", 0);
    voidfunc3var("1 parameter",  1, 10);
    voidfunc3var("2 parameters", 2, 10, 20);
    voidfunc3var("3 parameters", 3, 10, 20, 30);
+}
+
+TEST_F(FFFTestSuite, use_value_vararg_fake_with_different_number_of_arguments)
+{
+   valuefunc3var("0 parameters", 0);
+   valuefunc3var("1 parameter",  1, 10);
+   valuefunc3var("2 parameters", 2, 10, 20);
+   valuefunc3var("3 parameters", 3, 10, 20, 30);
 }
 #endif /* __cplusplus */
 
