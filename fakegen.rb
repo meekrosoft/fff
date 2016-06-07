@@ -406,6 +406,7 @@ def output_macro_counting_shortcuts
 #define PP_RSEQ_N_MINUS1() \
     20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
 
+
 #define FAKE_VOID_FUNC(...) \
     FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
 
@@ -414,6 +415,26 @@ def output_macro_counting_shortcuts
 
 #define FUNC_VOID_N(N,...) \
     FAKE_VOID_FUNC ## N(__VA_ARGS__)
+
+
+#define FAKE_VALUE_FUNC_VARARG(...) \
+    FUNC_VALUE_VARARG_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
+
+#define FUNC_VALUE_VARARG_(N,...) \
+    FUNC_VALUE_VARARG_N(N,__VA_ARGS__)
+
+#define FUNC_VALUE_VARARG_N(N,...) \
+    FAKE_VALUE_FUNC ## N ## _VARARG(__VA_ARGS__)
+
+
+#define FAKE_VOID_FUNC_VARARG(...) \
+    FUNC_VOID_VARARG_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
+
+#define FUNC_VOID_VARARG_(N,...) \
+    FUNC_VOID_VARARG_N(N,__VA_ARGS__)
+
+#define FUNC_VOID_VARARG_N(N,...) \
+    FAKE_VOID_FUNC ## N ## _VARARG(__VA_ARGS__)
 
   MACRO_COUNTING
 end
