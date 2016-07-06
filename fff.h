@@ -22,9 +22,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/#ifndef FAKE_FUNCTIONS
+*/
+#ifndef FAKE_FUNCTIONS
 #define FAKE_FUNCTIONS
 
+#include <stdarg.h>
 #define FFF_MAX_ARGS (20u)
 #ifndef FFF_ARG_HISTORY_LEN
     #define FFF_ARG_HISTORY_LEN (50u)
@@ -138,7 +140,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -172,7 +174,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -209,7 +211,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -249,7 +251,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -292,7 +294,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -338,7 +340,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -387,7 +389,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -439,7 +441,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -494,7 +496,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -552,7 +554,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -613,7 +615,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -677,7 +679,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -744,7 +746,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -814,7 +816,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -887,7 +889,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -963,7 +965,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -1042,7 +1044,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -1124,7 +1126,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -1209,7 +1211,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -1297,7 +1299,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -1388,7 +1390,7 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
+            if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -2726,7 +2728,7 @@ FFF_END_EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0); \
+            void(*custom_fake)(ARG0_TYPE arg0, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -2745,7 +2747,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg0);\
+              FUNCNAME##_fake.custom_fake(arg0, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -2761,7 +2768,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -2782,7 +2789,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg1);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -2799,7 +2811,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
             DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -2822,7 +2834,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg2);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -2840,7 +2857,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
             DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -2865,7 +2882,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg3);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -2884,7 +2906,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
             DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -2911,7 +2933,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg4);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -2931,7 +2958,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
             DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -2960,7 +2987,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg5);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -2981,7 +3013,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
             DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3012,7 +3044,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg6);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3034,7 +3071,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
             DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3067,7 +3104,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg7);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3090,7 +3132,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
             DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3125,7 +3167,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg8);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3149,7 +3196,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
             DECLARE_ARG(ARG9_TYPE, 9, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3186,7 +3233,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg9);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3211,7 +3263,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG9_TYPE, 9, FUNCNAME) \
             DECLARE_ARG(ARG10_TYPE, 10, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3250,7 +3302,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg10);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3276,7 +3333,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG10_TYPE, 10, FUNCNAME) \
             DECLARE_ARG(ARG11_TYPE, 11, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3317,7 +3374,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg11);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3344,7 +3406,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG11_TYPE, 11, FUNCNAME) \
             DECLARE_ARG(ARG12_TYPE, 12, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3387,7 +3449,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg12);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3415,7 +3482,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG12_TYPE, 12, FUNCNAME) \
             DECLARE_ARG(ARG13_TYPE, 13, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3460,7 +3527,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg13);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3489,7 +3561,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG13_TYPE, 13, FUNCNAME) \
             DECLARE_ARG(ARG14_TYPE, 14, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3536,7 +3608,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg14);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3566,7 +3643,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG14_TYPE, 14, FUNCNAME) \
             DECLARE_ARG(ARG15_TYPE, 15, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3615,7 +3692,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg15);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3646,7 +3728,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG15_TYPE, 15, FUNCNAME) \
             DECLARE_ARG(ARG16_TYPE, 16, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3697,7 +3779,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg16);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3729,7 +3816,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG16_TYPE, 16, FUNCNAME) \
             DECLARE_ARG(ARG17_TYPE, 17, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3782,7 +3869,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg17);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3815,7 +3907,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG17_TYPE, 17, FUNCNAME) \
             DECLARE_ARG(ARG18_TYPE, 18, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
-            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18); \
+            void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3870,7 +3962,12 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake)  FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+            if(FUNCNAME##_fake.custom_fake){\
+                va_list ap;\
+                va_start(ap, arg18);\
+              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, ap);\
+                va_end(ap);\
+            }\
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
     FFF_END_EXTERN_C \
@@ -3886,7 +3983,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3905,7 +4002,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg0);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -3923,7 +4027,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3944,7 +4048,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg1);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -3963,7 +4074,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -3986,7 +4097,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg2);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4006,7 +4124,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4031,7 +4149,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg3);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4052,7 +4177,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4079,7 +4204,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg4);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4101,7 +4233,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4130,7 +4262,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg5);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4153,7 +4292,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4184,7 +4323,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg6);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4208,7 +4354,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4241,7 +4387,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg7);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4266,7 +4419,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4301,7 +4454,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg8);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4327,7 +4487,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG9_TYPE, 9, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4364,7 +4524,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg9);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4391,7 +4558,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG10_TYPE, 10, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4430,7 +4597,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg10);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4458,7 +4632,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG11_TYPE, 11, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4499,7 +4673,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg11);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4528,7 +4709,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG12_TYPE, 12, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4571,7 +4752,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg12);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4601,7 +4789,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG13_TYPE, 13, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4646,7 +4834,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg13);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4677,7 +4872,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG14_TYPE, 14, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4724,7 +4919,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg14);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4756,7 +4958,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG15_TYPE, 15, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4805,7 +5007,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg15);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4838,7 +5047,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG16_TYPE, 16, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4889,7 +5098,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg16);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -4923,7 +5139,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG17_TYPE, 17, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -4976,7 +5192,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg17);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -5011,7 +5234,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG18_TYPE, 18, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
-            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18); \
+            RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -5066,7 +5289,14 @@ FFF_END_EXTERN_C \
             }\
             INCREMENT_CALL_COUNT(FUNCNAME); \
             REGISTER_CALL(FUNCNAME); \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+            if(FUNCNAME##_fake.custom_fake){\
+                RETURN_TYPE ret;\
+                va_list ap;\
+                va_start(ap, arg18);\
+                ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, ap);\
+                va_end(ap);\
+                return ret;\
+            }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -5102,11 +5332,26 @@ FFF_END_EXTERN_C \
 
 #define PP_RSEQ_N_MINUS1()     20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
 
+
 #define FAKE_VOID_FUNC(...)     FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
 
 #define FUNC_VOID_(N,...)     FUNC_VOID_N(N,__VA_ARGS__)
 
 #define FUNC_VOID_N(N,...)     FAKE_VOID_FUNC ## N(__VA_ARGS__)
+
+
+#define FAKE_VALUE_FUNC_VARARG(...)     FUNC_VALUE_VARARG_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
+
+#define FUNC_VALUE_VARARG_(N,...)     FUNC_VALUE_VARARG_N(N,__VA_ARGS__)
+
+#define FUNC_VALUE_VARARG_N(N,...)     FAKE_VALUE_FUNC ## N ## _VARARG(__VA_ARGS__)
+
+
+#define FAKE_VOID_FUNC_VARARG(...)     FUNC_VOID_VARARG_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
+
+#define FUNC_VOID_VARARG_(N,...)     FUNC_VOID_VARARG_N(N,__VA_ARGS__)
+
+#define FUNC_VOID_VARARG_N(N,...)     FAKE_VOID_FUNC ## N ## _VARARG(__VA_ARGS__)
 
 
 #endif /* FAKE_FUNCTIONS */

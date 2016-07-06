@@ -2,6 +2,7 @@
 set -e
 
 cat LICENSE > fff.h
+echo >> fff.h
 ruby fakegen.rb >> fff.h
 make clean
 make all

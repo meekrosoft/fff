@@ -11,6 +11,7 @@ void voidfunc1(int);
 void voidfunc2(char, char);
 long longfunc0();
 void voidfunc3var(const char *fmt, int argc, ...);
+int valuefunc3var(const char *fmt, int argc, ...);
 void voidfunc20(int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 
 enum MYBOOL { FALSE = 899, TRUE };
@@ -28,6 +29,7 @@ DECLARE_FAKE_VALUE_FUNC0(long, longfunc0);
 DECLARE_FAKE_VALUE_FUNC0(enum MYBOOL, enumfunc0);
 DECLARE_FAKE_VALUE_FUNC0(struct MyStruct, structfunc0);
 DECLARE_FAKE_VOID_FUNC3_VARARG(voidfunc3var, const char *, int, ...);
+DECLARE_FAKE_VALUE_FUNC3_VARARG(int, valuefunc3var, const char *, int, ...);
 DECLARE_FAKE_VOID_FUNC20(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 
 #ifndef __cplusplus

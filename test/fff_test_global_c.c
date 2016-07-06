@@ -14,6 +14,7 @@ void setup()
     RESET_FAKE(enumfunc0);
     RESET_FAKE(structfunc0);
     RESET_FAKE(voidfunc3var);
+    RESET_FAKE(valuefunc3var);
     RESET_FAKE(strlcpy3);
 
     FFF_RESET_HISTORY();
@@ -64,7 +65,8 @@ int main()
     RUN_TEST(FFFTestSuite, can_register_custom_fake);
     RUN_TEST(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return_value);
 
-    RUN_TEST(FFFTestSuite, use_vararg_fake_with_different_number_of_arguments);
+    RUN_TEST(FFFTestSuite, use_void_vararg_fake_with_different_number_of_arguments);
+    RUN_TEST(FFFTestSuite, use_value_vararg_fake_with_different_number_of_arguments);
 
     RUN_TEST(FFFTestSuite, can_capture_upto_20_arguments_correctly);
 

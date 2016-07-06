@@ -8,6 +8,10 @@ $MAX_ARGS = 20
 $DEFAULT_ARG_HISTORY = 50
 $MAX_CALL_HISTORY = 50
 
+def include_dependencies
+  putd "#include <stdarg.h>"
+end
+
 def output_constants
   putd "#define FFF_MAX_ARGS (#{$MAX_ARGS}u)"
   putd "#ifndef FFF_ARG_HISTORY_LEN"
@@ -264,7 +268,8 @@ end
 # void (*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2);\
 def output_custom_function_signature(arg_count, has_varargs, is_value_function)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
-  signature = "(*custom_fake)(#{arg_val_list(arg_count)}); \\"
+  ap_list = has_varargs ? ", va_list ap" : ""
+  signature = "(*custom_fake)(#{arg_val_list(arg_count)}#{ap_list}); \\"
   putd return_type + signature
 end
 
@@ -285,10 +290,26 @@ def output_function_body(arg_count, has_varargs, is_value_function)
   putd "}\\"
   putd "INCREMENT_CALL_COUNT(FUNCNAME); \\"
   putd "REGISTER_CALL(FUNCNAME); \\"
-  
-  return_type = is_value_function ? "return" : ""
-  putd "if (FUNCNAME##_fake.custom_fake) #{return_type} FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
-  
+
+  if has_varargs
+    putd "if(FUNCNAME##_fake.custom_fake){\\"
+    putd "    RETURN_TYPE ret;\\" if is_value_function
+    putd "    va_list ap;\\"
+    putd "    va_start(ap, arg#{arg_count-1});\\"
+    custom_fake_call = "FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}, ap);"
+    if is_value_function
+      putd "    ret = #{custom_fake_call}\\"
+    else
+      putd "  #{custom_fake_call}\\"
+    end
+    putd "    va_end(ap);\\"
+    putd "    return ret;\\" if is_value_function
+    putd "}\\"
+  else
+    return_type = is_value_function ? "return " : ""
+    putd "if (FUNCNAME##_fake.custom_fake) #{return_type}FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
+  end
+
   putd "RETURN_FAKE_RESULT(FUNCNAME)  \\" if is_value_function
 end
 
@@ -385,6 +406,7 @@ def output_macro_counting_shortcuts
 #define PP_RSEQ_N_MINUS1() \
     20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
 
+
 #define FAKE_VOID_FUNC(...) \
     FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
 
@@ -394,12 +416,33 @@ def output_macro_counting_shortcuts
 #define FUNC_VOID_N(N,...) \
     FAKE_VOID_FUNC ## N(__VA_ARGS__)
 
+
+#define FAKE_VALUE_FUNC_VARARG(...) \
+    FUNC_VALUE_VARARG_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
+
+#define FUNC_VALUE_VARARG_(N,...) \
+    FUNC_VALUE_VARARG_N(N,__VA_ARGS__)
+
+#define FUNC_VALUE_VARARG_N(N,...) \
+    FAKE_VALUE_FUNC ## N ## _VARARG(__VA_ARGS__)
+
+
+#define FAKE_VOID_FUNC_VARARG(...) \
+    FUNC_VOID_VARARG_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
+
+#define FUNC_VOID_VARARG_(N,...) \
+    FUNC_VOID_VARARG_N(N,__VA_ARGS__)
+
+#define FUNC_VOID_VARARG_N(N,...) \
+    FAKE_VOID_FUNC ## N ## _VARARG(__VA_ARGS__)
+
   MACRO_COUNTING
 end
 
 def output_c_and_cpp
 
   include_guard {
+    include_dependencies
     output_constants
     output_internal_helper_macros
     yield
