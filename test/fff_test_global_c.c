@@ -10,6 +10,7 @@ void setup()
 {
     RESET_FAKE(voidfunc1);
     RESET_FAKE(voidfunc2);
+    RESET_FAKE(voidfunc1outparam);
     RESET_FAKE(longfunc0);
     RESET_FAKE(enumfunc0);
     RESET_FAKE(structfunc0);

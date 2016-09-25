@@ -14,6 +14,7 @@ public:
         RESET_FAKE(voidfunc1);
         RESET_FAKE(voidfunc2);
         RESET_FAKE(longfunc0);
+        RESET_FAKE(voidfunc1outparam);
         FFF_RESET_HISTORY();
     }
 };

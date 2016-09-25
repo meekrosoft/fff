@@ -19,6 +19,7 @@ DEFINE_FFF_GLOBALS
 
 FAKE_VOID_FUNC(voidfunc1, int);
 FAKE_VOID_FUNC(voidfunc2, char, char);
+FAKE_VOID_FUNC(voidfunc1outparam, char *);
 FAKE_VALUE_FUNC(long, longfunc0);
 FAKE_VOID_FUNC(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 
@@ -30,6 +31,7 @@ public:
         RESET_FAKE(voidfunc1);
         RESET_FAKE(voidfunc2);
         RESET_FAKE(longfunc0);
+        RESET_FAKE(voidfunc1outparam);
         FFF_RESET_HISTORY();
     }
 };

@@ -31,6 +31,7 @@ def output_internal_helper_macros
   putd "/* -- INTERNAL HELPER MACROS -- */"
   
   define_return_sequence_helper
+  define_custom_fake_sequence_helper
   define_reset_fake_macro
   define_declare_arg_helper
   define_declare_all_func_common_helper
@@ -39,6 +40,7 @@ def output_internal_helper_macros
   define_save_arg_history_helper
   define_history_dropped_helper
   define_value_function_variables_helper
+  define_custom_fake_seq_variables_helper
   define_increment_call_count_helper
   define_return_fake_result_helper
   define_extern_c_helper
@@ -52,6 +54,12 @@ def define_return_sequence_helper
   putd "#define SET_RETURN_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
   putd "                        FUNCNAME##_fake.return_val_seq = ARRAY_POINTER; \\"
   putd "                        FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;"
+end
+
+def define_custom_fake_sequence_helper
+  putd "#define SET_CUSTOM_FAKE_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
+  putd "                            FUNCNAME##_fake.custom_fake_seq = ARRAY_POINTER; \\"
+  putd "                            FUNCNAME##_fake.custom_fake_seq_len = ARRAY_LEN;"
 end
 
 def define_reset_fake_macro
@@ -108,7 +116,14 @@ def define_value_function_variables_helper
   putd "    RETURN_TYPE return_val; \\" 
   putd "    int return_val_seq_len; \\" 
   putd "    int return_val_seq_idx; \\" 
-  putd "    RETURN_TYPE * return_val_seq; \\" 
+  putd "    RETURN_TYPE * return_val_seq; \\"
+end
+
+def define_custom_fake_seq_variables_helper
+  putd ""
+  putd "#define DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \\"
+  putd "    int custom_fake_seq_len; \\"
+  putd "    int custom_fake_seq_idx; \\"
 end
 
 def define_increment_call_count_helper
@@ -244,7 +259,9 @@ def output_variables(arg_count, has_varargs, is_value_function)
     }
     putd "DECLARE_ALL_FUNC_COMMON \\"
     putd "DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \\" unless not is_value_function
+    putd "DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \\"
     output_custom_function_signature(arg_count, has_varargs, is_value_function)
+    output_custom_function_array(arg_count, has_varargs, is_value_function)
   }
   putd "extern FUNCNAME##_Fake FUNCNAME##_fake;\\"
   putd "void FUNCNAME##_reset(); \\"
@@ -271,6 +288,13 @@ def output_custom_function_signature(arg_count, has_varargs, is_value_function)
   ap_list = has_varargs ? ", va_list ap" : ""
   signature = "(*custom_fake)(#{arg_val_list(arg_count)}#{ap_list}); \\"
   putd return_type + signature
+end
+
+def output_custom_function_array(arg_count, has_varargs, is_value_function)
+  return_type = is_value_function ? "RETURN_TYPE" : "void"
+  ap_list = has_varargs ? ", va_list ap" : ""
+  custom_array = "(**custom_fake_seq)(#{arg_val_list(arg_count)}#{ap_list}); \\"
+  putd return_type + custom_array
 end
 
 # example: RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1)
@@ -307,6 +331,14 @@ def output_function_body(arg_count, has_varargs, is_value_function)
     putd "}\\"
   else
     return_type = is_value_function ? "return " : ""
+    putd "if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \\"
+    putd "    if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \\"
+    putd "        #{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)}); \\"
+    putd "    } \\"
+    putd "    else{ \\"
+    putd "        #{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)}); \\"
+    putd "    } \\"
+    putd "} \\"
     putd "if (FUNCNAME##_fake.custom_fake) #{return_type}FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
   end
 
