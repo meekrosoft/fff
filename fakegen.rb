@@ -10,6 +10,8 @@ $MAX_CALL_HISTORY = 50
 
 def include_dependencies
   putd "#include <stdarg.h>"
+  putd "#include <string.h> /* For memset and memcpy */"
+  putd ""
 end
 
 def output_constants

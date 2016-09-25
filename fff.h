@@ -27,6 +27,8 @@ SOFTWARE.
 #define FAKE_FUNCTIONS
 
 #include <stdarg.h>
+#include <string.h> /* For memset and memcpy */
+
 #define FFF_MAX_ARGS (20u)
 #ifndef FFF_ARG_HISTORY_LEN
     #define FFF_ARG_HISTORY_LEN (50u)
