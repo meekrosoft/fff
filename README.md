@@ -285,6 +285,50 @@ is done by setting the custom_fake member of the fake.  Here's an example:
         ASSERT_EQ(MEANING_OF_LIFE, retval);
     }
 
+## Custom Return Value Delegate Sequences
+
+Say you have a function with an out parameter, and you want it to have a different behaviour
+on the first three calls, for example: set the value 'x' to the out parameter on the first call,
+the value 'y' to the out parameter on the second call, and the value 'z' to the out parameter
+on the third call. You can specify a sequence of custom functions to a non-variadic function
+using the SET_CUSTOM_FAKE_SEQ macro. Here's an example:
+
+    void voidfunc1outparam_custom_fake1(char *a)
+    {
+        *a = 'x';
+    }
+
+    void voidfunc1outparam_custom_fake2(char *a)
+    {
+        *a = 'y';
+    }
+
+    void voidfunc1outparam_custom_fake3(char *a)
+    {
+        *a = 'z';
+    }
+
+    TEST_F(FFFTestSuite, custom_fake_sequence_not_exausthed)
+    {
+        void (*custom_fakes[])(char *) = {voidfunc1outparam_custom_fake1,
+                                          voidfunc1outparam_custom_fake2,
+                                          voidfunc1outparam_custom_fake3};
+        char a = 'a';
+
+        SET_CUSTOM_FAKE_SEQ(voidfunc1outparam, custom_fakes, 3);
+
+        voidfunc1outparam(&a);
+        ASSERT_EQ('x', a);
+        voidfunc1outparam(&a);
+        ASSERT_EQ('y', a);
+        voidfunc1outparam(&a);
+        ASSERT_EQ('z', a);
+    }
+
+The fake will call your custom functions in the order specified by the SET_CUSTOM_FAKE_SEQ
+macro. When the last custom fake is reached the fake will keep calling the last custom
+fake in the sequence. This macro works much like the SET_RETURN_SEQ macro.
+
 ## How do I fake a function that returns a value by reference?
 The basic mechanism that FFF provides you in this case is the custom_fake field described in the *Custom Return Value Delegate* example above.
 
