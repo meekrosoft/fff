@@ -449,6 +449,32 @@ TEST_F(FFFTestSuite, test_fake_with_function_pointer)
     ASSERT_EQ(cb_timeout_called, 1);
 }
 ```
+## How do I reuse a fake across multiple test-suites?
+FFF functions like FAKE_VALUE_FUNC will perform both the declaration AND the definition of the fake function and the corresponding data structs. This cannot be placed in a header, since it will lead to multiple definitions of the fake functions. 
+
+The solution is to separate declaration and definition of the fakes, and place the declaration into a public header file, and the definition into a private source file. 
+
+Here is an example of how it could be done:
+
+```
+/* Public header file */
+#include "fff.h"
+
+DECLARE_FAKE_VALUE_FUNC(int, value_function, int, int);
+DECLARE_FAKE_VOID_FUNC(void_function, int, int);
+DECLARE_FAKE_VALUE_FUNC_VARARG(int, value_function_vargs, const char *, int, ...);
+DECLARE_FAKE_VOID_FUNC_VARARG(void_function_vargs, const char *, int, ...);
+
+
+/* Private source file file */
+#include "public_header.h"
+
+DEFINE_FAKE_VALUE_FUNC(int, value_function, int, int);
+DEFINE_FAKE_VOID_FUNC(void_function, int, int);
+DEFINE_FAKE_VALUE_FUNC_VARARG(int, value_function_vargs, const char *, int, ...);
+DEFINE_FAKE_VOID_FUNC_VARARG(void_function_vargs, const char *, int, ...);
+
+```
 
 ## Find out more...
 
