@@ -403,6 +403,11 @@ def include_guard
   putd "#endif /* FAKE_FUNCTIONS */"
 end
 
+def generate_arg_sequence(args, prefix, do_reverse, joinstr) 
+ fmap = (0..args).flat_map {|i| [prefix + i.to_s]}
+ if do_reverse then fmap.reverse.join(joinstr) else fmap.join(", ") end
+end
+
 def output_macro_counting_shortcuts
   putd <<-MACRO_COUNTING
 
@@ -412,10 +417,10 @@ def output_macro_counting_shortcuts
 #define PP_NARG_MINUS2_(...) \
     PP_ARG_MINUS2_N(__VA_ARGS__)
 
-#define PP_ARG_MINUS2_N(returnVal, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, N, ...)   N
+#define PP_ARG_MINUS2_N(returnVal, #{generate_arg_sequence($MAX_ARGS - 1, '_', false, ", ")}, N, ...)   N
 
 #define PP_RSEQ_N_MINUS2() \
-    19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
+    #{generate_arg_sequence($MAX_ARGS - 1, '', true, ',')}
 
 
 #define FAKE_VALUE_FUNC(...) \
@@ -435,10 +440,10 @@ def output_macro_counting_shortcuts
 #define PP_NARG_MINUS1_(...) \
     PP_ARG_MINUS1_N(__VA_ARGS__)
 
-#define PP_ARG_MINUS1_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, N, ...)   N
+#define PP_ARG_MINUS1_N(#{generate_arg_sequence($MAX_ARGS, '_', false, ", ")}, N, ...)   N
 
 #define PP_RSEQ_N_MINUS1() \
-    20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
+    #{generate_arg_sequence($MAX_ARGS, '', true, ',')}
 
 
 #define FAKE_VOID_FUNC(...) \
