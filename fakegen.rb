@@ -403,6 +403,11 @@ def include_guard
   putd "#endif /* FAKE_FUNCTIONS */"
 end
 
+def generate_arg_sequence(args, prefix, do_reverse, joinstr) 
+ fmap = (0..args).flat_map {|i| [prefix + i.to_s]}
+ if do_reverse then fmap.reverse.join(joinstr) else fmap.join(", ") end
+end
+
 def output_macro_counting_shortcuts
   putd <<-MACRO_COUNTING
 
@@ -412,11 +417,26 @@ def output_macro_counting_shortcuts
 #define PP_NARG_MINUS2_(...) \
     PP_ARG_MINUS2_N(__VA_ARGS__)
 
-#define PP_ARG_MINUS2_N(returnVal, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, N, ...)   N
+#define PP_ARG_MINUS2_N(returnVal, #{generate_arg_sequence($MAX_ARGS - 1, '_', false, ", ")}, N, ...)   N
 
 #define PP_RSEQ_N_MINUS2() \
-    19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
+    #{generate_arg_sequence($MAX_ARGS - 1, '', true, ',')}
 
+
+#define PP_NARG_MINUS1(...) \
+    PP_NARG_MINUS1_(__VA_ARGS__, PP_RSEQ_N_MINUS1())
+
+#define PP_NARG_MINUS1_(...) \
+    PP_ARG_MINUS1_N(__VA_ARGS__)
+
+#define PP_ARG_MINUS1_N(#{generate_arg_sequence($MAX_ARGS, '_', false, ", ")}, N, ...)   N
+
+#define PP_RSEQ_N_MINUS1() \
+    #{generate_arg_sequence($MAX_ARGS, '', true, ',')}
+
+
+
+/* DECLARE AND DEFINE FAKE FUNCTIONS - PLACE IN TEST FILES */
 
 #define FAKE_VALUE_FUNC(...) \
     FUNC_VALUE_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
@@ -426,19 +446,6 @@ def output_macro_counting_shortcuts
 
 #define FUNC_VALUE_N(N,...) \
     FAKE_VALUE_FUNC ## N(__VA_ARGS__)
-
-
-
-#define PP_NARG_MINUS1(...) \
-    PP_NARG_MINUS1_(__VA_ARGS__, PP_RSEQ_N_MINUS1())
-
-#define PP_NARG_MINUS1_(...) \
-    PP_ARG_MINUS1_N(__VA_ARGS__)
-
-#define PP_ARG_MINUS1_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, N, ...)   N
-
-#define PP_RSEQ_N_MINUS1() \
-    20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
 
 
 #define FAKE_VOID_FUNC(...) \
@@ -469,6 +476,92 @@ def output_macro_counting_shortcuts
 
 #define FUNC_VOID_VARARG_N(N,...) \
     FAKE_VOID_FUNC ## N ## _VARARG(__VA_ARGS__)
+
+
+
+/* DECLARE FAKE FUNCTIONS - PLACE IN HEADER FILES */
+
+#define DECLARE_FAKE_VALUE_FUNC(...) \
+    DEC_FUNC_VALUE_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
+
+#define DEC_FUNC_VALUE_(N,...)  \
+    DEC_FUNC_VALUE_N(N,__VA_ARGS__)
+
+#define DEC_FUNC_VALUE_N(N,...) \
+    DECLARE_FAKE_VALUE_FUNC ## N(__VA_ARGS__)
+
+
+#define DECLARE_FAKE_VOID_FUNC(...) \
+    DEC_FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
+
+#define DEC_FUNC_VOID_(N,...) \
+    DEC_FUNC_VOID_N(N, __VA_ARGS__)    
+
+#define DEC_FUNC_VOID_N(N,...) \
+    DECLARE_FAKE_VOID_FUNC ## N(__VA_ARGS__)
+
+
+#define DECLARE_FAKE_VALUE_FUNC_VARARG(...) \
+    DEC_FUNC_VALUE_VARARG_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
+
+#define DEC_FUNC_VALUE_VARARG_(N,...) \
+    DEC_FUNC_VALUE_VARARG_N(N, __VA_ARGS__)    
+
+#define DEC_FUNC_VALUE_VARARG_N(N,...) \
+    DECLARE_FAKE_VALUE_FUNC ## N ## _VARARG(__VA_ARGS__)
+
+
+#define DECLARE_FAKE_VOID_FUNC_VARARG(...) \
+    DEC_FUNC_VOID_VARARG_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
+
+#define DEC_FUNC_VOID_VARARG_(N,...) \
+    DEC_FUNC_VOID_VARARG_N(N, __VA_ARGS__)    
+
+#define DEC_FUNC_VOID_VARARG_N(N,...) \
+    DECLARE_FAKE_VOID_FUNC ## N ## _VARARG(__VA_ARGS__)
+
+
+
+/* DEFINE FAKE FUNCTIONS - PLACE IN SOURCE FILES */
+
+#define DEFINE_FAKE_VALUE_FUNC(...) \
+    DEF_FUNC_VALUE_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
+
+#define DEF_FUNC_VALUE_(N,...)  \
+    DEF_FUNC_VALUE_N(N,__VA_ARGS__)
+
+#define DEF_FUNC_VALUE_N(N,...) \
+    DEFINE_FAKE_VALUE_FUNC ## N(__VA_ARGS__)
+
+
+#define DEFINE_FAKE_VOID_FUNC(...) \
+    DEF_FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
+
+#define DEF_FUNC_VOID_(N,...) \
+    DEF_FUNC_VOID_N(N,__VA_ARGS__) 
+
+#define DEF_FUNC_VOID_N(N,...) \
+    DEFINE_FAKE_VOID_FUNC ## N(__VA_ARGS__) 
+
+
+#define DEFINE_FAKE_VALUE_FUNC_VARARG(...) \
+    DEF_FUNC_VALUE_VARARG(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
+
+#define DEF_FUNC_VALUE_VARARG(N,...) \
+    DEF_FUNC_VALUE_VARARG_N(N,__VA_ARGS__) 
+
+#define DEF_FUNC_VALUE_VARARG_N(N,...) \
+    DEFINE_FAKE_VALUE_FUNC ## N ## _VARARG(__VA_ARGS__) 
+
+
+#define DEFINE_FAKE_VOID_FUNC_VARARG(...) \
+    DEF_FUNC_VOID_VARARG(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
+
+#define DEF_FUNC_VOID_VARARG(N,...) \
+    DEF_FUNC_VOID_VARARG_N(N,__VA_ARGS__) 
+
+#define DEF_FUNC_VOID_VARARG_N(N,...) \
+    DEFINE_FAKE_VOID_FUNC ## N ## _VARARG(__VA_ARGS__) 
 
   MACRO_COUNTING
 end

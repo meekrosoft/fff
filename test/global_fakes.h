@@ -24,18 +24,18 @@ enum MYBOOL enumfunc();
 struct MyStruct structfunc();
 ////  End Imaginary production code header file ///
 
-DECLARE_FAKE_VOID_FUNC1(voidfunc1, int);
-DECLARE_FAKE_VOID_FUNC2(voidfunc2, char, char);
-DECLARE_FAKE_VOID_FUNC1(voidfunc1outparam, char *);
-DECLARE_FAKE_VALUE_FUNC0(long, longfunc0);
-DECLARE_FAKE_VALUE_FUNC0(enum MYBOOL, enumfunc0);
-DECLARE_FAKE_VALUE_FUNC0(struct MyStruct, structfunc0);
-DECLARE_FAKE_VOID_FUNC3_VARARG(voidfunc3var, const char *, int, ...);
-DECLARE_FAKE_VALUE_FUNC3_VARARG(int, valuefunc3var, const char *, int, ...);
-DECLARE_FAKE_VOID_FUNC20(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+DECLARE_FAKE_VOID_FUNC(voidfunc1, int);
+DECLARE_FAKE_VOID_FUNC(voidfunc2, char, char);
+DECLARE_FAKE_VOID_FUNC(voidfunc1outparam, char *);
+DECLARE_FAKE_VALUE_FUNC(long, longfunc0);
+DECLARE_FAKE_VALUE_FUNC(enum MYBOOL, enumfunc0);
+DECLARE_FAKE_VALUE_FUNC(struct MyStruct, structfunc0);
+DECLARE_FAKE_VOID_FUNC_VARARG(voidfunc3var, const char *, int, ...);
+DECLARE_FAKE_VALUE_FUNC_VARARG(int, valuefunc3var, const char *, int, ...);
+DECLARE_FAKE_VOID_FUNC(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 
 #ifndef __cplusplus
 int strlcpy3(char* const, const char* const, const size_t);
-DECLARE_FAKE_VALUE_FUNC3(int, strlcpy3, char* const, const char* const, const size_t);
+DECLARE_FAKE_VALUE_FUNC(int, strlcpy3, char* const, const char* const, const size_t);
 #endif /* __cplusplus */
 #endif /* GLOBAL_FAKES_H_ */
