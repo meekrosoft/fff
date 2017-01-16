@@ -434,10 +434,10 @@ def output_macro_counting_shortcuts
 #define PP_NARG_MINUS2_(...) \
     PP_ARG_MINUS2_N(__VA_ARGS__)
 
-#define PP_ARG_MINUS2_N(returnVal, #{generate_arg_sequence($MAX_ARGS - 1, '_', false, ", ")}, N, ...)   N
+#define PP_ARG_MINUS2_N(returnVal, #{generate_arg_sequence($MAX_ARGS, '_', false, ", ")}, N, ...)   N
 
 #define PP_RSEQ_N_MINUS2() \
-    #{generate_arg_sequence($MAX_ARGS - 1, '', true, ',')}
+    #{generate_arg_sequence($MAX_ARGS, '', true, ',')}
 
 
 #define PP_NARG_MINUS1(...) \

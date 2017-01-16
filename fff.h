@@ -5816,9 +5816,9 @@ FFF_END_EXTERN_C \
 
 #define PP_NARG_MINUS2_(...)     PP_ARG_MINUS2_N(__VA_ARGS__)
 
-#define PP_ARG_MINUS2_N(returnVal, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, N, ...)   N
+#define PP_ARG_MINUS2_N(returnVal, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, N, ...)   N
 
-#define PP_RSEQ_N_MINUS2()     19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
+#define PP_RSEQ_N_MINUS2()     20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
 
 
 #define PP_NARG_MINUS1(...)     PP_NARG_MINUS1_(__VA_ARGS__, PP_RSEQ_N_MINUS1())

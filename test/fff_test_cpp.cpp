@@ -22,6 +22,7 @@ FAKE_VOID_FUNC(voidfunc2, char, char);
 FAKE_VOID_FUNC(voidfunc1outparam, char *);
 FAKE_VALUE_FUNC(long, longfunc0);
 FAKE_VOID_FUNC(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+FAKE_VALUE_FUNC(int, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 
 class FFFTestSuite: public testing::Test
 {
