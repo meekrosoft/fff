@@ -335,4 +335,32 @@ TEST_F(FFFTestSuite, can_capture_upto_20_arguments_correctly)
     ASSERT_EQ(19, voidfunc20_fake.arg19_val);
 }
 
+TEST_F(FFFTestSuite, value_func_can_capture_upto_20_arguments_correctly)
+{
+    valuefunc20_fake.return_val = 42;
+
+    int return_val = valuefunc20(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19);
+
+    ASSERT_EQ(42, return_val);
+    ASSERT_EQ(0, valuefunc20_fake.arg0_val);
+    ASSERT_EQ(1, valuefunc20_fake.arg1_val);
+    ASSERT_EQ(2, valuefunc20_fake.arg2_val);
+    ASSERT_EQ(3, valuefunc20_fake.arg3_val);
+    ASSERT_EQ(4, valuefunc20_fake.arg4_val);
+    ASSERT_EQ(5, valuefunc20_fake.arg5_val);
+    ASSERT_EQ(6, valuefunc20_fake.arg6_val);
+    ASSERT_EQ(7, valuefunc20_fake.arg7_val);
+    ASSERT_EQ(8, valuefunc20_fake.arg8_val);
+    ASSERT_EQ(9, valuefunc20_fake.arg9_val);
+    ASSERT_EQ(10, valuefunc20_fake.arg10_val);
+    ASSERT_EQ(11, valuefunc20_fake.arg11_val);
+    ASSERT_EQ(12, valuefunc20_fake.arg12_val);
+    ASSERT_EQ(13, valuefunc20_fake.arg13_val);
+    ASSERT_EQ(14, valuefunc20_fake.arg14_val);
+    ASSERT_EQ(15, valuefunc20_fake.arg15_val);
+    ASSERT_EQ(16, valuefunc20_fake.arg16_val);
+    ASSERT_EQ(17, valuefunc20_fake.arg17_val);
+    ASSERT_EQ(18, valuefunc20_fake.arg18_val);
+    ASSERT_EQ(19, valuefunc20_fake.arg19_val);
+}
 

@@ -408,6 +408,23 @@ def generate_arg_sequence(args, prefix, do_reverse, joinstr)
  if do_reverse then fmap.reverse.join(joinstr) else fmap.join(", ") end
 end
 
+def counting_macro_instance(type, vararg = :non_vararg, prefix = "")
+  appendix = (vararg == :vararg) ? "_VARARG" : ""
+  minus_count = (type == :VOID) ? 1 : 2
+
+  <<-MACRO_COUNTING_INSTANCE
+#define #{prefix}FAKE_#{type.to_s}_FUNC#{appendix}(...) \
+    #{prefix}FUNC_#{type.to_s}#{appendix}_(PP_NARG_MINUS#{minus_count}(__VA_ARGS__), __VA_ARGS__)
+
+#define #{prefix}FUNC_#{type.to_s}#{appendix}_(N,...) \
+    #{prefix}FUNC_#{type.to_s}#{appendix}_N(N,__VA_ARGS__)
+
+#define #{prefix}FUNC_#{type.to_s}#{appendix}_N(N,...) \
+    #{prefix}FAKE_#{type.to_s}_FUNC ## N#{" ## _VARARG" if vararg == :vararg}(__VA_ARGS__)
+
+  MACRO_COUNTING_INSTANCE
+end
+
 def output_macro_counting_shortcuts
   putd <<-MACRO_COUNTING
 
@@ -417,10 +434,10 @@ def output_macro_counting_shortcuts
 #define PP_NARG_MINUS2_(...) \
     PP_ARG_MINUS2_N(__VA_ARGS__)
 
-#define PP_ARG_MINUS2_N(returnVal, #{generate_arg_sequence($MAX_ARGS - 1, '_', false, ", ")}, N, ...)   N
+#define PP_ARG_MINUS2_N(returnVal, #{generate_arg_sequence($MAX_ARGS, '_', false, ", ")}, N, ...)   N
 
 #define PP_RSEQ_N_MINUS2() \
-    #{generate_arg_sequence($MAX_ARGS - 1, '', true, ',')}
+    #{generate_arg_sequence($MAX_ARGS, '', true, ',')}
 
 
 #define PP_NARG_MINUS1(...) \
@@ -438,130 +455,24 @@ def output_macro_counting_shortcuts
 
 /* DECLARE AND DEFINE FAKE FUNCTIONS - PLACE IN TEST FILES */
 
-#define FAKE_VALUE_FUNC(...) \
-    FUNC_VALUE_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
-
-#define FUNC_VALUE_(N,...) \
-    FUNC_VALUE_N(N,__VA_ARGS__)
-
-#define FUNC_VALUE_N(N,...) \
-    FAKE_VALUE_FUNC ## N(__VA_ARGS__)
-
-
-#define FAKE_VOID_FUNC(...) \
-    FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
-
-#define FUNC_VOID_(N,...) \
-    FUNC_VOID_N(N,__VA_ARGS__)
-
-#define FUNC_VOID_N(N,...) \
-    FAKE_VOID_FUNC ## N(__VA_ARGS__)
-
-
-#define FAKE_VALUE_FUNC_VARARG(...) \
-    FUNC_VALUE_VARARG_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
-
-#define FUNC_VALUE_VARARG_(N,...) \
-    FUNC_VALUE_VARARG_N(N,__VA_ARGS__)
-
-#define FUNC_VALUE_VARARG_N(N,...) \
-    FAKE_VALUE_FUNC ## N ## _VARARG(__VA_ARGS__)
-
-
-#define FAKE_VOID_FUNC_VARARG(...) \
-    FUNC_VOID_VARARG_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
-
-#define FUNC_VOID_VARARG_(N,...) \
-    FUNC_VOID_VARARG_N(N,__VA_ARGS__)
-
-#define FUNC_VOID_VARARG_N(N,...) \
-    FAKE_VOID_FUNC ## N ## _VARARG(__VA_ARGS__)
-
-
+#{counting_macro_instance(:VALUE)}
+#{counting_macro_instance(:VOID)}
+#{counting_macro_instance(:VALUE, :vararg)}
+#{counting_macro_instance(:VOID, :vararg)}
 
 /* DECLARE FAKE FUNCTIONS - PLACE IN HEADER FILES */
 
-#define DECLARE_FAKE_VALUE_FUNC(...) \
-    DEC_FUNC_VALUE_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
-
-#define DEC_FUNC_VALUE_(N,...)  \
-    DEC_FUNC_VALUE_N(N,__VA_ARGS__)
-
-#define DEC_FUNC_VALUE_N(N,...) \
-    DECLARE_FAKE_VALUE_FUNC ## N(__VA_ARGS__)
-
-
-#define DECLARE_FAKE_VOID_FUNC(...) \
-    DEC_FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
-
-#define DEC_FUNC_VOID_(N,...) \
-    DEC_FUNC_VOID_N(N, __VA_ARGS__)    
-
-#define DEC_FUNC_VOID_N(N,...) \
-    DECLARE_FAKE_VOID_FUNC ## N(__VA_ARGS__)
-
-
-#define DECLARE_FAKE_VALUE_FUNC_VARARG(...) \
-    DEC_FUNC_VALUE_VARARG_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
-
-#define DEC_FUNC_VALUE_VARARG_(N,...) \
-    DEC_FUNC_VALUE_VARARG_N(N, __VA_ARGS__)    
-
-#define DEC_FUNC_VALUE_VARARG_N(N,...) \
-    DECLARE_FAKE_VALUE_FUNC ## N ## _VARARG(__VA_ARGS__)
-
-
-#define DECLARE_FAKE_VOID_FUNC_VARARG(...) \
-    DEC_FUNC_VOID_VARARG_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
-
-#define DEC_FUNC_VOID_VARARG_(N,...) \
-    DEC_FUNC_VOID_VARARG_N(N, __VA_ARGS__)    
-
-#define DEC_FUNC_VOID_VARARG_N(N,...) \
-    DECLARE_FAKE_VOID_FUNC ## N ## _VARARG(__VA_ARGS__)
-
-
+#{counting_macro_instance(:VALUE, :non_vararg, "DECLARE_")}
+#{counting_macro_instance(:VOID, :non_vararg, "DECLARE_")}
+#{counting_macro_instance(:VALUE, :vararg, "DECLARE_")}
+#{counting_macro_instance(:VOID, :vararg, "DECLARE_")}
 
 /* DEFINE FAKE FUNCTIONS - PLACE IN SOURCE FILES */
 
-#define DEFINE_FAKE_VALUE_FUNC(...) \
-    DEF_FUNC_VALUE_(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
-
-#define DEF_FUNC_VALUE_(N,...)  \
-    DEF_FUNC_VALUE_N(N,__VA_ARGS__)
-
-#define DEF_FUNC_VALUE_N(N,...) \
-    DEFINE_FAKE_VALUE_FUNC ## N(__VA_ARGS__)
-
-
-#define DEFINE_FAKE_VOID_FUNC(...) \
-    DEF_FUNC_VOID_(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
-
-#define DEF_FUNC_VOID_(N,...) \
-    DEF_FUNC_VOID_N(N,__VA_ARGS__) 
-
-#define DEF_FUNC_VOID_N(N,...) \
-    DEFINE_FAKE_VOID_FUNC ## N(__VA_ARGS__) 
-
-
-#define DEFINE_FAKE_VALUE_FUNC_VARARG(...) \
-    DEF_FUNC_VALUE_VARARG(PP_NARG_MINUS2(__VA_ARGS__), __VA_ARGS__)
-
-#define DEF_FUNC_VALUE_VARARG(N,...) \
-    DEF_FUNC_VALUE_VARARG_N(N,__VA_ARGS__) 
-
-#define DEF_FUNC_VALUE_VARARG_N(N,...) \
-    DEFINE_FAKE_VALUE_FUNC ## N ## _VARARG(__VA_ARGS__) 
-
-
-#define DEFINE_FAKE_VOID_FUNC_VARARG(...) \
-    DEF_FUNC_VOID_VARARG(PP_NARG_MINUS1(__VA_ARGS__), __VA_ARGS__)
-
-#define DEF_FUNC_VOID_VARARG(N,...) \
-    DEF_FUNC_VOID_VARARG_N(N,__VA_ARGS__) 
-
-#define DEF_FUNC_VOID_VARARG_N(N,...) \
-    DEFINE_FAKE_VOID_FUNC ## N ## _VARARG(__VA_ARGS__) 
+#{counting_macro_instance(:VALUE, :non_vararg, "DEFINE_")}
+#{counting_macro_instance(:VOID, :non_vararg, "DEFINE_")}
+#{counting_macro_instance(:VALUE, :vararg, "DEFINE_")}
+#{counting_macro_instance(:VOID, :vararg, "DEFINE_")}
 
   MACRO_COUNTING
 end

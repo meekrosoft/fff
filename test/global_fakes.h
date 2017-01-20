@@ -14,6 +14,7 @@ long longfunc0();
 void voidfunc3var(const char *fmt, int argc, ...);
 int valuefunc3var(const char *fmt, int argc, ...);
 void voidfunc20(int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+int valuefunc20(int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 
 enum MYBOOL { FALSE = 899, TRUE };
 struct MyStruct {
@@ -33,6 +34,7 @@ DECLARE_FAKE_VALUE_FUNC(struct MyStruct, structfunc0);
 DECLARE_FAKE_VOID_FUNC_VARARG(voidfunc3var, const char *, int, ...);
 DECLARE_FAKE_VALUE_FUNC_VARARG(int, valuefunc3var, const char *, int, ...);
 DECLARE_FAKE_VOID_FUNC(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+DECLARE_FAKE_VALUE_FUNC(int, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 
 #ifndef __cplusplus
 int strlcpy3(char* const, const char* const, const size_t);

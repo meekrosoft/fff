@@ -14,3 +14,4 @@ DEFINE_FAKE_VALUE_FUNC_VARARG(int, valuefunc3var, const char *, int, ...);
 DEFINE_FAKE_VALUE_FUNC(int, strlcpy3, char* const, const char* const, const size_t);
 #endif /* __cplusplus */
 DEFINE_FAKE_VOID_FUNC(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+DEFINE_FAKE_VALUE_FUNC(int, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);

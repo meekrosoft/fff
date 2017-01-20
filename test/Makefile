@@ -62,7 +62,7 @@ $(FFF_TEST_C_TARGET): $(FFF_TEST_C_OBJS)
 $(FFF_TEST_GLOBAL_C_TARGET): $(FFF_TEST_GLOBAL_C_OBJS) 
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "$(FFF_TEST_GLOBAL_C_TARGET)" $(FFF_TEST_GLOBAL_C_OBJS) $(LIBS)
+	gcc  -o "$(FFF_TEST_GLOBAL_C_TARGET)" $(FFF_TEST_GLOBAL_C_OBJS) $(LIBS) $(WRAP_LDFLAGS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
