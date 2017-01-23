@@ -108,8 +108,9 @@ SOFTWARE.
     }
 /* -- END INTERNAL HELPER MACROS -- */
 
+typedef void (*fff_function_t)(void);
 typedef struct { 
-    void * call_history[FFF_CALL_HISTORY_LEN];
+    fff_function_t call_history[FFF_CALL_HISTORY_LEN];
     unsigned int call_history_idx;
 } fff_globals_t;
 
@@ -126,7 +127,7 @@ FFF_END_EXTERN_C \
 
 #define REGISTER_CALL(function) \
    if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \
-       fff.call_history[fff.call_history_idx++] = (void *)function;
+       fff.call_history[fff.call_history_idx++] = (fff_function_t)function;
 
 #define DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
     FFF_EXTERN_C \
