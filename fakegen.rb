@@ -410,15 +410,6 @@ def output_function_body(arg_count, has_varargs, is_value_function)
   putdml "RETURN_FAKE_RESULT(FUNCNAME)" if is_value_function
 end
 
-def output_reset_function(arg_count, is_value_function)
-  putdml "void FUNCNAME##_reset(){"
-  indent {
-    putdml "memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake));"
-    putdml "FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;"
-  }
-  putdml "}"
-end
-
 def define_fff_globals
   putd "typedef struct { "
   indent {
