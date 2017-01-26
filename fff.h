@@ -34,15 +34,15 @@ SOFTWARE.
     #define FFF_ARG_HISTORY_LEN (50u)
 #endif
 #ifndef FFF_CALL_HISTORY_LEN
-  #define FFF_CALL_HISTORY_LEN (50u)
+    #define FFF_CALL_HISTORY_LEN (50u)
 #endif
 /* -- INTERNAL HELPER MACROS -- */
 #define SET_RETURN_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
-                        FUNCNAME##_fake.return_val_seq = ARRAY_POINTER; \
-                        FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;
+    FUNCNAME##_fake.return_val_seq = ARRAY_POINTER; \
+    FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;
 #define SET_CUSTOM_FAKE_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
-                            FUNCNAME##_fake.custom_fake_seq = ARRAY_POINTER; \
-                            FUNCNAME##_fake.custom_fake_seq_len = ARRAY_LEN;
+    FUNCNAME##_fake.custom_fake_seq = ARRAY_POINTER; \
+    FUNCNAME##_fake.custom_fake_seq_len = ARRAY_LEN;
 
 /* Defining a function to reset a fake function */
 #define RESET_FAKE(FUNCNAME) { \
@@ -63,7 +63,7 @@ SOFTWARE.
     memcpy((void*)&FUNCNAME##_fake.arg##n##_val, (void*)&arg##n, sizeof(arg##n));
 
 #define ROOM_FOR_MORE_HISTORY(FUNCNAME) \
-  FUNCNAME##_fake.call_count < FFF_ARG_HISTORY_LEN
+    FUNCNAME##_fake.call_count < FFF_ARG_HISTORY_LEN
 
 #define SAVE_ARG_HISTORY(FUNCNAME, ARGN) \
     memcpy((void*)&FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count], (void*)&arg##ARGN, sizeof(arg##ARGN));
@@ -125,8 +125,8 @@ FFF_END_EXTERN_C \
 #define FFF_RESET_HISTORY() fff.call_history_idx = 0;
 
 #define REGISTER_CALL(function) \
-   if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \
-       fff.call_history[fff.call_history_idx++] = (void *)function;
+    if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \
+        fff.call_history[fff.call_history_idx++] = (void *)function;
 
 #define DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
     FFF_EXTERN_C \
@@ -3181,7 +3181,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg0);\
-              FUNCNAME##_fake.custom_fake(arg0, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3225,7 +3225,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg1);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3272,7 +3272,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg2);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3322,7 +3322,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg3);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3375,7 +3375,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg4);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3431,7 +3431,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg5);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3490,7 +3490,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg6);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3552,7 +3552,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg7);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3617,7 +3617,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg8);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3685,7 +3685,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg9);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3756,7 +3756,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg10);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3830,7 +3830,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg11);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3907,7 +3907,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg12);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, ap);\
                 va_end(ap);\
             }\
         } \
@@ -3987,7 +3987,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg13);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, ap);\
                 va_end(ap);\
             }\
         } \
@@ -4070,7 +4070,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg14);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, ap);\
                 va_end(ap);\
             }\
         } \
@@ -4156,7 +4156,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg15);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, ap);\
                 va_end(ap);\
             }\
         } \
@@ -4245,7 +4245,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg16);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, ap);\
                 va_end(ap);\
             }\
         } \
@@ -4337,7 +4337,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg17);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, ap);\
                 va_end(ap);\
             }\
         } \
@@ -4432,7 +4432,7 @@ FFF_END_EXTERN_C \
             if(FUNCNAME##_fake.custom_fake){\
                 va_list ap;\
                 va_start(ap, arg18);\
-              FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, ap);\
+                FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, ap);\
                 va_end(ap);\
             }\
         } \
