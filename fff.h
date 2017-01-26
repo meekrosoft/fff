@@ -133,8 +133,8 @@ FFF_END_EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
-            void(*custom_fake)(); \
-            void(**custom_fake_seq)(); \
+            void(*custom_fake)(void); \
+            void(**custom_fake_seq)(void); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -143,7 +143,7 @@ FFF_END_EXTERN_C \
 #define DEFINE_FAKE_VOID_FUNC0(FUNCNAME) \
     FFF_EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(){ \
+        void FUNCNAME(void){ \
             if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
             }\
             else{\
@@ -1625,8 +1625,8 @@ FFF_END_EXTERN_C \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
-            RETURN_TYPE(*custom_fake)(); \
-            RETURN_TYPE(**custom_fake_seq)(); \
+            RETURN_TYPE(*custom_fake)(void); \
+            RETURN_TYPE(**custom_fake_seq)(void); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
         void FUNCNAME##_reset(); \
@@ -1635,7 +1635,7 @@ FFF_END_EXTERN_C \
 #define DEFINE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
     FFF_EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(){ \
+        RETURN_TYPE FUNCNAME(void){ \
             if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
             }\
             else{\

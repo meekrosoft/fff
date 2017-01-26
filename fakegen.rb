@@ -271,6 +271,7 @@ end
 
 #example: ARG0_TYPE arg0, ARG1_TYPE arg1
 def arg_val_list(args_count)
+  return "void" if (args_count == 0)
   arguments = []
   args_count.times { |i| arguments << "ARG#{i}_TYPE arg#{i}" }
   arguments.join(", ")
