@@ -11,7 +11,7 @@ $MAX_CALL_HISTORY = 50
 def include_dependencies
   putd "#include <stdarg.h>"
   putd "#include <string.h> /* For memset and memcpy */"
-  putd ""
+  puts
 end
 
 def output_constants
@@ -53,7 +53,7 @@ def output_internal_helper_macros
   define_reset_fake_helper
   
   putd "/* -- END INTERNAL HELPER MACROS -- */"
-  putd ""
+  puts
 end
 
 def define_return_sequence_helper
@@ -73,18 +73,18 @@ def define_custom_fake_sequence_helper
 end
 
 def define_reset_fake_macro
-  putd ""
+  puts
   putd "/* Defining a function to reset a fake function */"
   putdml("#define RESET_FAKE(FUNCNAME) {")
   indent {
     putdml("FUNCNAME##_reset();")
   }
   putdml("}")
-  putd ""
+  puts
 end
 
 def define_declare_arg_helper
-  putd ""
+  puts
   putdml("#define DECLARE_ARG(type, n, FUNCNAME)")
   indent {
     putdml("type arg##n##_val;")
@@ -93,7 +93,7 @@ def define_declare_arg_helper
 end
 
 def define_declare_all_func_common_helper
-  putd ""
+  puts
   putdml("#define DECLARE_ALL_FUNC_COMMON")
   indent {
     putdml("unsigned int call_count;")
@@ -103,7 +103,7 @@ def define_declare_all_func_common_helper
 end
 
 def define_save_arg_helper
-  putd ""
+  puts
   putdml("#define SAVE_ARG(FUNCNAME, n)")
   indent {
     putd "memcpy((void*)&FUNCNAME##_fake.arg##n##_val, (void*)&arg##n, sizeof(arg##n));"
@@ -111,7 +111,7 @@ def define_save_arg_helper
 end
 
 def define_room_for_more_history
-  putd ""
+  puts
   putdml("#define ROOM_FOR_MORE_HISTORY(FUNCNAME)")
   indent {
     putd "FUNCNAME##_fake.call_count < FFF_ARG_HISTORY_LEN"
@@ -119,7 +119,7 @@ def define_room_for_more_history
 end
 
 def define_save_arg_history_helper
-  putd ""
+  puts
   putdml("#define SAVE_ARG_HISTORY(FUNCNAME, ARGN)")
   indent {
     putd "memcpy((void*)&FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count], (void*)&arg##ARGN, sizeof(arg##ARGN));"
@@ -127,7 +127,7 @@ def define_save_arg_history_helper
 end
 
 def define_history_dropped_helper
-  putd ""
+  puts
   putdml("#define HISTORY_DROPPED(FUNCNAME)")
   indent {
     putd "FUNCNAME##_fake.arg_histories_dropped++"
@@ -135,7 +135,7 @@ def define_history_dropped_helper
 end
 
 def define_value_function_variables_helper
-  putd ""
+  puts
   putdml("#define DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE)")
   indent {
     putdml("RETURN_TYPE return_val;") 
@@ -146,7 +146,7 @@ def define_value_function_variables_helper
 end
 
 def define_custom_fake_seq_variables_helper
-  putd ""
+  puts
   putdml("#define DECLARE_CUSTOM_FAKE_SEQ_VARIABLES")
   indent {
     putdml("int custom_fake_seq_len;")
@@ -155,7 +155,7 @@ def define_custom_fake_seq_variables_helper
 end
 
 def define_increment_call_count_helper
-  putd ""
+  puts
   putdml("#define INCREMENT_CALL_COUNT(FUNCNAME)")
   indent {
     putd "FUNCNAME##_fake.call_count++"
@@ -163,7 +163,7 @@ def define_increment_call_count_helper
 end
 
 def define_return_fake_result_helper
-  putd ""
+  puts
   putdml("#define RETURN_FAKE_RESULT(FUNCNAME)")
   indent {
     putdml("if (FUNCNAME##_fake.return_val_seq_len){ /* then its a sequence */")
@@ -181,7 +181,7 @@ def define_return_fake_result_helper
 end
 
 def define_extern_c_helper
-  putd ""
+  puts
   putd "#ifdef __cplusplus"
   indent {
     putd "#define FFF_EXTERN_C extern \"C\"{" 
@@ -196,7 +196,7 @@ def define_extern_c_helper
 end
 
 def define_reset_fake_helper
-  putd ""
+  puts
   putdml("#define DEFINE_RESET_FUNCTION(FUNCNAME)")
   indent {
     putdml("void FUNCNAME##_reset(){")
@@ -244,7 +244,7 @@ def output_macro(arg_count, has_varargs, is_value_function)
   saved_arg_count = arg_count - (has_varargs ? 1 : 0)
   return_type = is_value_function ? "RETURN_TYPE" : ""
 
-  putd ""
+  puts
   output_macro_header(declare_macro_name, saved_arg_count, has_varargs, return_type)
   indent {
     extern_c {  # define argument capture variables
@@ -252,7 +252,7 @@ def output_macro(arg_count, has_varargs, is_value_function)
     }
   }
   
-  putd ""
+  puts
   output_macro_header(define_macro_name, saved_arg_count, has_varargs, return_type)
   indent {
     extern_c {
@@ -266,13 +266,13 @@ def output_macro(arg_count, has_varargs, is_value_function)
     }
   }
   
-  putd ""
+  puts
   
   output_macro_header(fake_macro_name, saved_arg_count, has_varargs, return_type)
   indent {
     putd macro_signature_for(declare_macro_name, saved_arg_count, has_varargs, return_type)
     putd macro_signature_for(define_macro_name, saved_arg_count, has_varargs, return_type)
-    putd ""
+    puts
   }
 end
 
@@ -426,11 +426,11 @@ def define_fff_globals
     putd "unsigned int call_history_idx;"
   }
   putd "} fff_globals_t;"
-  putd ""
+  puts
   putdml("FFF_EXTERN_C")
   putd "extern fff_globals_t fff;"
   putdml("FFF_END_EXTERN_C")
-  putd ""
+  puts
   putdml("#define DEFINE_FFF_GLOBALS")
   indent {
     putdml("FFF_EXTERN_C")
@@ -439,9 +439,9 @@ def define_fff_globals
     }
     putd "FFF_END_EXTERN_C"
   }
-  putd ""
+  puts
   putd "#define FFF_RESET_HISTORY() fff.call_history_idx = 0;"
-  putd ""
+  puts
   putdml("#define REGISTER_CALL(function)")
   indent {
     putdml("if(fff.call_history_idx < FFF_CALL_HISTORY_LEN)")
@@ -470,11 +470,11 @@ end
 def include_guard
   putd "#ifndef FAKE_FUNCTIONS"
   putd "#define FAKE_FUNCTIONS"
-  putd ""
+  puts
 
   yield
 
-  putd ""
+  puts
   putd "#endif /* FAKE_FUNCTIONS */"
 end
 
