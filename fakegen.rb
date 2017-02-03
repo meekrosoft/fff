@@ -160,7 +160,7 @@ end
 def define_reset_fake_helper
   putd ""
   putd "#define DEFINE_RESET_FUNCTION(FUNCNAME) \\"
-  putd "    void FUNCNAME##_reset(){ \\"
+  putd "    void FUNCNAME##_reset(void){ \\"
   putd "        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
   putd "        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
   putd "    }"
@@ -266,11 +266,12 @@ def output_variables(arg_count, has_varargs, is_value_function)
     output_custom_function_array(arg_count, has_varargs, is_value_function)
   }
   putd "extern FUNCNAME##_Fake FUNCNAME##_fake;\\"
-  putd "void FUNCNAME##_reset(); \\"
+  putd "void FUNCNAME##_reset(void); \\"
 end
 
 #example: ARG0_TYPE arg0, ARG1_TYPE arg1
 def arg_val_list(args_count)
+  return "void" if (args_count == 0)
   arguments = []
   args_count.times { |i| arguments << "ARG#{i}_TYPE arg#{i}" }
   arguments.join(", ")
@@ -348,7 +349,7 @@ def output_function_body(arg_count, has_varargs, is_value_function)
 end
 
 def output_reset_function(arg_count, is_value_function)
-  putd "void FUNCNAME##_reset(){ \\"
+  putd "void FUNCNAME##_reset(void){ \\"
   putd "    memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
   putd "    FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
   putd "} \\"
