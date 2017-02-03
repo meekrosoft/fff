@@ -355,8 +355,9 @@ def output_reset_function(arg_count, is_value_function)
 end
 
 def define_fff_globals
+  putd "typedef void (*fff_function_t)(void);"
   putd "typedef struct { "
-  putd "    void * call_history[FFF_CALL_HISTORY_LEN];"
+  putd "    fff_function_t call_history[FFF_CALL_HISTORY_LEN];"
   putd "    unsigned int call_history_idx;"
   putd "} fff_globals_t;"
   putd ""
@@ -373,7 +374,7 @@ def define_fff_globals
   putd ""
   putd "#define REGISTER_CALL(function) \\"
   putd "   if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \\"
-  putd "       fff.call_history[fff.call_history_idx++] = (void *)function;"
+  putd "       fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
 end
 
 def extern_c
