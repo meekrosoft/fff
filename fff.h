@@ -102,14 +102,15 @@ SOFTWARE.
 #endif  /* cpp/ansi c */
 
 #define DEFINE_RESET_FUNCTION(FUNCNAME) \
-    void FUNCNAME##_reset(){ \
+    void FUNCNAME##_reset(void){ \
         memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \
         FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\
     }
 /* -- END INTERNAL HELPER MACROS -- */
 
+typedef void (*fff_function_t)(void);
 typedef struct { 
-    void * call_history[FFF_CALL_HISTORY_LEN];
+    fff_function_t call_history[FFF_CALL_HISTORY_LEN];
     unsigned int call_history_idx;
 } fff_globals_t;
 
@@ -126,25 +127,25 @@ FFF_END_EXTERN_C \
 
 #define REGISTER_CALL(function) \
    if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \
-       fff.call_history[fff.call_history_idx++] = (void *)function;
+       fff.call_history[fff.call_history_idx++] = (fff_function_t)function;
 
 #define DECLARE_FAKE_VOID_FUNC0(FUNCNAME) \
     FFF_EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
-            void(*custom_fake)(); \
-            void(**custom_fake_seq)(); \
+            void(*custom_fake)(void); \
+            void(**custom_fake_seq)(void); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-        void FUNCNAME(); \
+        void FUNCNAME##_reset(void); \
+        void FUNCNAME(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC0(FUNCNAME) \
     FFF_EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME(){ \
+        void FUNCNAME(void){ \
             if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
             }\
             else{\
@@ -180,7 +181,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0); \
     FFF_END_EXTERN_C \
 
@@ -226,7 +227,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1); \
     FFF_END_EXTERN_C \
 
@@ -275,7 +276,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
     FFF_END_EXTERN_C \
 
@@ -327,7 +328,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
     FFF_END_EXTERN_C \
 
@@ -382,7 +383,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
     FFF_END_EXTERN_C \
 
@@ -440,7 +441,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
     FFF_END_EXTERN_C \
 
@@ -501,7 +502,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
     FFF_END_EXTERN_C \
 
@@ -565,7 +566,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
     FFF_END_EXTERN_C \
 
@@ -632,7 +633,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
     FFF_END_EXTERN_C \
 
@@ -702,7 +703,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9); \
     FFF_END_EXTERN_C \
 
@@ -775,7 +776,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10); \
     FFF_END_EXTERN_C \
 
@@ -851,7 +852,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11); \
     FFF_END_EXTERN_C \
 
@@ -930,7 +931,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12); \
     FFF_END_EXTERN_C \
 
@@ -1012,7 +1013,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13); \
     FFF_END_EXTERN_C \
 
@@ -1097,7 +1098,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14); \
     FFF_END_EXTERN_C \
 
@@ -1185,7 +1186,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15); \
     FFF_END_EXTERN_C \
 
@@ -1276,7 +1277,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16); \
     FFF_END_EXTERN_C \
 
@@ -1370,7 +1371,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17); \
     FFF_END_EXTERN_C \
 
@@ -1467,7 +1468,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18); \
     FFF_END_EXTERN_C \
 
@@ -1567,7 +1568,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, ARG19_TYPE arg19); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, ARG19_TYPE arg19); \
     FFF_END_EXTERN_C \
 
@@ -1646,18 +1647,18 @@ FFF_END_EXTERN_C \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
-            RETURN_TYPE(*custom_fake)(); \
-            RETURN_TYPE(**custom_fake_seq)(); \
+            RETURN_TYPE(*custom_fake)(void); \
+            RETURN_TYPE(**custom_fake_seq)(void); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
-        RETURN_TYPE FUNCNAME(); \
+        void FUNCNAME##_reset(void); \
+        RETURN_TYPE FUNCNAME(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
     FFF_EXTERN_C \
         FUNCNAME##_Fake FUNCNAME##_fake;\
-        RETURN_TYPE FUNCNAME(){ \
+        RETURN_TYPE FUNCNAME(void){ \
             if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\
             }\
             else{\
@@ -1695,7 +1696,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0); \
     FFF_END_EXTERN_C \
 
@@ -1743,7 +1744,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1); \
     FFF_END_EXTERN_C \
 
@@ -1794,7 +1795,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
     FFF_END_EXTERN_C \
 
@@ -1848,7 +1849,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
     FFF_END_EXTERN_C \
 
@@ -1905,7 +1906,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
     FFF_END_EXTERN_C \
 
@@ -1965,7 +1966,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
     FFF_END_EXTERN_C \
 
@@ -2028,7 +2029,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
     FFF_END_EXTERN_C \
 
@@ -2094,7 +2095,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
     FFF_END_EXTERN_C \
 
@@ -2163,7 +2164,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
     FFF_END_EXTERN_C \
 
@@ -2235,7 +2236,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9); \
     FFF_END_EXTERN_C \
 
@@ -2310,7 +2311,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10); \
     FFF_END_EXTERN_C \
 
@@ -2388,7 +2389,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11); \
     FFF_END_EXTERN_C \
 
@@ -2469,7 +2470,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12); \
     FFF_END_EXTERN_C \
 
@@ -2553,7 +2554,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13); \
     FFF_END_EXTERN_C \
 
@@ -2640,7 +2641,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14); \
     FFF_END_EXTERN_C \
 
@@ -2730,7 +2731,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15); \
     FFF_END_EXTERN_C \
 
@@ -2823,7 +2824,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16); \
     FFF_END_EXTERN_C \
 
@@ -2919,7 +2920,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17); \
     FFF_END_EXTERN_C \
 
@@ -3018,7 +3019,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18); \
     FFF_END_EXTERN_C \
 
@@ -3120,7 +3121,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, ARG19_TYPE arg19); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, ARG19_TYPE arg19); \
     FFF_END_EXTERN_C \
 
@@ -3204,7 +3205,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ...); \
     FFF_END_EXTERN_C \
 
@@ -3247,7 +3248,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ...); \
     FFF_END_EXTERN_C \
 
@@ -3293,7 +3294,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ...); \
     FFF_END_EXTERN_C \
 
@@ -3342,7 +3343,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ...); \
     FFF_END_EXTERN_C \
 
@@ -3394,7 +3395,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ...); \
     FFF_END_EXTERN_C \
 
@@ -3449,7 +3450,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ...); \
     FFF_END_EXTERN_C \
 
@@ -3507,7 +3508,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ...); \
     FFF_END_EXTERN_C \
 
@@ -3568,7 +3569,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ...); \
     FFF_END_EXTERN_C \
 
@@ -3632,7 +3633,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ...); \
     FFF_END_EXTERN_C \
 
@@ -3699,7 +3700,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ...); \
     FFF_END_EXTERN_C \
 
@@ -3769,7 +3770,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ...); \
     FFF_END_EXTERN_C \
 
@@ -3842,7 +3843,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ...); \
     FFF_END_EXTERN_C \
 
@@ -3918,7 +3919,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ...); \
     FFF_END_EXTERN_C \
 
@@ -3997,7 +3998,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ...); \
     FFF_END_EXTERN_C \
 
@@ -4079,7 +4080,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ...); \
     FFF_END_EXTERN_C \
 
@@ -4164,7 +4165,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ...); \
     FFF_END_EXTERN_C \
 
@@ -4252,7 +4253,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ...); \
     FFF_END_EXTERN_C \
 
@@ -4343,7 +4344,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ...); \
     FFF_END_EXTERN_C \
 
@@ -4437,7 +4438,7 @@ FFF_END_EXTERN_C \
             void(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         void FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, ...); \
     FFF_END_EXTERN_C \
 
@@ -4516,7 +4517,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ...); \
     FFF_END_EXTERN_C \
 
@@ -4563,7 +4564,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ...); \
     FFF_END_EXTERN_C \
 
@@ -4613,7 +4614,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ...); \
     FFF_END_EXTERN_C \
 
@@ -4666,7 +4667,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ...); \
     FFF_END_EXTERN_C \
 
@@ -4722,7 +4723,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ...); \
     FFF_END_EXTERN_C \
 
@@ -4781,7 +4782,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ...); \
     FFF_END_EXTERN_C \
 
@@ -4843,7 +4844,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ...); \
     FFF_END_EXTERN_C \
 
@@ -4908,7 +4909,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ...); \
     FFF_END_EXTERN_C \
 
@@ -4976,7 +4977,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ...); \
     FFF_END_EXTERN_C \
 
@@ -5047,7 +5048,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ...); \
     FFF_END_EXTERN_C \
 
@@ -5121,7 +5122,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ...); \
     FFF_END_EXTERN_C \
 
@@ -5198,7 +5199,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ...); \
     FFF_END_EXTERN_C \
 
@@ -5278,7 +5279,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ...); \
     FFF_END_EXTERN_C \
 
@@ -5361,7 +5362,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ...); \
     FFF_END_EXTERN_C \
 
@@ -5447,7 +5448,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ...); \
     FFF_END_EXTERN_C \
 
@@ -5536,7 +5537,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ...); \
     FFF_END_EXTERN_C \
 
@@ -5628,7 +5629,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ...); \
     FFF_END_EXTERN_C \
 
@@ -5723,7 +5724,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ...); \
     FFF_END_EXTERN_C \
 
@@ -5821,7 +5822,7 @@ FFF_END_EXTERN_C \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, va_list ap); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
         RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, ...); \
     FFF_END_EXTERN_C \
 

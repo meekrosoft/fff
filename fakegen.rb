@@ -160,7 +160,7 @@ end
 def define_reset_fake_helper
   putd ""
   putd "#define DEFINE_RESET_FUNCTION(FUNCNAME) \\"
-  putd "    void FUNCNAME##_reset(){ \\"
+  putd "    void FUNCNAME##_reset(void){ \\"
   putd "        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
   putd "        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
   putd "    }"
@@ -266,12 +266,13 @@ def output_variables(arg_count, has_varargs, is_value_function)
     output_custom_function_array(arg_count, has_varargs, is_value_function)
   }
   putd "extern FUNCNAME##_Fake FUNCNAME##_fake;\\"
-  putd "void FUNCNAME##_reset(); \\"
+  putd "void FUNCNAME##_reset(void); \\"
   putd function_signature(arg_count, has_varargs, is_value_function) + "; \\"
 end
 
 #example: ARG0_TYPE arg0, ARG1_TYPE arg1
 def arg_val_list(args_count)
+  return "void" if (args_count == 0)
   arguments = []
   args_count.times { |i| arguments << "ARG#{i}_TYPE arg#{i}" }
   arguments.join(", ")
@@ -349,15 +350,16 @@ def output_function_body(arg_count, has_varargs, is_value_function)
 end
 
 def output_reset_function(arg_count, is_value_function)
-  putd "void FUNCNAME##_reset(){ \\"
+  putd "void FUNCNAME##_reset(void){ \\"
   putd "    memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
   putd "    FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
   putd "} \\"
 end
 
 def define_fff_globals
+  putd "typedef void (*fff_function_t)(void);"
   putd "typedef struct { "
-  putd "    void * call_history[FFF_CALL_HISTORY_LEN];"
+  putd "    fff_function_t call_history[FFF_CALL_HISTORY_LEN];"
   putd "    unsigned int call_history_idx;"
   putd "} fff_globals_t;"
   putd ""
@@ -374,7 +376,7 @@ def define_fff_globals
   putd ""
   putd "#define REGISTER_CALL(function) \\"
   putd "   if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \\"
-  putd "       fff.call_history[fff.call_history_idx++] = (void *)function;"
+  putd "       fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
 end
 
 def extern_c
