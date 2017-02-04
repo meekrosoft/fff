@@ -8,7 +8,7 @@
 /* Test Framework :-) */
 void setup();
 #define TEST_F(SUITE, NAME) void NAME()
-#define RUN_TEST(SUITE, TESTNAME) printf(" Running %s.%s: \n", #SUITE, #TESTNAME); setup(); TESTNAME(); printf(" SUCCESS\n");
+#define RUN_TEST(SUITE, TESTNAME) do { printf(" Running %s.%s: \n", #SUITE, #TESTNAME); setup(); TESTNAME(); printf(" SUCCESS\n"); } while (0)
 #define ASSERT_EQ(A, B) assert((A) == (B))
 #define ASSERT_TRUE(A) assert((A))
 

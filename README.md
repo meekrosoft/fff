@@ -136,7 +136,7 @@ you would use a syntax like this:
 
 Good tests are isolated tests, so it is important to reset the fakes for each
 unit test.  All the fakes have a reset function to reset their arguments and
-call counts.  It is good prectice is to call the reset function for all the
+call counts.  It is good practice is to call the reset function for all the
 fakes in the setup function of your test suite.
 
     void setup()
@@ -478,7 +478,7 @@ DEFINE_FAKE_VOID_FUNC_VARARG(void_function_vargs, const char *, int, ...);
 
 ## Find out more...
 
-Look under the examlples directory for full length examples in both C and C++.
+Look under the examples directory for full length examples in both C and C++.
 There is also a test suite for the framework under the test directory.
 
 -------------------------
