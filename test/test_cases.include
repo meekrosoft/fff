@@ -299,6 +299,11 @@ TEST_F(FFFTestSuite, use_void_vararg_fake_with_different_number_of_arguments)
    voidfunc3var("1 parameter",  1, 10);
    voidfunc3var("2 parameters", 2, 10, 20);
    voidfunc3var("3 parameters", 3, 10, 20, 30);
+
+   ASSERT_EQ(voidfunc3var_fake.call_count, 4);
+   char msg[] = "3 parameters";
+   ASSERT_EQ(strcmp(voidfunc3var_fake.arg0_val, msg), 0);
+   ASSERT_EQ(3, voidfunc3var_fake.arg1_val);
 }
 
 TEST_F(FFFTestSuite, use_value_vararg_fake_with_different_number_of_arguments)
@@ -307,6 +312,11 @@ TEST_F(FFFTestSuite, use_value_vararg_fake_with_different_number_of_arguments)
    valuefunc3var("1 parameter",  1, 10);
    valuefunc3var("2 parameters", 2, 10, 20);
    valuefunc3var("3 parameters", 3, 10, 20, 30);
+
+   ASSERT_EQ(valuefunc3var_fake.call_count, 4);
+   char msg[] = "3 parameters";
+   ASSERT_EQ(strcmp(valuefunc3var_fake.arg0_val, msg), 0);
+   ASSERT_EQ(3, valuefunc3var_fake.arg1_val);
 }
 #endif /* __cplusplus */
 
