@@ -257,6 +257,64 @@ TEST_F(FFFTestSuite, custom_fake_sequence_not_exausthed)
   ASSERT_EQ('z', a);
 }
 
+TEST_F(FFFTestSuite, return_value_sequence_saved_in_history)
+{
+    long myReturnVals[3] = { 3, 7, 9 };
+    SET_RETURN_SEQ(longfunc0, myReturnVals, 3);
+    longfunc0();
+    longfunc0();
+    longfunc0();
+    ASSERT_EQ(myReturnVals[0], longfunc0_fake.return_val_history[0]);
+    ASSERT_EQ(myReturnVals[1], longfunc0_fake.return_val_history[1]);
+    ASSERT_EQ(myReturnVals[2], longfunc0_fake.return_val_history[2]);
+}
+
+TEST_F(FFFTestSuite, return_value_saved_in_history)
+{
+    long i;
+
+    for (i = 0; i < FFF_ARG_HISTORY_LEN; i++)
+    {
+      longfunc0_fake.return_val = i + 1;
+      longfunc0();
+    }
+
+    for (i = 0; i < FFF_ARG_HISTORY_LEN; i++)
+    {
+      ASSERT_EQ(longfunc0_fake.return_val_history[i], i + 1);
+    }
+}
+long custom_longfunc1()
+{
+  return 42;
+}
+
+long custom_longfunc2()
+{
+  return 15;
+}
+
+long custom_longfunc3()
+{
+  return 7;
+}
+
+TEST_F(FFFTestSuite, custom_fake_seq_return_values_saved_in_history)
+{
+  long (*custom_fakes[])(void) = {custom_longfunc1,
+                                  custom_longfunc2,
+                                  custom_longfunc3};
+  SET_CUSTOM_FAKE_SEQ(longfunc0, custom_fakes, 3);
+
+  longfunc0();
+  longfunc0();
+  longfunc0();
+
+  ASSERT_EQ(42, longfunc0_fake.return_val_history[0]);
+  ASSERT_EQ(15, longfunc0_fake.return_val_history[1]);
+  ASSERT_EQ(7, longfunc0_fake.return_val_history[2]);
+}
+
 TEST_F(FFFTestSuite, custom_fake_sequence_exhausted)
 {
   void (*custom_fakes[])(char *) = {voidfunc1outparam_custom_fake1,
