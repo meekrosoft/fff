@@ -59,11 +59,18 @@ SOFTWARE.
     unsigned int arg_history_len;\
     unsigned int arg_histories_dropped; \
 
+#define DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
+    RETURN_TYPE return_val_history[FFF_ARG_HISTORY_LEN];
+
 #define SAVE_ARG(FUNCNAME, n) \
     memcpy((void*)&FUNCNAME##_fake.arg##n##_val, (void*)&arg##n, sizeof(arg##n));
 
 #define ROOM_FOR_MORE_HISTORY(FUNCNAME) \
   FUNCNAME##_fake.call_count < FFF_ARG_HISTORY_LEN
+
+#define SAVE_RET_HISTORY(FUNCNAME, RETVAL) \
+    if ((FUNCNAME##_fake.call_count - 1) < FFF_ARG_HISTORY_LEN) \
+        memcpy((void *)&FUNCNAME##_fake.return_val_history[FUNCNAME##_fake.call_count - 1], (const void *) &RETVAL, sizeof(RETVAL)); \
 
 #define SAVE_ARG_HISTORY(FUNCNAME, ARGN) \
     memcpy((void*)&FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count], (void*)&arg##ARGN, sizeof(arg##ARGN));
@@ -87,10 +94,13 @@ SOFTWARE.
 #define RETURN_FAKE_RESULT(FUNCNAME) \
     if (FUNCNAME##_fake.return_val_seq_len){ /* then its a sequence */ \
         if(FUNCNAME##_fake.return_val_seq_idx < FUNCNAME##_fake.return_val_seq_len) { \
+            SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_idx]) \
             return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_idx++]; \
         } \
+        SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]) \
         return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]; /* return last element */ \
     } \
+    SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val) \
     return FUNCNAME##_fake.return_val; \
 
 #ifdef __cplusplus
@@ -1625,6 +1635,7 @@ FFF_END_EXTERN_C \
         typedef struct FUNCNAME##_Fake { \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(void); \
             RETURN_TYPE(**custom_fake_seq)(void); \
@@ -1646,9 +1657,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](); \
                 } \
             } \
@@ -1669,6 +1685,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0); \
@@ -1692,9 +1709,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0); \
                 } \
             } \
@@ -1716,6 +1738,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
@@ -1741,9 +1764,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1); \
                 } \
             } \
@@ -1766,6 +1794,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
@@ -1793,9 +1822,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2); \
                 } \
             } \
@@ -1819,6 +1853,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
@@ -1848,9 +1883,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3); \
                 } \
             } \
@@ -1875,6 +1915,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
@@ -1906,9 +1947,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4); \
                 } \
             } \
@@ -1934,6 +1980,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
@@ -1967,9 +2014,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5); \
                 } \
             } \
@@ -1996,6 +2048,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
@@ -2031,9 +2084,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
                 } \
             } \
@@ -2061,6 +2119,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
@@ -2098,9 +2157,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
                 } \
             } \
@@ -2129,6 +2193,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
@@ -2168,9 +2233,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
                 } \
             } \
@@ -2200,6 +2270,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG9_TYPE, 9, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9); \
@@ -2241,9 +2312,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
                 } \
             } \
@@ -2274,6 +2350,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG10_TYPE, 10, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10); \
@@ -2317,9 +2394,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
                 } \
             } \
@@ -2351,6 +2433,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG11_TYPE, 11, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11); \
@@ -2396,9 +2479,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
                 } \
             } \
@@ -2431,6 +2519,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG12_TYPE, 12, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12); \
@@ -2478,9 +2567,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
                 } \
             } \
@@ -2514,6 +2608,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG13_TYPE, 13, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13); \
@@ -2563,9 +2658,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
                 } \
             } \
@@ -2600,6 +2700,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG14_TYPE, 14, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14); \
@@ -2651,9 +2752,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
                 } \
             } \
@@ -2689,6 +2795,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG15_TYPE, 15, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15); \
@@ -2742,9 +2849,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
                 } \
             } \
@@ -2781,6 +2893,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG16_TYPE, 16, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16); \
@@ -2836,9 +2949,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
                 } \
             } \
@@ -2876,6 +2994,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG17_TYPE, 17, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17); \
@@ -2933,9 +3052,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
                 } \
             } \
@@ -2974,6 +3098,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG18_TYPE, 18, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18); \
@@ -3033,9 +3158,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
                 } \
             } \
@@ -3075,6 +3205,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG19_TYPE, 19, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, ARG19_TYPE arg19); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, ARG19_TYPE arg19); \
@@ -3136,9 +3267,14 @@ FFF_END_EXTERN_C \
             REGISTER_CALL(FUNCNAME); \
             if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \
                 if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \
-                    return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                 } \
                 else{ \
+                    RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
+                    SAVE_RET_HISTORY(FUNCNAME, ret); \
+                    return ret; \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
                 } \
             } \
@@ -4451,6 +4587,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG0_TYPE, 0, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, va_list ap); \
@@ -4478,6 +4615,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg0);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -4497,6 +4635,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG1_TYPE, 1, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, va_list ap); \
@@ -4526,6 +4665,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg1);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -4546,6 +4686,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG2_TYPE, 2, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, va_list ap); \
@@ -4577,6 +4718,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg2);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -4598,6 +4740,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG3_TYPE, 3, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, va_list ap); \
@@ -4631,6 +4774,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg3);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -4653,6 +4797,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG4_TYPE, 4, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, va_list ap); \
@@ -4688,6 +4833,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg4);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -4711,6 +4857,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG5_TYPE, 5, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, va_list ap); \
@@ -4748,6 +4895,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg5);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -4772,6 +4920,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG6_TYPE, 6, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, va_list ap); \
@@ -4811,6 +4960,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg6);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -4836,6 +4986,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG7_TYPE, 7, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, va_list ap); \
@@ -4877,6 +5028,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg7);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -4903,6 +5055,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG8_TYPE, 8, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, va_list ap); \
@@ -4946,6 +5099,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg8);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -4973,6 +5127,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG9_TYPE, 9, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, va_list ap); \
@@ -5018,6 +5173,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg9);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -5046,6 +5202,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG10_TYPE, 10, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, va_list ap); \
@@ -5093,6 +5250,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg10);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -5122,6 +5280,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG11_TYPE, 11, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, va_list ap); \
@@ -5171,6 +5330,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg11);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -5201,6 +5361,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG12_TYPE, 12, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, va_list ap); \
@@ -5252,6 +5413,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg12);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -5283,6 +5445,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG13_TYPE, 13, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, va_list ap); \
@@ -5336,6 +5499,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg13);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -5368,6 +5532,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG14_TYPE, 14, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, va_list ap); \
@@ -5423,6 +5588,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg14);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -5456,6 +5622,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG15_TYPE, 15, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, va_list ap); \
@@ -5513,6 +5680,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg15);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -5547,6 +5715,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG16_TYPE, 16, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, va_list ap); \
@@ -5606,6 +5775,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg16);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -5641,6 +5811,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG17_TYPE, 17, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, va_list ap); \
@@ -5702,6 +5873,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg17);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
@@ -5738,6 +5910,7 @@ FFF_END_EXTERN_C \
             DECLARE_ARG(ARG18_TYPE, 18, FUNCNAME) \
             DECLARE_ALL_FUNC_COMMON \
             DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \
+            DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \
             DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, va_list ap); \
             RETURN_TYPE(**custom_fake_seq)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8, ARG9_TYPE arg9, ARG10_TYPE arg10, ARG11_TYPE arg11, ARG12_TYPE arg12, ARG13_TYPE arg13, ARG14_TYPE arg14, ARG15_TYPE arg15, ARG16_TYPE arg16, ARG17_TYPE arg17, ARG18_TYPE arg18, va_list ap); \
@@ -5801,6 +5974,7 @@ FFF_END_EXTERN_C \
                 va_start(ap, arg18);\
                 ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, ap);\
                 va_end(ap);\
+                SAVE_RET_HISTORY(FUNCNAME, ret); \
                 return ret;\
             }\
             RETURN_FAKE_RESULT(FUNCNAME)  \
