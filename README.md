@@ -40,14 +40,14 @@ TEST_F(GreeterTests, init_initialises_display)
 ```
 
 So what has happened here?  The first thing to note is that the framework is
-header only, all you need to do to use it is download <tt>fff.h</tt> and include
+header only, all you need to do to use it is download `fff.h` and include
 it in your test suite.
 
-The magic is in the <tt>FAKE_VOID_FUNC</tt>.  This
-expands a macro that defines a function returning <tt>void</tt>
+The magic is in the `FAKE_VOID_FUNC`.  This
+expands a macro that defines a function returning `void`
 which has zero arguments.  It also defines a struct
-<tt>"function_name"_fake</tt> which contains all the information about the fake.
-For instance, <tt>DISPLAY_init_fake.call_count</tt>is incremented every time the faked
+`"function_name"_fake` which contains all the information about the fake.
+For instance, `DISPLAY_init_fake.call_count`is incremented every time the faked
 function is called.
 
 Under the hood it generates a struct that looks like this:
@@ -96,20 +96,20 @@ TEST_F(UITests, write_line_outputs_lines_to_display)
 ```
 
 
-There is no more magic here, the <tt>FAKE_VOID_FUNC</tt> works as in the
+There is no more magic here, the `FAKE_VOID_FUNC` works as in the
 previous example.  The number of arguments that the function takes is calculated,
  and the macro arguments following the function name defines the argument
 type (a char pointer in this example).
 
 A variable is created for every argument in the form
-<tt>"function_name"fake.argN_val</tt>
+`"function_name"fake.argN_val`
 
 
 
 ## Return values
 
 When you want to define a fake function that returns a value, you should use the
-<tt>FAKE_VALUE_FUNC</tt> macro.  For instance:
+`FAKE_VALUE_FUNC` macro.  For instance:
 
 ```c
 // UI.c
@@ -198,7 +198,7 @@ void setup()
 
 ## Call history
 Say you want to test that a function calls functionA, then functionB, then
-functionA again, how would you do that?  Well <tt>fff</tt> maintains a call
+functionA again, how would you do that?  Well `fff` maintains a call
 history so that it is easy to assert these expectations.
 
 Here's how it works:
@@ -219,7 +219,7 @@ TEST_F(FFFTestSuite, calls_in_correct_order)
 }
 ```
 
-They are reset by calling <tt>FFF_RESET_HISTORY();</tt>
+They are reset by calling `FFF_RESET_HISTORY();`
 
 
 ## Default Argument History
@@ -267,7 +267,7 @@ function is called
 ## User Defined Argument History
 
 If you wish to control how many calls to capture for argument history you can
-override the default by defining it before include the <tt>fff.h</tt> like this:
+override the default by defining it before include the `fff.h` like this:
 
 ```c
 // Want to keep the argument history for 13 calls
@@ -301,7 +301,7 @@ TEST_F(FFFTestSuite, return_value_sequences_exhausted)
 }
 ```
 
-By specifying a return value sequence using the <tt>SET_RETURN_SEQ</tt> macro,
+By specifying a return value sequence using the `SET_RETURN_SEQ` macro,
 the fake will return the values given in the parameter array in sequence.  When
 the end of the sequence is reached the fake will continue to return the last
 value in the sequence indefinitely.
@@ -542,25 +542,8 @@ So whats the point?
 
 
 ## Cheat Sheet
-<table>
-    <tr>
-        <th>Macro</th>
-        <th>Description</th>
-        <th>Example</th>
-    </tr>
-    <tr>
-        <td>FAKE_VOID_FUNC(fn [,arg_types*]);</td>
-        <td>Define a fake function named fn returning void with n arguments</td>
-        <td>FAKE_VOID_FUNC(DISPLAY_output_message, const char*);</td>
-    </tr>
-    <tr>
-        <td>FAKE_VALUE_FUNC(return_type, fn [,arg_types*]);</td>
-        <td>Define a fake function returning a value with type return_type taking n arguments</td>
-        <td>FAKE_VALUE_FUNC(int, DISPLAY_get_line_insert_index);</td>
-    </tr>
-    <tr>
-        <td>RESET_FAKE(fn);</td>
-        <td>Reset the state of fake function called fn</td>
-        <td>RESET_FAKE(DISPLAY_init);</td>
-    </tr>
-</table>
+| Macro | Description | Example |
+|-------|-------------|---------|
+| FAKE_VOID_FUNC(fn [,arg_types*]); | Define a fake function named fn returning void with n arguments | FAKE_VOID_FUNC(DISPLAY_output_message, const char*); |
+| FAKE_VALUE_FUNC(return_type, fn [,arg_types*]); | Define a fake function returning a value with type return_type taking n arguments | FAKE_VALUE_FUNC(int, DISPLAY_get_line_insert_index); |
+| RESET_FAKE(fn); | Reset the state of fake function called fn | RESET_FAKE(DISPLAY_init); |
