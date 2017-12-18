@@ -376,7 +376,7 @@ The basic mechanism that FFF provides you in this case is the custom_fake field 
 
 You need to create a custom function (e.g. getTime_custom_fake) to produce the output optionally by use of a helper variable (e.g. getTime_custom_now) to retrieve that output from. Then some creativity to tie it all together. The most important part (IMHO) is to keep your test case readable and maintainable.
 
-In case your project uses a C99 compliant C compiler you can even combine all this in a single unit test function so you can easily oversee all details of the test. See the example below.
+In case your project uses a C compiler that supports nested functions (e.g. GCC) you can even combine all this in a single unit test function so you can easily oversee all details of the test.
 
 ```c
 /* The time structure */
