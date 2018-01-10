@@ -35,7 +35,7 @@ end
 # ------  Helper macros to use internally ------ #
 def output_internal_helper_macros
   putd "/* -- INTERNAL HELPER MACROS -- */"
-  
+
   define_return_sequence_helper
   define_custom_fake_sequence_helper
   define_reset_fake_macro
@@ -51,7 +51,7 @@ def output_internal_helper_macros
   define_return_fake_result_helper
   define_extern_c_helper
   define_reset_fake_helper
-  
+
   putd "/* -- END INTERNAL HELPER MACROS -- */"
   puts
 end
@@ -299,7 +299,7 @@ def macro_signature_for(macro_name, arg_count, has_varargs, return_type)
   parameter_list += ", ..." if has_varargs
 
   parameter_list +=  ") \\"
-  
+
   parameter_list
 end
 
@@ -471,7 +471,12 @@ def include_guard
   putd "#endif /* FAKE_FUNCTIONS */"
 end
 
-def generate_arg_sequence(args, prefix, do_reverse, joinstr) 
+def msvc_expand_macro_fix
+    putd "/* MSVC expand macro fix */"
+    putd "#define EXPAND(x) x"
+end
+
+def generate_arg_sequence(args, prefix, do_reverse, joinstr)
  fmap = (0..args).flat_map {|i| [prefix + i.to_s]}
  if do_reverse then fmap.reverse.join(joinstr) else fmap.join(", ") end
 end
@@ -482,25 +487,26 @@ def counting_macro_instance(type, vararg = :non_vararg, prefix = "")
 
   <<-MACRO_COUNTING_INSTANCE
 #define #{prefix}FAKE_#{type.to_s}_FUNC#{appendix}(...) \
-    #{prefix}FUNC_#{type.to_s}#{appendix}_(PP_NARG_MINUS#{minus_count}(__VA_ARGS__), __VA_ARGS__)
+    EXPAND(#{prefix}FUNC_#{type.to_s}#{appendix}_(PP_NARG_MINUS#{minus_count}(__VA_ARGS__), __VA_ARGS__))
 
 #define #{prefix}FUNC_#{type.to_s}#{appendix}_(N,...) \
-    #{prefix}FUNC_#{type.to_s}#{appendix}_N(N,__VA_ARGS__)
+    EXPAND(#{prefix}FUNC_#{type.to_s}#{appendix}_N(N,__VA_ARGS__))
 
 #define #{prefix}FUNC_#{type.to_s}#{appendix}_N(N,...) \
-    #{prefix}FAKE_#{type.to_s}_FUNC ## N#{" ## _VARARG" if vararg == :vararg}(__VA_ARGS__)
+    EXPAND(#{prefix}FAKE_#{type.to_s}_FUNC ## N#{" ## _VARARG" if vararg == :vararg}(__VA_ARGS__))
 
   MACRO_COUNTING_INSTANCE
 end
 
 def output_macro_counting_shortcuts
+  msvc_expand_macro_fix
   putd <<-MACRO_COUNTING
 
 #define PP_NARG_MINUS2(...) \
-    PP_NARG_MINUS2_(__VA_ARGS__, PP_RSEQ_N_MINUS2())
+    EXPAND(PP_NARG_MINUS2_(__VA_ARGS__, PP_RSEQ_N_MINUS2()))
 
 #define PP_NARG_MINUS2_(...) \
-    PP_ARG_MINUS2_N(__VA_ARGS__)
+    EXPAND(PP_ARG_MINUS2_N(__VA_ARGS__))
 
 #define PP_ARG_MINUS2_N(returnVal, #{generate_arg_sequence($MAX_ARGS, '_', false, ", ")}, N, ...)   N
 
@@ -509,10 +515,10 @@ def output_macro_counting_shortcuts
 
 
 #define PP_NARG_MINUS1(...) \
-    PP_NARG_MINUS1_(__VA_ARGS__, PP_RSEQ_N_MINUS1())
+    EXPAND(PP_NARG_MINUS1_(__VA_ARGS__, PP_RSEQ_N_MINUS1()))
 
 #define PP_NARG_MINUS1_(...) \
-    PP_ARG_MINUS1_N(__VA_ARGS__)
+    EXPAND(PP_ARG_MINUS1_N(__VA_ARGS__))
 
 #define PP_ARG_MINUS1_N(#{generate_arg_sequence($MAX_ARGS, '_', false, ", ")}, N, ...)   N
 
