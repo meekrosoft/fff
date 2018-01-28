@@ -371,6 +371,23 @@ The fake will call your custom functions in the order specified by the SET_CUSTO
 macro. When the last custom fake is reached the fake will keep calling the last custom
 fake in the sequence. This macro works much like the SET_RETURN_SEQ macro.
 
+## Variadic Functions
+
+You can fake variadic functions using the macros <tt>FAKE_VALUE_FUNC_VARARG</tt>
+and <tt>FAKE_VOID_FUNC_VARARG</tt>. For instance:
+
+    FAKE_VALUE_FUNC_VARARG(int, fprintf, FILE *, const char*, ...);
+
+In order to access the variadic parameters from a custom fake function, declare a
+<tt>va_list</tt> parameter. For instance, a custom fake for <tt>fprintf()</tt>
+could call the real <tt>fprintf()</tt> like this:
+
+    int fprintf_custom(FILE *stream, const char *format, va_list ap) {
+      if (fprintf0_fake.return_val < 0) // should we fail?
+        return fprintf0_fake.return_val;
+      return vfprintf(stream, format, ap);
+    }
+
 ## How do I fake a function that returns a value by reference?
 The basic mechanism that FFF provides you in this case is the custom_fake field described in the *Custom Return Value Delegate* example above.
 
