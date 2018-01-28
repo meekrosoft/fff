@@ -37,8 +37,10 @@ def output_internal_helper_macros
   define_reset_fake_macro
   define_declare_arg_helper
   define_declare_all_func_common_helper
+  define_declare_return_value_history
   define_save_arg_helper
   define_room_for_more_history
+  define_save_ret_history_helper
   define_save_arg_history_helper
   define_history_dropped_helper
   define_value_function_variables_helper
@@ -88,10 +90,23 @@ def define_declare_all_func_common_helper
   putd "    unsigned int arg_histories_dropped; \\"
 end
 
+def define_declare_return_value_history
+  putd ""
+  putd "#define DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \\"
+  putd "    RETURN_TYPE return_val_history[FFF_ARG_HISTORY_LEN];"
+end
+
 def define_save_arg_helper
   putd ""
   putd "#define SAVE_ARG(FUNCNAME, n) \\"
   putd "    memcpy((void*)&FUNCNAME##_fake.arg##n##_val, (void*)&arg##n, sizeof(arg##n));"
+end
+
+def define_save_ret_history_helper
+  putd ""
+  putd "#define SAVE_RET_HISTORY(FUNCNAME, RETVAL) \\"
+  putd "    if ((FUNCNAME##_fake.call_count - 1) < FFF_ARG_HISTORY_LEN) \\"
+  putd "        memcpy((void *)&FUNCNAME##_fake.return_val_history[FUNCNAME##_fake.call_count - 1], (const void *) &RETVAL, sizeof(RETVAL)); \\"
 end
 
 def define_room_for_more_history
@@ -139,10 +154,13 @@ def define_return_fake_result_helper
   putd "#define RETURN_FAKE_RESULT(FUNCNAME) \\"
   putd "    if (FUNCNAME##_fake.return_val_seq_len){ /* then its a sequence */ \\"
   putd "        if(FUNCNAME##_fake.return_val_seq_idx < FUNCNAME##_fake.return_val_seq_len) { \\"
+  putd "            SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_idx]) \\"
   putd "            return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_idx++]; \\"
   putd "        } \\"
+  putd "        SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]) \\"
   putd "        return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]; /* return last element */ \\"
   putd "    } \\"
+  putd "    SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val) \\"
   putd "    return FUNCNAME##_fake.return_val; \\"
 end
 
@@ -261,6 +279,7 @@ def output_variables(arg_count, has_varargs, is_value_function)
     }
     putd "DECLARE_ALL_FUNC_COMMON \\"
     putd "DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \\" unless not is_value_function
+    putd "DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \\" unless not is_value_function
     putd "DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \\"
     output_custom_function_signature(arg_count, has_varargs, is_value_function)
     output_custom_function_array(arg_count, has_varargs, is_value_function)
@@ -331,15 +350,22 @@ def output_function_body(arg_count, has_varargs, is_value_function)
       putd "  #{custom_fake_call}\\"
     end
     putd "    va_end(ap);\\"
+    putd "    SAVE_RET_HISTORY(FUNCNAME, ret); \\" unless not is_value_function
     putd "    return ret;\\" if is_value_function
     putd "}\\"
   else
     return_type = is_value_function ? "return " : ""
     putd "if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \\"
     putd "    if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \\"
-    putd "        #{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)}); \\"
+    putd "        RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)}); \\" unless not is_value_function
+    putd "        SAVE_RET_HISTORY(FUNCNAME, ret); \\" unless not is_value_function
+    putd "        return ret; \\" unless not is_value_function
+    putd "        #{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)}); \\" unless is_value_function
     putd "    } \\"
     putd "    else{ \\"
+    putd "        RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)}); \\" unless not is_value_function
+    putd "        SAVE_RET_HISTORY(FUNCNAME, ret); \\" unless not is_value_function
+    putd "        return ret; \\" unless not is_value_function
     putd "        #{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)}); \\"
     putd "    } \\"
     putd "} \\"
