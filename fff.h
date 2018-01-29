@@ -1743,7 +1743,11 @@ FFF_END_EXTERN_C \
                     return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0); \
                 } \
             } \
-            if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0); \
+			if (FUNCNAME##_fake.custom_fake){ \
+				RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0); \
+				SAVE_RET_HISTORY(FUNCNAME, ret); \
+				return ret; \
+			} \
             RETURN_FAKE_RESULT(FUNCNAME)  \
         } \
         DEFINE_RESET_FUNCTION(FUNCNAME) \
