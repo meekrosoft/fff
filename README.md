@@ -221,7 +221,6 @@ TEST_F(FFFTestSuite, calls_in_correct_order)
 
 They are reset by calling `FFF_RESET_HISTORY();`
 
-
 ## Default Argument History
 
 The framework will by default store the arguments for the last ten calls made
@@ -370,6 +369,44 @@ TEST_F(FFFTestSuite, custom_fake_sequence_not_exausthed)
 The fake will call your custom functions in the order specified by the SET_CUSTOM_FAKE_SEQ
 macro. When the last custom fake is reached the fake will keep calling the last custom
 fake in the sequence. This macro works much like the SET_RETURN_SEQ macro.
+
+## Return value history
+Say you have two functions f1 and f2. f2 must be called to release some resource
+allocated by f1, but only in the cases where f1 returns zero. f1 could be
+pthread_mutex_trylock and f2 could be pthread_mutex_unlock. <tt>fff</tt> will
+save the history of returned values so this can be easily checked, even when
+you use a sequence of custom fakes. Here's a simple example:
+
+    TEST_F(FFFTestSuite, return_value_sequence_saved_in_history)
+    {
+        long myReturnVals[3] = { 3, 7, 9 };
+        SET_RETURN_SEQ(longfunc0, myReturnVals, 3);
+        longfunc0();
+        longfunc0();
+        longfunc0();
+        ASSERT_EQ(myReturnVals[0], longfunc0_fake.return_val_history[0]);
+        ASSERT_EQ(myReturnVals[1], longfunc0_fake.return_val_history[1]);
+        ASSERT_EQ(myReturnVals[2], longfunc0_fake.return_val_history[2]);
+    }
+
+You access the returned values in the <tt>return_val_history</tt> field.
+
+## Variadic Functions
+
+You can fake variadic functions using the macros <tt>FAKE_VALUE_FUNC_VARARG</tt>
+and <tt>FAKE_VOID_FUNC_VARARG</tt>. For instance:
+
+    FAKE_VALUE_FUNC_VARARG(int, fprintf, FILE *, const char*, ...);
+
+In order to access the variadic parameters from a custom fake function, declare a
+<tt>va_list</tt> parameter. For instance, a custom fake for <tt>fprintf()</tt>
+could call the real <tt>fprintf()</tt> like this:
+
+    int fprintf_custom(FILE *stream, const char *format, va_list ap) {
+      if (fprintf0_fake.return_val < 0) // should we fail?
+        return fprintf0_fake.return_val;
+      return vfprintf(stream, format, ap);
+    }
 
 ## How do I fake a function that returns a value by reference?
 The basic mechanism that FFF provides you in this case is the custom_fake field described in the *Custom Return Value Delegate* example above.
