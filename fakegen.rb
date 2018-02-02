@@ -11,16 +11,20 @@ $MAX_CALL_HISTORY = 50
 def include_dependencies
   putd "#include <stdarg.h>"
   putd "#include <string.h> /* For memset and memcpy */"
-  putd ""
+  puts
 end
 
 def output_constants
   putd "#define FFF_MAX_ARGS (#{$MAX_ARGS}u)"
   putd "#ifndef FFF_ARG_HISTORY_LEN"
-  putd "    #define FFF_ARG_HISTORY_LEN (#{$DEFAULT_ARG_HISTORY}u)"
+  indent {
+    putd "#define FFF_ARG_HISTORY_LEN (#{$DEFAULT_ARG_HISTORY}u)"
+  }
   putd "#endif"
   putd "#ifndef FFF_CALL_HISTORY_LEN"
-  putd "  #define FFF_CALL_HISTORY_LEN (#{$MAX_CALL_HISTORY}u)"
+  indent {
+    putd "#define FFF_CALL_HISTORY_LEN (#{$MAX_CALL_HISTORY}u)"
+  }
   putd "#endif"
 end
 
@@ -51,137 +55,181 @@ def output_internal_helper_macros
   define_reset_fake_helper
 
   putd "/* -- END INTERNAL HELPER MACROS -- */"
-  putd ""
+  puts
 end
 
 def define_return_sequence_helper
-  putd "#define SET_RETURN_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
-  putd "                        FUNCNAME##_fake.return_val_seq = ARRAY_POINTER; \\"
-  putd "                        FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;"
+  putd_backslash "#define SET_RETURN_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN)"
+  indent {
+    putd_backslash "FUNCNAME##_fake.return_val_seq = ARRAY_POINTER;"
+    putd "FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;"
+  }
 end
 
 def define_custom_fake_sequence_helper
-  putd "#define SET_CUSTOM_FAKE_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \\"
-  putd "                            FUNCNAME##_fake.custom_fake_seq = ARRAY_POINTER; \\"
-  putd "                            FUNCNAME##_fake.custom_fake_seq_len = ARRAY_LEN;"
+  putd_backslash "#define SET_CUSTOM_FAKE_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN)"
+  indent {
+    putd_backslash "FUNCNAME##_fake.custom_fake_seq = ARRAY_POINTER;"
+    putd "FUNCNAME##_fake.custom_fake_seq_len = ARRAY_LEN;"
+  }
 end
 
 def define_reset_fake_macro
-  putd ""
+  puts
   putd "/* Defining a function to reset a fake function */"
-  putd "#define RESET_FAKE(FUNCNAME) { \\"
-  putd "    FUNCNAME##_reset(); \\"
-  putd "} \\"
-  putd ""
+  putd_backslash "#define RESET_FAKE(FUNCNAME) {"
+  indent {
+    putd_backslash "FUNCNAME##_reset();"
+  }
+  putd_backslash "}"
+  puts
 end
 
 def define_declare_arg_helper
-  putd ""
-  putd "#define DECLARE_ARG(type, n, FUNCNAME) \\"
-  putd "    type arg##n##_val; \\"
-  putd "    type arg##n##_history[FFF_ARG_HISTORY_LEN];"
+  puts
+  putd_backslash "#define DECLARE_ARG(type, n, FUNCNAME)"
+  indent {
+    putd_backslash "type arg##n##_val;"
+    putd "type arg##n##_history[FFF_ARG_HISTORY_LEN];"
+  }
 end
 
 def define_declare_all_func_common_helper
-  putd ""
-  putd "#define DECLARE_ALL_FUNC_COMMON \\"
-  putd "    unsigned int call_count; \\"
-  putd "    unsigned int arg_history_len;\\"
-  putd "    unsigned int arg_histories_dropped; \\"
+  puts
+  putd_backslash "#define DECLARE_ALL_FUNC_COMMON"
+  indent {
+    putd_backslash "unsigned int call_count;"
+    putd_backslash "unsigned int arg_history_len;"
+    putd_backslash "unsigned int arg_histories_dropped;"
+  }
 end
 
 def define_declare_return_value_history
   putd ""
-  putd "#define DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \\"
-  putd "    RETURN_TYPE return_val_history[FFF_ARG_HISTORY_LEN];"
+  putd_backslash "#define DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE)"
+  indent {
+    putd "RETURN_TYPE return_val_history[FFF_ARG_HISTORY_LEN];"
+  }
 end
 
 def define_save_arg_helper
-  putd ""
-  putd "#define SAVE_ARG(FUNCNAME, n) \\"
-  putd "    memcpy((void*)&FUNCNAME##_fake.arg##n##_val, (void*)&arg##n, sizeof(arg##n));"
+  puts
+  putd_backslash "#define SAVE_ARG(FUNCNAME, n)"
+  indent {
+    putd "memcpy((void*)&FUNCNAME##_fake.arg##n##_val, (void*)&arg##n, sizeof(arg##n));"
+  }
 end
 
 def define_save_ret_history_helper
   putd ""
-  putd "#define SAVE_RET_HISTORY(FUNCNAME, RETVAL) \\"
-  putd "    if ((FUNCNAME##_fake.call_count - 1) < FFF_ARG_HISTORY_LEN) \\"
-  putd "        memcpy((void *)&FUNCNAME##_fake.return_val_history[FUNCNAME##_fake.call_count - 1], (const void *) &RETVAL, sizeof(RETVAL)); \\"
+  putd_backslash "#define SAVE_RET_HISTORY(FUNCNAME, RETVAL)"
+  indent {
+    putd_backslash "if ((FUNCNAME##_fake.call_count - 1) < FFF_ARG_HISTORY_LEN)"
+    indent {
+      putd_backslash "memcpy((void *)&FUNCNAME##_fake.return_val_history[FUNCNAME##_fake.call_count - 1], (const void *) &RETVAL, sizeof(RETVAL));"
+    }
+  }
 end
 
 def define_room_for_more_history
-  putd ""
-  putd "#define ROOM_FOR_MORE_HISTORY(FUNCNAME) \\"
-  putd "  FUNCNAME##_fake.call_count < FFF_ARG_HISTORY_LEN"
+  puts
+  putd_backslash "#define ROOM_FOR_MORE_HISTORY(FUNCNAME)"
+  indent {
+    putd "FUNCNAME##_fake.call_count < FFF_ARG_HISTORY_LEN"
+  }
 end
 
 def define_save_arg_history_helper
-  putd ""
-  putd "#define SAVE_ARG_HISTORY(FUNCNAME, ARGN) \\"
-  putd "    memcpy((void*)&FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count], (void*)&arg##ARGN, sizeof(arg##ARGN));"
+  puts
+  putd_backslash "#define SAVE_ARG_HISTORY(FUNCNAME, ARGN)"
+  indent {
+    putd "memcpy((void*)&FUNCNAME##_fake.arg##ARGN##_history[FUNCNAME##_fake.call_count], (void*)&arg##ARGN, sizeof(arg##ARGN));"
+  }
 end
 
 def define_history_dropped_helper
-  putd ""
-  putd "#define HISTORY_DROPPED(FUNCNAME) \\"
-  putd "    FUNCNAME##_fake.arg_histories_dropped++"
+  puts
+  putd_backslash "#define HISTORY_DROPPED(FUNCNAME)"
+  indent {
+    putd "FUNCNAME##_fake.arg_histories_dropped++"
+  }
 end
 
 def define_value_function_variables_helper
-  putd ""
-  putd "#define DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \\"
-  putd "    RETURN_TYPE return_val; \\"
-  putd "    int return_val_seq_len; \\"
-  putd "    int return_val_seq_idx; \\"
-  putd "    RETURN_TYPE * return_val_seq; \\"
+  puts
+  putd_backslash "#define DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE)"
+  indent {
+    putd_backslash "RETURN_TYPE return_val;" 
+    putd_backslash "int return_val_seq_len;" 
+    putd_backslash "int return_val_seq_idx;" 
+    putd_backslash "RETURN_TYPE * return_val_seq;"
+  }
 end
 
 def define_custom_fake_seq_variables_helper
-  putd ""
-  putd "#define DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \\"
-  putd "    int custom_fake_seq_len; \\"
-  putd "    int custom_fake_seq_idx; \\"
+  puts
+  putd_backslash "#define DECLARE_CUSTOM_FAKE_SEQ_VARIABLES"
+  indent {
+    putd_backslash "int custom_fake_seq_len;"
+    putd_backslash "int custom_fake_seq_idx;"
+  }
 end
 
 def define_increment_call_count_helper
-  putd ""
-  putd "#define INCREMENT_CALL_COUNT(FUNCNAME) \\"
-  putd "    FUNCNAME##_fake.call_count++"
+  puts
+  putd_backslash "#define INCREMENT_CALL_COUNT(FUNCNAME)"
+  indent {
+    putd "FUNCNAME##_fake.call_count++"
+  }
 end
 
 def define_return_fake_result_helper
-  putd ""
-  putd "#define RETURN_FAKE_RESULT(FUNCNAME) \\"
-  putd "    if (FUNCNAME##_fake.return_val_seq_len){ /* then its a sequence */ \\"
-  putd "        if(FUNCNAME##_fake.return_val_seq_idx < FUNCNAME##_fake.return_val_seq_len) { \\"
-  putd "            SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_idx]) \\"
-  putd "            return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_idx++]; \\"
-  putd "        } \\"
-  putd "        SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]) \\"
-  putd "        return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]; /* return last element */ \\"
-  putd "    } \\"
-  putd "    SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val) \\"
-  putd "    return FUNCNAME##_fake.return_val; \\"
+  puts
+  putd_backslash "#define RETURN_FAKE_RESULT(FUNCNAME)"
+  indent {
+    putd_backslash "if (FUNCNAME##_fake.return_val_seq_len){ /* then its a sequence */"
+    indent {
+      putd_backslash "if(FUNCNAME##_fake.return_val_seq_idx < FUNCNAME##_fake.return_val_seq_len) {"
+      indent {
+        putd_backslash "SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_idx])"
+        putd_backslash "return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_idx++];"
+      }
+      putd_backslash "}"
+      putd_backslash "SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1])"
+      putd_backslash "return FUNCNAME##_fake.return_val_seq[FUNCNAME##_fake.return_val_seq_len-1]; /* return last element */"
+    }
+    putd_backslash "}"
+    putd_backslash "SAVE_RET_HISTORY(FUNCNAME, FUNCNAME##_fake.return_val)"
+    putd_backslash "return FUNCNAME##_fake.return_val;"
+  }
 end
 
 def define_extern_c_helper
-  putd ""
+  puts
   putd "#ifdef __cplusplus"
-  putd "    #define FFF_EXTERN_C extern \"C\"{"
-  putd "    #define FFF_END_EXTERN_C } "
+  indent {
+    putd "#define FFF_EXTERN_C extern \"C\"{" 
+    putd "#define FFF_END_EXTERN_C } " 
+  }
   putd "#else  /* ansi c */"
-  putd "    #define FFF_EXTERN_C "
-  putd "    #define FFF_END_EXTERN_C "
+  indent {
+    putd "#define FFF_EXTERN_C "
+    putd "#define FFF_END_EXTERN_C "
+  }
   putd "#endif  /* cpp/ansi c */"
 end
 
 def define_reset_fake_helper
-  putd ""
-  putd "#define DEFINE_RESET_FUNCTION(FUNCNAME) \\"
-  putd "    void FUNCNAME##_reset(void){ \\"
-  putd "        memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
-  putd "        FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
-  putd "    }"
+  puts
+  putd_backslash "#define DEFINE_RESET_FUNCTION(FUNCNAME)"
+  indent {
+    putd_backslash "void FUNCNAME##_reset(void){"
+    indent {
+      putd_backslash "memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake));"
+      putd_backslash "FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;"
+    }
+    putd "}"
+  }
 end
 # ------  End Helper macros ------ #
 
@@ -192,12 +240,23 @@ def putd(str)
   puts str
 end
 
+#multiline putd which adds a \ at the end of the generated macro
+def putd_backslash str
+  putd(str + " \\")
+end
+
 def pushd
   $current_depth = $current_depth + 4
 end
 
 def popd
   $current_depth = $current_depth - 4
+end
+
+def indent
+  pushd 
+    yield
+  popd
 end
 
 def output_macro(arg_count, has_varargs, is_value_function)
@@ -209,36 +268,36 @@ def output_macro(arg_count, has_varargs, is_value_function)
   saved_arg_count = arg_count - (has_varargs ? 1 : 0)
   return_type = is_value_function ? "RETURN_TYPE" : ""
 
-  putd ""
+  puts
   output_macro_header(declare_macro_name, saved_arg_count, has_varargs, return_type)
-  pushd
+  indent {
     extern_c {  # define argument capture variables
       output_variables(saved_arg_count, has_varargs, is_value_function)
     }
-  popd
-
-  putd ""
+  }
+  
+  puts
   output_macro_header(define_macro_name, saved_arg_count, has_varargs, return_type)
-  pushd
+  indent {
     extern_c {
-      putd "FUNCNAME##_Fake FUNCNAME##_fake;\\"
-      putd function_signature(saved_arg_count, has_varargs, is_value_function) + "{ \\"
-      pushd
+      putd_backslash "FUNCNAME##_Fake FUNCNAME##_fake;"
+      putd_backslash function_signature(saved_arg_count, has_varargs, is_value_function) + "{"
+      indent {
         output_function_body(saved_arg_count, has_varargs, is_value_function)
-      popd
-      putd "} \\"
-      putd "DEFINE_RESET_FUNCTION(FUNCNAME) \\"
+      }
+      putd_backslash "}"
+      putd_backslash "DEFINE_RESET_FUNCTION(FUNCNAME)"
     }
-  popd
-
-  putd ""
-
+  }
+  
+  puts
+  
   output_macro_header(fake_macro_name, saved_arg_count, has_varargs, return_type)
-  pushd
+  indent {
     putd macro_signature_for(declare_macro_name, saved_arg_count, has_varargs, return_type)
     putd macro_signature_for(define_macro_name, saved_arg_count, has_varargs, return_type)
-    putd ""
-  popd
+    puts
+  }
 end
 
 def output_macro_header(macro_name, arg_count, has_varargs, return_type)
@@ -250,7 +309,7 @@ def output_macro_name(macro_name, arg_count, has_varargs, return_type)
   putd "#define " + macro_signature_for(macro_name, arg_count, has_varargs, return_type)
 end
 
-# #macro_name(RETURN_TYPE, FUNCNAME, ARG0,...)
+# #macro_name(RETURN_TYPE, FUNCNAME, ARG0,...) \
 def macro_signature_for(macro_name, arg_count, has_varargs, return_type)
   parameter_list = "#{macro_name}("
   if return_type != ""
@@ -268,25 +327,21 @@ def macro_signature_for(macro_name, arg_count, has_varargs, return_type)
   parameter_list
 end
 
-def output_argument_capture_variables(argN)
-  putd "    DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
-end
-
 def output_variables(arg_count, has_varargs, is_value_function)
   in_struct{
-    arg_count.times { |argN|
-      putd "DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME) \\"
+    arg_count.times { |argN| 
+      putd_backslash "DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME)"
     }
-    putd "DECLARE_ALL_FUNC_COMMON \\"
-    putd "DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE) \\" unless not is_value_function
-    putd "DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE) \\" unless not is_value_function
-    putd "DECLARE_CUSTOM_FAKE_SEQ_VARIABLES \\"
+    putd_backslash "DECLARE_ALL_FUNC_COMMON"
+    putd_backslash "DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE)" unless not is_value_function
+    putd_backslash "DECLARE_RETURN_VALUE_HISTORY(RETURN_TYPE)" unless not is_value_function
+    putd_backslash "DECLARE_CUSTOM_FAKE_SEQ_VARIABLES"
     output_custom_function_signature(arg_count, has_varargs, is_value_function)
     output_custom_function_array(arg_count, has_varargs, is_value_function)
   }
-  putd "extern FUNCNAME##_Fake FUNCNAME##_fake;\\"
-  putd "void FUNCNAME##_reset(void); \\"
-  putd function_signature(arg_count, has_varargs, is_value_function) + "; \\"
+  putd_backslash "extern FUNCNAME##_Fake FUNCNAME##_fake;"
+  putd_backslash "void FUNCNAME##_reset(void);"
+  putd_backslash function_signature(arg_count, has_varargs, is_value_function) + ";"
 end
 
 #example: ARG0_TYPE arg0, ARG1_TYPE arg1
@@ -309,15 +364,15 @@ end
 def output_custom_function_signature(arg_count, has_varargs, is_value_function)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
   ap_list = has_varargs ? ", va_list ap" : ""
-  signature = "(*custom_fake)(#{arg_val_list(arg_count)}#{ap_list}); \\"
-  putd return_type + signature
+  signature = "(*custom_fake)(#{arg_val_list(arg_count)}#{ap_list});"
+  putd_backslash return_type + signature
 end
 
 def output_custom_function_array(arg_count, has_varargs, is_value_function)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
   ap_list = has_varargs ? ", va_list ap" : ""
-  custom_array = "(**custom_fake_seq)(#{arg_val_list(arg_count)}#{ap_list}); \\"
-  putd return_type + custom_array
+  custom_array = "(**custom_fake_seq)(#{arg_val_list(arg_count)}#{ap_list});"
+  putd_backslash return_type + custom_array
 end
 
 # example: RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1)
@@ -328,107 +383,124 @@ def function_signature(arg_count, has_varargs, is_value_function)
 end
 
 def output_function_body(arg_count, has_varargs, is_value_function)
-  arg_count.times { |i| putd "SAVE_ARG(FUNCNAME, #{i}); \\" }
-  putd "if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){\\"
-  arg_count.times { |i| putd "    SAVE_ARG_HISTORY(FUNCNAME, #{i}); \\" }
-  putd "}\\"
-  putd "else{\\"
-  putd "    HISTORY_DROPPED(FUNCNAME);\\"
-  putd "}\\"
-  putd "INCREMENT_CALL_COUNT(FUNCNAME); \\"
-  putd "REGISTER_CALL(FUNCNAME); \\"
+  arg_count.times { |i| putd_backslash "SAVE_ARG(FUNCNAME, #{i});" }
+  putd_backslash "if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){"
+  indent {
+    arg_count.times { |i| putd_backslash "SAVE_ARG_HISTORY(FUNCNAME, #{i});" }
+  }
+  putd_backslash "}"
+  putd_backslash "else{"
+  indent {
+    putd_backslash "HISTORY_DROPPED(FUNCNAME);"
+  }
+  putd_backslash "}"
+  putd_backslash "INCREMENT_CALL_COUNT(FUNCNAME);"
+  putd_backslash "REGISTER_CALL(FUNCNAME);"
 
   if has_varargs
-    putd "if(FUNCNAME##_fake.custom_fake){\\"
-    putd "    RETURN_TYPE ret;\\" if is_value_function
-    putd "    va_list ap;\\"
-    putd "    va_start(ap, arg#{arg_count-1});\\"
+    putd_backslash "if(FUNCNAME##_fake.custom_fake){"
+    indent {
+      putd_backslash "RETURN_TYPE ret;" if is_value_function
+      putd_backslash "va_list ap;"
+      putd_backslash "va_start(ap, arg#{arg_count-1});"
+    }
     custom_fake_call = "FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}, ap);"
-    if is_value_function
-      putd "    ret = #{custom_fake_call}\\"
-    else
-      putd "  #{custom_fake_call}\\"
-    end
-    putd "    va_end(ap);\\"
-    putd "    SAVE_RET_HISTORY(FUNCNAME, ret); \\" unless not is_value_function
-    putd "    return ret;\\" if is_value_function
-    putd "}\\"
+    indent {
+      if is_value_function
+        putd_backslash "ret = #{custom_fake_call}"
+      else
+        putd_backslash "#{custom_fake_call}"
+      end
+      putd_backslash "va_end(ap);"
+      putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
+      putd_backslash "return ret;" if is_value_function
+    }
+    putd_backslash "}"
   else
     return_type = is_value_function ? "return " : ""
-    putd "if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */ \\"
-    putd "    if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){ \\"
-    putd "        RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)}); \\" unless not is_value_function
-    putd "        SAVE_RET_HISTORY(FUNCNAME, ret); \\" unless not is_value_function
-    putd "        return ret; \\" unless not is_value_function
-    putd "        #{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)}); \\" unless is_value_function
-    putd "    } \\"
-    putd "    else{ \\"
-    putd "        RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)}); \\" unless not is_value_function
-    putd "        SAVE_RET_HISTORY(FUNCNAME, ret); \\" unless not is_value_function
-    putd "        return ret; \\" unless not is_value_function
-    putd "        #{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)}); \\"
-    putd "    } \\"
-    putd "} \\"
-    putd "if (FUNCNAME##_fake.custom_fake) #{return_type}FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)}); \\"
+    putd_backslash "if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */"
+    indent {
+      putd_backslash "if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){"
+      indent {
+        putd_backslash "RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)});" unless not is_value_function
+        putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
+        putd_backslash "return ret;" unless not is_value_function
+        putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)});" unless is_value_function
+      }
+      putd_backslash "}"
+      putd_backslash "else{"
+      indent {
+        putd_backslash "RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)});" unless not is_value_function
+        putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
+        putd_backslash "return ret;" unless not is_value_function
+        putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)});"
+      }
+      putd_backslash "}"
+    }
+    putd_backslash "}"
+    putd_backslash "if (FUNCNAME##_fake.custom_fake) #{return_type}FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)});"
   end
 
-  putd "RETURN_FAKE_RESULT(FUNCNAME)  \\" if is_value_function
-end
-
-def output_reset_function(arg_count, is_value_function)
-  putd "void FUNCNAME##_reset(void){ \\"
-  putd "    memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake)); \\"
-  putd "    FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;\\"
-  putd "} \\"
+  putd_backslash "RETURN_FAKE_RESULT(FUNCNAME)" if is_value_function
 end
 
 def define_fff_globals
   putd "typedef void (*fff_function_t)(void);"
   putd "typedef struct { "
-  putd "    fff_function_t call_history[FFF_CALL_HISTORY_LEN];"
-  putd "    unsigned int call_history_idx;"
+  indent {
+    putd "fff_function_t call_history[FFF_CALL_HISTORY_LEN];"
+    putd "unsigned int call_history_idx;"
+  }
   putd "} fff_globals_t;"
-  putd ""
-  putd "FFF_EXTERN_C \\"
+  puts
+  putd_backslash "FFF_EXTERN_C"
   putd "extern fff_globals_t fff;"
-  putd "FFF_END_EXTERN_C \\"
-  putd ""
-  putd "#define DEFINE_FFF_GLOBALS \\"
-  putd "    FFF_EXTERN_C \\"
-  putd "        fff_globals_t fff; \\"
-  putd "    FFF_END_EXTERN_C"
-  putd ""
+  putd_backslash "FFF_END_EXTERN_C"
+  puts
+  putd_backslash "#define DEFINE_FFF_GLOBALS"
+  indent {
+    putd_backslash "FFF_EXTERN_C"
+    indent {
+      putd_backslash "fff_globals_t fff;"
+    }
+    putd "FFF_END_EXTERN_C"
+  }
+  puts
   putd "#define FFF_RESET_HISTORY() fff.call_history_idx = 0;"
-  putd ""
-  putd "#define REGISTER_CALL(function) \\"
-  putd "   if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \\"
-  putd "       fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
+  puts
+  putd_backslash "#define REGISTER_CALL(function)"
+  indent {
+    putd_backslash "if(fff.call_history_idx < FFF_CALL_HISTORY_LEN)"
+    indent {
+		putd "fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
+    }
+  }
 end
 
 def extern_c
-  putd "FFF_EXTERN_C \\"
-  pushd
+  putd_backslash "FFF_EXTERN_C"
+  indent { 
     yield
-  popd
-  putd "FFF_END_EXTERN_C \\"
+  }
+  putd_backslash "FFF_END_EXTERN_C"
 end
 
 def in_struct
-  putd "typedef struct FUNCNAME##_Fake { \\"
-  pushd
-  yield
-  popd
-  putd "} FUNCNAME##_Fake;\\"
+  putd_backslash "typedef struct FUNCNAME##_Fake {"
+  indent {
+    yield
+  }
+  putd_backslash "} FUNCNAME##_Fake;"
 end
 
 def include_guard
   putd "#ifndef FAKE_FUNCTIONS"
   putd "#define FAKE_FUNCTIONS"
-  putd ""
+  puts
 
   yield
 
-  putd ""
+  puts
   putd "#endif /* FAKE_FUNCTIONS */"
 end
 
