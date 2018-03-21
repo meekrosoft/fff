@@ -603,6 +603,18 @@ DEFINE_FAKE_VALUE_FUNC_VARARG(int, value_function_vargs, const char *, int, ...)
 DEFINE_FAKE_VOID_FUNC_VARARG(void_function_vargs, const char *, int, ...);
 
 ```
+## How simplify test linking
+
+You can define 
+```
+#define FFF_FUNCTION_ATTRIBUTES __attribute__((weak)) 
+#include "fff.h"
+```
+
+This will cause all of the fake functions to be declared with weak attribute. This causes that during link time a weak object (fake function) is replaced with non-weak (real function).
+
+You can use this so that you link all the fake objects into single fake-archive (compiled once) and then when a single real_implementation.c you can link with the fake-archive. During the link time the all other functions will be the fake ones, except the ones defined in real_implementation.c (that are non-weak).
+
 
 ## Find out more...
 

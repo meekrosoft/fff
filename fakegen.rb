@@ -26,6 +26,13 @@ def output_constants
     putd "#define FFF_CALL_HISTORY_LEN (#{$MAX_CALL_HISTORY}u)"
   }
   putd "#endif"
+  # If user has defined functions to have some attributes, use those. If not, define as empty so it wont affect others.
+  putd "#ifndef FFF_FUNCTION_ATTRIBUTES"
+  indent {
+     putd "#define FFF_FUNCTION_ATTRIBUTES"
+  }
+  putd "#endif"
+  
 end
 
 
@@ -384,8 +391,8 @@ def function_signature(arg_count, has_varargs, has_calling_conventions, is_value
   return_type = is_value_function ? "RETURN_TYPE" : "void"
   varargs = has_varargs ? ", ..." : ""
   calling_conventions = has_calling_conventions ?
-    "#{return_type} CALLING_CONVENTION FUNCNAME(#{arg_val_list(arg_count)}#{varargs})" :
-    "#{return_type} FUNCNAME(#{arg_val_list(arg_count)}#{varargs})"
+    "#{return_type} FFF_FUNCTION_ATTRIBUTES CALLING_CONVENTION FUNCNAME(#{arg_val_list(arg_count)}#{varargs})" :
+    "#{return_type} FFF_FUNCTION_ATTRIBUTES FUNCNAME(#{arg_val_list(arg_count)}#{varargs})"
 end
 
 def output_function_body(arg_count, has_varargs, is_value_function)
