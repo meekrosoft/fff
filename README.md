@@ -55,6 +55,16 @@ And the unit test might look something like this:
 TEST_F(GreeterTests, init_initialises_display)
 {
     UI_init();
+    FFF_ASSERT_CALLS(DISPLAY_init, 1);
+}
+```
+
+... or ...
+
+```c
+TEST_F(GreeterTests, init_initialises_display)
+{
+    UI_init();
     ASSERT_EQ(DISPLAY_init_fake.call_count, 1);
 }
 ```
@@ -106,11 +116,21 @@ TEST_F(UITests, write_line_outputs_lines_to_display)
 {
     char msg[] = "helloworld";
     UI_write_line(msg);
+    FFF_ASSERT(DISPLAY_output, msg);
+}
+```
+
+... or ...
+
+```c
+TEST_F(UITests, write_line_outputs_lines_to_display)
+{
+    char msg[] = "helloworld";
+    UI_write_line(msg);
     ASSERT_EQ(DISPLAY_output_fake.call_count, 1);
     ASSERT_EQ(strncmp(DISPLAY_output_fake.arg0_val, msg, 26), 0);
 }
 ```
-
 
 There is no more magic here, the `FAKE_VOID_FUNC` works as in the
 previous example.  The number of arguments that the function takes is calculated,
@@ -120,7 +140,23 @@ type (a char pointer in this example).
 A variable is created for every argument in the form
 `"function_name"fake.argN_val`
 
-## Return Values
+### Variadic argument assertions
+
+These are a recent addition to the framework. The range of available assertions is
+listed in the cheat sheet at the foot of this page. The assertions use a simple
+assertion macro defined internally. To override with a macro from some test framework,
+do the following in some header you include in all your tests:
+
+```c
+// my_test_framework_header.h
+...
+#define _FFF_ASSERT_EQ_MSG(expected, actual, message) MY_CUSTOM_ASSERTION(expected, actual, message)
+#include "fff.h"
+...
+```
+
+
+## Return values
 
 When you want to define a fake function that returns a value, you should use the
 `FAKE_VALUE_FUNC` macro.  For instance:
@@ -141,6 +177,21 @@ FAKE_VALUE_FUNC(unsigned int, DISPLAY_get_line_insert_index);
 ```
 
 And the unit test might look something like this:
+
+```c
+TEST_F(UITests, when_empty_lines_write_line_doesnt_clear_screen)
+{
+    // given
+    FFF_RETURN(DISPLAY_get_line_insert_index,1);
+    char msg[] = "helloworld";
+    // when
+    UI_write_line(msg);
+    // then
+    FFF_ASSERT_NOT_CALLED(DISPLAY_clear);
+}
+```
+
+... or ...
 
 ```c
 TEST_F(UITests, when_empty_lines_write_line_doesnt_clear_screen)
@@ -167,7 +218,37 @@ you would use a syntax like this:
 ```c
 FAKE_VALUE_FUNC(double, pow, double, double);
 ```
-## Resetting a Fake
+
+*N.B.* When using the variadic form (i.e. `FFF_RETURN(FN, ...)`), the hidden value sequence array
+is declared locally by default. If you want to set a return sequence in a function other than
+the test body (e.g. in a fixture setup method or helper function used in multiple tests), you'll
+need to prefix the macro invocation with the `static` keyword. e.g.
+
+```c
+void setup(void)
+{
+    // given
+    static FFF_RETURN(DISPLAY_get_line_insert_index, 1, 2, 3);
+}
+
+TEST_F(UITests, when_empty_lines_write_line_doesnt_clear_screen)
+{
+...
+//Some test logic exercising DISPLAY_get_line_insert_index
+...
+}
+
+TEST_F(UITests, when_empty_lines_write_line_bla)
+{
+...
+//Some more test logic exercising DISPLAY_get_line_insert_index
+...
+}
+```
+
+The static keyword is not necessary when specifying a single value, as the macro uses the dedicated struct member in this case.
+
+## Resetting a fake
 
 Good tests are isolated tests, so it is important to reset the fakes for each
 unit test.  All the fakes have a reset function to reset their arguments and
@@ -242,6 +323,18 @@ TEST_F(FFFTestSuite, when_fake_func_called_then_arguments_captured_in_history)
 {
     voidfunc2('g', 'h');
     voidfunc2('i', 'j');
+    FFF_ASSERT_NTH(voidfunc2, 1, 'g', 'h');
+    FFF_ASSERT_NTH(voidfunc2, 2, 'i', 'j');
+}
+```
+
+... or ...
+
+```c
+TEST_F(FFFTestSuite, when_fake_func_called_then_arguments_captured_in_history)
+{
+    voidfunc2('g', 'h');
+    voidfunc2('i', 'j');
     ASSERT_EQ('g', voidfunc2_fake.arg0_history[0]);
     ASSERT_EQ('h', voidfunc2_fake.arg1_history[0]);
     ASSERT_EQ('i', voidfunc2_fake.arg0_history[1]);
@@ -294,6 +387,21 @@ Often in testing we would like to test the behaviour of sequence of function cal
 events.  One way to do this with fff is to specify a sequence of return values
 with for the fake function.  It is probably easier to describe with an example:
 
+```c
+// faking "long longfunc();"
+FAKE_VALUE_FUNC(long, longfunc0);
+
+TEST_F(FFFTestSuite, return_value_sequences_exhausted)
+{
+    FFF_RETURN(longfunc0, myReturnVals, 3, 7, 9);
+    ASSERT_EQ(3, longfunc0());
+    ASSERT_EQ(7, longfunc0());
+    ASSERT_EQ(9, longfunc0());
+    ASSERT_EQ(9, longfunc0());
+    ASSERT_EQ(9, longfunc0());
+}
+```
+... or ...
 ```c
 // faking "long longfunc();"
 FAKE_VALUE_FUNC(long, longfunc0);
@@ -638,10 +746,20 @@ So whats the point?
 
 
 ## Cheat Sheet
-| Macro | Description | Example |
-|-------|-------------|---------|
-| FAKE_VOID_FUNC(fn [,arg_types*]); | Define a fake function named fn returning void with n arguments | FAKE_VOID_FUNC(DISPLAY_output_message, const char*); |
-| FAKE_VALUE_FUNC(return_type, fn [,arg_types*]); | Define a fake function returning a value with type return_type taking n arguments | FAKE_VALUE_FUNC(int, DISPLAY_get_line_insert_index); |
-| FAKE_VOID_FUNC_VARARG(fn [,arg_types*], ...); | Define a fake variadic function returning void with type return_type taking n arguments and n variadic arguments | FAKE_VOID_FUNC_VARARG(fn, const char*, ...) |
+| Macro                                                       | Description                                                                                                         | Example                                                       |
+|-------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
+| FAKE_VOID_FUNC(fn [,arg_types*]);                           | Define a fake function named fn returning void with n arguments                                                     | FAKE_VOID_FUNC(DISPLAY_output_message, const char*);          |
+| FAKE_VALUE_FUNC(return_type, fn [,arg_types*]);             | Define a fake function returning a value with type return_type taking n arguments                                   | FAKE_VALUE_FUNC(int, DISPLAY_get_line_insert_index);          |
+| FAKE_VOID_FUNC_VARARG(fn [,arg_types*], ...);               | Define a fake variadic function returning void with type return_type taking n arguments and n variadic arguments    | FAKE_VOID_FUNC_VARARG(fn, const char*, ...)                   |
 | FAKE_VALUE_FUNC_VARARG(return_type, fn [,arg_types*], ...); | Define a fake variadic function returning a value with type return_type taking n arguments and n variadic arguments | FAKE_VALUE_FUNC_VARARG(int, fprintf, FILE*, const char*, ...) |
-| RESET_FAKE(fn); | Reset the state of fake function called fn | RESET_FAKE(DISPLAY_init); |
+| RESET_FAKE(fn);                                             | Reset the state of fake function called fn                                                                          | RESET_FAKE(DISPLAY_init);                                     |
+| FFF_RETURN(fn, ...return_value(s)*);                        | Set one or more return values (final value repeated if calls > values)                                              | FFF_RETURN(DISPLAY_init, 1, 2, 3);                            |
+| FFF_ASSERT_CALLED(fn);                                      | Assert that a function was called once and only once.                                                               | FFF_ASSERT_CALLED(DISPLAY_init);                              |
+| FFF_ASSERT_NOT_CALLED(fn);                                  | Assert that a function was not called.                                                                              | FFF_ASSERT_NOT_CALLED(DISPLAY_init);                          |
+| FFF_ASSERT_CALLS(fn, call_count);                           | Assert that a function was called the specified number of times.                                                    | FFF_ASSERT_CALLS(DISPLAY_init, 3);                            |
+| FFF_ASSERT(fn, ...arg_value(s))                             | Assert that a function was called only once with the specified argument values.                                     | FFF_ASSERT(DISPLAY_output_message, my_message_ptr);           |
+| FFF_ASSERT_LAST(fn, ...arg_value(s))                        | Assert that the last call to a function had the specified argument values.                                          | FFF_ASSERT_LAST(DISPLAY_output_message, my_message_ptr);      |
+| FFF_ASSERT_ANY(fn, ...arg_value(s))                         | Assert that any call to a function had the specified argument values.                                               | FFF_ASSERT_ANY(DISPLAY_output_message, my_message_ptr);       |
+| FFF_ASSERT_NONE(fn, ...arg_value(s))                        | Assert that no calls to a function had the specified argument values.                                               | FFF_ASSERT_NONE(DISPLAY_output_message, my_message_ptr);      |
+
+*N.B.* All of the function argument assertions support partial specification of arguments. I.e. Given a function taking 3 args, you may just specify the first argument for verification. Any arguments that are specified must be specified from left to right however. i.e. it is possibly to specify arguments 0 and 1, but not arguments 0 and 2 (ignoring the value of 1).
