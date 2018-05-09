@@ -46,3 +46,37 @@ TEST_F(FFFTestSuite, default_constants_can_be_overridden)
     ASSERT_EQ(OVERRIDE_ARG_HIST_LEN, voidfunc2_fake.arg_history_len);
 }
 
+// Fake declared in C++ context (not extern "C", using namespace)
+// before the fake is declared
+namespace cxx
+{
+    typedef int int_t;
+    void voidfunc1(cxx::int_t);
+}
+
+// Now declare the fake.  Must be in the same namespace as the
+// original declaration.
+namespace cxx
+{
+    FAKE_VOID_FUNC(voidfunc1, cxx::int_t);
+}
+
+TEST_F(FFFTestSuite, cxx_fake_is_called)
+{
+    cxx::voidfunc1(66);
+    ASSERT_EQ(cxx::voidfunc1_fake.call_count, 1u);
+    ASSERT_EQ(cxx::voidfunc1_fake.arg0_val, 66);
+}
+
+static int cxx_my_custom_fake_called = 0;
+void cxx_my_custom_fake(cxx::int_t i)
+{
+    cxx_my_custom_fake_called++;
+}
+
+TEST_F(FFFTestSuite, cxx_can_register_custom_fake)
+{
+    cxx::voidfunc1_fake.custom_fake = cxx_my_custom_fake;
+    cxx::voidfunc1(66);
+    ASSERT_EQ(1, cxx_my_custom_fake_called);
+}
