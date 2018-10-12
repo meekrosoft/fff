@@ -158,11 +158,13 @@ TEST_F(FFFTestSuite, register_call_macro_registers_two_calls)
 TEST_F(FFFTestSuite, reset_call_history_resets_call_history)
 {
     REGISTER_CALL(longfunc0);
+    REGISTER_CALL(voidfunc1);
     FFF_RESET_HISTORY();
     REGISTER_CALL(voidfunc2);
 
     ASSERT_EQ(1u, fff.call_history_idx);
     ASSERT_EQ(fff.call_history[0], (void *)voidfunc2);
+    ASSERT_EQ(fff.call_history[1], (void *)0);
 }
 
 TEST_F(FFFTestSuite, call_history_will_not_write_past_array_bounds)

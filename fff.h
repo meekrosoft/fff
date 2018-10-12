@@ -133,7 +133,9 @@ FFF_END_EXTERN_C \
         fff_globals_t fff; \
     FFF_END_EXTERN_C
 
-#define FFF_RESET_HISTORY() fff.call_history_idx = 0;
+#define FFF_RESET_HISTORY() \
+    fff.call_history_idx = 0; \
+    memset(fff.call_history, 0, sizeof(fff.call_history));
 
 #define REGISTER_CALL(function) \
     if(fff.call_history_idx < FFF_CALL_HISTORY_LEN) \
