@@ -408,6 +408,22 @@ could call the real <tt>fprintf()</tt> like this:
       return vfprintf(stream, format, ap);
     }
 
+## How do I specify calling conventions for my fake functions?
+FFF has a limited capability for enabling specification of Microsoft's Visual C/C++ calling conventions, but this support must be enabled when generating FFF's header file `fff.h`.
+
+```bash
+ruby fakegen.rb --with-calling-conventions > fff.h
+```
+
+By enabling this support, all of FFF's fake function scaffolding will necessitate the specification of a calling convention, e.g. `__cdecl` for each VALUE or VOID fake.
+
+Here are some basic examples: take note that the placement of the calling convention being specified is different depending on whether the fake is a VOID or VALUE function.
+
+```c
+FAKE_VOID_FUNC(__cdecl, voidfunc1, int);
+FAKE_VALUE_FUNC(long, __cdecl, longfunc0);
+```
+
 ## How do I fake a function that returns a value by reference?
 The basic mechanism that FFF provides you in this case is the custom_fake field described in the *Custom Return Value Delegate* example above.
 

@@ -164,7 +164,6 @@ TEST_F(FFFTestSuite, reset_call_history_resets_call_history)
 
     ASSERT_EQ(1u, fff.call_history_idx);
     ASSERT_EQ(fff.call_history[0], (void *)voidfunc2);
-    ASSERT_EQ(fff.call_history[1], (void *)0);
 }
 
 TEST_F(FFFTestSuite, call_history_will_not_write_past_array_bounds)
@@ -286,17 +285,18 @@ TEST_F(FFFTestSuite, return_value_saved_in_history)
       ASSERT_EQ(longfunc0_fake.return_val_history[i], i + 1);
     }
 }
-long custom_longfunc1()
+
+long custom_longfunc1(void)
 {
   return 42;
 }
 
-long custom_longfunc2()
+long custom_longfunc2(void)
 {
   return 15;
 }
 
-long custom_longfunc3()
+long custom_longfunc3(void)
 {
   return 7;
 }
@@ -306,6 +306,7 @@ TEST_F(FFFTestSuite, custom_fake_seq_return_values_saved_in_history)
   long (*custom_fakes[])(void) = {custom_longfunc1,
                                   custom_longfunc2,
                                   custom_longfunc3};
+
   SET_CUSTOM_FAKE_SEQ(longfunc0, custom_fakes, 3);
 
   longfunc0();

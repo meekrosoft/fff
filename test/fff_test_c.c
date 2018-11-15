@@ -21,7 +21,7 @@ struct MyStruct {
     int y;
 };
 
-
+#ifndef TEST_WITH_CALLING_CONVENTIONS
 FAKE_VOID_FUNC(voidfunc1, int);
 FAKE_VOID_FUNC(voidfunc2, char, char);
 FAKE_VOID_FUNC(voidfunc1outparam, char *);
@@ -33,6 +33,19 @@ FAKE_VALUE_FUNC_VARARG(int, valuefunc3var, char *, int, ...);
 FAKE_VALUE_FUNC(int, strlcpy3, char* const, const char* const, const size_t);
 FAKE_VOID_FUNC(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 FAKE_VALUE_FUNC(int, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+#else
+FAKE_VOID_FUNC(__cdecl, voidfunc1, int);
+FAKE_VOID_FUNC(__cdecl, voidfunc2, char, char);
+FAKE_VOID_FUNC(__cdecl, voidfunc1outparam, char *);
+FAKE_VALUE_FUNC(long, __cdecl, longfunc0);
+FAKE_VALUE_FUNC(enum MYBOOL, __cdecl, enumfunc0);
+FAKE_VALUE_FUNC(struct MyStruct, __cdecl, structfunc0);
+FAKE_VOID_FUNC_VARARG(__cdecl, voidfunc3var, char *, int, ...);
+FAKE_VALUE_FUNC_VARARG(int, __cdecl, valuefunc3var, char *, int, ...);
+FAKE_VALUE_FUNC(int, __cdecl, strlcpy3, char* const, const char* const, const size_t);
+FAKE_VOID_FUNC(__cdecl, voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+FAKE_VALUE_FUNC(int, __cdecl, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+#endif
 
 void setup()
 {

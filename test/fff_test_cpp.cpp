@@ -17,12 +17,21 @@
 
 DEFINE_FFF_GLOBALS
 
+#ifndef TEST_WITH_CALLING_CONVENTIONS
 FAKE_VOID_FUNC(voidfunc1, int);
 FAKE_VOID_FUNC(voidfunc2, char, char);
 FAKE_VOID_FUNC(voidfunc1outparam, char *);
 FAKE_VALUE_FUNC(long, longfunc0);
 FAKE_VOID_FUNC(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 FAKE_VALUE_FUNC(int, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+#else
+FAKE_VOID_FUNC(__cdecl, voidfunc1, int);
+FAKE_VOID_FUNC(__cdecl, voidfunc2, char, char);
+FAKE_VOID_FUNC(__cdecl, voidfunc1outparam, char *);
+FAKE_VALUE_FUNC(long, __cdecl, longfunc0);
+FAKE_VOID_FUNC(__cdecl, voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+FAKE_VALUE_FUNC(int, __cdecl, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
+#endif
 
 class FFFTestSuite: public testing::Test
 {
@@ -37,8 +46,6 @@ public:
     }
 };
 
-#include "test_cases.include"
-
 TEST_F(FFFTestSuite, default_constants_can_be_overridden)
 {
     unsigned sizeCallHistory = (sizeof fff.call_history) / (sizeof fff.call_history[0]);
@@ -46,3 +53,4 @@ TEST_F(FFFTestSuite, default_constants_can_be_overridden)
     ASSERT_EQ(OVERRIDE_ARG_HIST_LEN, voidfunc2_fake.arg_history_len);
 }
 
+#include "test_cases.include"
