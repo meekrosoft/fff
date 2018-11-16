@@ -482,7 +482,7 @@ def define_fff_globals
   indent {
     putd_backslash "if(fff.call_history_idx < FFF_CALL_HISTORY_LEN)"
     indent {
-		putd "fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
+      putd "fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
     }
   }
 end
@@ -515,13 +515,13 @@ def include_guard
 end
 
 def msvc_expand_macro_fix
-    putd "/* MSVC expand macro fix */"
-    putd "#define EXPAND(x) x"
+  putd "/* MSVC expand macro fix */"
+  putd "#define EXPAND(x) x"
 end
 
 def generate_arg_sequence(args, prefix, do_reverse, joinstr)
- fmap = (0..args).flat_map {|i| [prefix + i.to_s]}
- if do_reverse then fmap.reverse.join(joinstr) else fmap.join(", ") end
+  fmap = (0..args).flat_map {|i| [prefix + i.to_s]}
+  if do_reverse then fmap.reverse.join(joinstr) else fmap.join(", ") end
 end
 
 def counting_macro_instance(type, has_calling_conventions, vararg = :non_vararg, prefix = "")
@@ -546,12 +546,12 @@ def counting_macro_instance(type, has_calling_conventions, vararg = :non_vararg,
 end
 
 def output_macro_counting_shortcuts(has_calling_conventions)
-    has_calling_conventions ?
-      (arg_depth = ["3", "2"]; calling_conv = "callingConv, ") :
-      (arg_depth = ["2", "1"]; calling_conv = "")
+  has_calling_conventions ?
+    (arg_depth = ["3", "2"]; calling_conv = "callingConv, ") :
+    (arg_depth = ["2", "1"]; calling_conv = "")
 
   msvc_expand_macro_fix
-    putd <<-MACRO_COUNTING
+  putd <<-MACRO_COUNTING
 
 #define PP_NARG_MINUS#{arg_depth[0]}(...) \
   EXPAND(PP_NARG_MINUS#{arg_depth[0]}_(__VA_ARGS__, PP_RSEQ_N_MINUS#{arg_depth[0]}()))
@@ -565,10 +565,10 @@ def output_macro_counting_shortcuts(has_calling_conventions)
   #{generate_arg_sequence($MAX_ARGS, '', true, ',')}
 
 #define PP_NARG_MINUS#{arg_depth[1]}(...) \
-EXPAND(PP_NARG_MINUS#{arg_depth[1]}_(__VA_ARGS__, PP_RSEQ_N_MINUS#{arg_depth[1]}()))
+  EXPAND(PP_NARG_MINUS#{arg_depth[1]}_(__VA_ARGS__, PP_RSEQ_N_MINUS#{arg_depth[1]}()))
 
 #define PP_NARG_MINUS#{arg_depth[1]}_(...) \
-EXPAND(PP_ARG_MINUS#{arg_depth[1]}_N(__VA_ARGS__))
+  EXPAND(PP_ARG_MINUS#{arg_depth[1]}_N(__VA_ARGS__))
 
 #define PP_ARG_MINUS#{arg_depth[1]}_N(#{calling_conv} #{generate_arg_sequence($MAX_ARGS, '_', false, ", ")}, N, ...)   N
 
@@ -612,28 +612,28 @@ def output_c_and_cpp(has_calling_conventions)
 end
 
 def help
-    # Check if we should generate _with_ support for specifying calling conventions
-    if (ARGV[0] == "--help" or ARGV[0] == "-h")
-        puts "Usage: fakegen.rb [options]
-        -h, --help                        Show this help message
-        -wcc, --with-calling-conventions  Support specifying calling conventions"
-        exit
-    end
-    yield
+  # Check if we should generate _with_ support for specifying calling conventions
+  if (ARGV[0] == "--help" or ARGV[0] == "-h")
+    puts "Usage: fakegen.rb [options]
+    -h, --help                        Show this help message
+    -wcc, --with-calling-conventions  Support specifying calling conventions"
+    exit
+  end
+  yield
 end
 
 help {
-    # Determine if we should generate with support for calling conventions
-    has_calling_conventions = true if (ARGV[0] == "--with-calling-conventions" or ARGV[0] == "-wcc")
-    # lets generate!!
-    output_c_and_cpp(has_calling_conventions) {
-        define_fff_globals
-        # Create fake generators for 0..MAX_ARGS
-        num_fake_generators = $MAX_ARGS + 1
-        num_fake_generators.times {|arg_count| output_macro(arg_count, false, has_calling_conventions, false)}
-        num_fake_generators.times {|arg_count| output_macro(arg_count, false, has_calling_conventions, true)}
-        # generate the varargs variants
-        (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, has_calling_conventions, false)}
-        (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, has_calling_conventions, true)}
-    }
+  # Determine if we should generate with support for calling conventions
+  has_calling_conventions = true if (ARGV[0] == "--with-calling-conventions" or ARGV[0] == "-wcc")
+  # lets generate!!
+  output_c_and_cpp(has_calling_conventions) {
+    define_fff_globals
+    # Create fake generators for 0..MAX_ARGS
+    num_fake_generators = $MAX_ARGS + 1
+    num_fake_generators.times {|arg_count| output_macro(arg_count, false, has_calling_conventions, false)}
+    num_fake_generators.times {|arg_count| output_macro(arg_count, false, has_calling_conventions, true)}
+    # generate the varargs variants
+    (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, has_calling_conventions, false)}
+    (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, has_calling_conventions, true)}
+  }
 }
