@@ -476,13 +476,17 @@ def define_fff_globals
     putd "FFF_END_EXTERN_C"
   }
   puts
-  putd "#define FFF_RESET_HISTORY() fff.call_history_idx = 0;"
+  putd_backslash "#define FFF_RESET_HISTORY()"
+  indent {
+    putd_backslash "fff.call_history_idx = 0;"
+    putd "memset(fff.call_history, 0, sizeof(fff.call_history));"
+  }
   puts
   putd_backslash "#define REGISTER_CALL(function)"
   indent {
     putd_backslash "if(fff.call_history_idx < FFF_CALL_HISTORY_LEN)"
     indent {
-      putd "fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
+                putd "fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
     }
   }
 end
