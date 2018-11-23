@@ -286,17 +286,18 @@ TEST_F(FFFTestSuite, return_value_saved_in_history)
       ASSERT_EQ(longfunc0_fake.return_val_history[i], i + 1);
     }
 }
-long custom_longfunc1()
+
+long custom_longfunc1(void)
 {
   return 42;
 }
 
-long custom_longfunc2()
+long custom_longfunc2(void)
 {
   return 15;
 }
 
-long custom_longfunc3()
+long custom_longfunc3(void)
 {
   return 7;
 }
@@ -306,6 +307,7 @@ TEST_F(FFFTestSuite, custom_fake_seq_return_values_saved_in_history)
   long (*custom_fakes[])(void) = {custom_longfunc1,
                                   custom_longfunc2,
                                   custom_longfunc3};
+
   SET_CUSTOM_FAKE_SEQ(longfunc0, custom_fakes, 3);
 
   longfunc0();
