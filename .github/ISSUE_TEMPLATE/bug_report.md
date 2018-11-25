@@ -21,7 +21,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Compiler, toolset, platform (please complete the following information):**
- - OS: [e.g. iOS]
+ - OS: [e.g. Ubuntu 16.04 LTS]
  - Compiler: [e.g. gcc (Ubuntu 5.4.0-6ubuntu1~16.04.10) 5.4.0 20160609]
 
 **Additional context**
