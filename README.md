@@ -2,6 +2,7 @@
 -----------------------------
 
 [![Build Status](https://travis-ci.org/meekrosoft/fff.svg?branch=master)](https://travis-ci.org/meekrosoft/fff)
+[![Build status](https://ci.appveyor.com/api/projects/status/md1gn8cxnjkrkq3b/branch/master?svg=true)](https://ci.appveyor.com/project/wulfgarpro/fff/branch/master)
 
 ## A Fake Function Framework for C
 fff is a micro-framework for creating fake C functions for tests.  Because life
