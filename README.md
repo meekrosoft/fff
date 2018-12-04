@@ -23,7 +23,7 @@
 - [How do I reuse a fake across multiple test-suites?](#how-do-i-reuse-a-fake-across-multiple-test-suites)
 - [Find out more...](#find-out-more)
 - [Benefits](#benefits)
-- [Under the hood:](#under-the-hood)
+- [Under the hood](#under-the-hood)
 - [Cheat Sheet](#cheat-sheet)
 
 ## A Fake Function Framework for C
