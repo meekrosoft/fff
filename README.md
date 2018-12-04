@@ -622,4 +622,6 @@ So whats the point?
 |-------|-------------|---------|
 | FAKE_VOID_FUNC(fn [,arg_types*]); | Define a fake function named fn returning void with n arguments | FAKE_VOID_FUNC(DISPLAY_output_message, const char*); |
 | FAKE_VALUE_FUNC(return_type, fn [,arg_types*]); | Define a fake function returning a value with type return_type taking n arguments | FAKE_VALUE_FUNC(int, DISPLAY_get_line_insert_index); |
+| FAKE_VOID_FUNC_VARARG(fn [,arg_types*], ...); | Define a fake variadic function returning a value with type return_type taking n arguments and n variadic arguments | FAKE_VOID_FUNC_VARARG(fn, const char*, ...) |
+| FAKE_VALUE_FUNC_VARARG(return_type, fn [,arg_types*], ...); | Define a fake variadic function returning a value with type return_type taking n arguments and n variadic arguments | FAKE_VALUE_FUNC_VARARG(int, fprintf, FILE*, const char*, ...) |
 | RESET_FAKE(fn); | Reset the state of fake function called fn | RESET_FAKE(DISPLAY_init); |
