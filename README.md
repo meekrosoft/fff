@@ -221,7 +221,7 @@ void setup()
 
 ## Call history
 Say you want to test that a function calls functionA, then functionB, then
-functionA again, how would you do that?  Well `fff` maintains a call
+functionA again, how would you do that?  Well fff maintains a call
 history so that it is easy to assert these expectations.
 
 Here's how it works:
@@ -283,7 +283,7 @@ The other is to check if the call count is greater than the history size:
 ASSERT(voidfunc2_fake.arg_history_len < voidfunc2_fake.call_count);
 ```
 
-The argument histories for a fake function are reset when the RESET_FAKE
+The argument histories for a fake function are reset when the `RESET_FAKE`
 function is called
 
 ## User Defined Argument History
@@ -331,7 +331,7 @@ value in the sequence indefinitely.
 ## Custom Return Value Delegate
 
 You can specify your own function to provide the return value for the fake. This
-is done by setting the custom_fake member of the fake.  Here's an example:
+is done by setting the `custom_fake` member of the fake.  Here's an example:
 
 ```c
 #define MEANING_OF_LIFE 42
@@ -353,7 +353,7 @@ Say you have a function with an out parameter, and you want it to have a differe
 on the first three calls, for example: set the value 'x' to the out parameter on the first call,
 the value 'y' to the out parameter on the second call, and the value 'z' to the out parameter
 on the third call. You can specify a sequence of custom functions to a non-variadic function
-using the SET_CUSTOM_FAKE_SEQ macro. Here's an example:
+using the `SET_CUSTOM_FAKE_SEQ` macro. Here's an example:
 
 ```c
 void voidfunc1outparam_custom_fake1(char *a)
@@ -389,15 +389,15 @@ TEST_F(FFFTestSuite, custom_fake_sequence_not_exausthed)
 }
 ```
 
-The fake will call your custom functions in the order specified by the SET_CUSTOM_FAKE_SEQ
+The fake will call your custom functions in the order specified by the `SET_CUSTOM_FAKE_SEQ`
 macro. When the last custom fake is reached the fake will keep calling the last custom
-fake in the sequence. This macro works much like the SET_RETURN_SEQ macro.
+fake in the sequence. This macro works much like the `SET_RETURN_SEQ` macro.
 
 ## Return value history
 
 Say you have two functions f1 and f2. f2 must be called to release some resource
 allocated by f1, but only in the cases where f1 returns zero. f1 could be
-pthread_mutex_trylock and f2 could be pthread_mutex_unlock. <tt>fff</tt> will
+pthread_mutex_trylock and f2 could be pthread_mutex_unlock. fff will
 save the history of returned values so this can be easily checked, even when
 you use a sequence of custom fakes. Here's a simple example:
 
@@ -413,18 +413,18 @@ you use a sequence of custom fakes. Here's a simple example:
         ASSERT_EQ(myReturnVals[2], longfunc0_fake.return_val_history[2]);
     }
 
-You access the returned values in the <tt>return_val_history</tt> field.
+You access the returned values in the `return_val_history` field.
 
 ## Variadic Functions
 
-You can fake variadic functions using the macros <tt>FAKE_VALUE_FUNC_VARARG</tt>
-and <tt>FAKE_VOID_FUNC_VARARG</tt>. For instance:
+You can fake variadic functions using the macros `FAKE_VALUE_FUNC_VARARG`
+and `FAKE_VOID_FUNC_VARARG`. For instance:
 
     FAKE_VALUE_FUNC_VARARG(int, fprintf, FILE *, const char*, ...);
 
 In order to access the variadic parameters from a custom fake function, declare a
-<tt>va_list</tt> parameter. For instance, a custom fake for <tt>fprintf()</tt>
-could call the real <tt>fprintf()</tt> like this:
+`va_list` parameter. For instance, a custom fake for `fprintf()`
+could call the real `fprintf()` like this:
 
     int fprintf_custom(FILE *stream, const char *format, va_list ap) {
       if (fprintf0_fake.return_val < 0) // should we fail?
@@ -434,13 +434,13 @@ could call the real <tt>fprintf()</tt> like this:
 
 ## How do I specify calling conventions for my fake functions?
 
-FFF has a limited capability for enabling specification of Microsoft's Visual C/C++ calling conventions, but this support must be enabled when generating FFF's header file `fff.h`.
+fff has a limited capability for enabling specification of Microsoft's Visual C/C++ calling conventions, but this support must be enabled when generating fff's header file `fff.h`.
 
 ```bash
 ruby fakegen.rb --with-calling-conventions > fff.h
 ```
 
-By enabling this support, all of FFF's fake function scaffolding will necessitate the specification of a calling convention, e.g. `__cdecl` for each VALUE or VOID fake.
+By enabling this support, all of fff's fake function scaffolding will necessitate the specification of a calling convention, e.g. `__cdecl` for each VALUE or VOID fake.
 
 Here are some basic examples: take note that the placement of the calling convention being specified is different depending on whether the fake is a VOID or VALUE function.
 
@@ -451,7 +451,7 @@ FAKE_VALUE_FUNC(long, __cdecl, longfunc0);
 
 ## How do I fake a function that returns a value by reference?
 
-The basic mechanism that FFF provides you in this case is the custom_fake field described in the *Custom Return Value Delegate* example above.
+The basic mechanism that fff provides you in this case is the custom_fake field described in the *Custom Return Value Delegate* example above.
 
 You need to create a custom function (e.g. getTime_custom_fake) to produce the output optionally by use of a helper variable (e.g. getTime_custom_now) to retrieve that output from. Then some creativity to tie it all together. The most important part (IMHO) is to keep your test case readable and maintainable.
 
@@ -491,7 +491,7 @@ TEST_F(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_output
 
 ## How do I fake a function with a function pointer parameter?
 
-Using FFF to stub functions that have function pointer parameter can cause problems when trying to stub them. Presented here is an example how to deal with this situation.
+Using fff to stub functions that have function pointer parameter can cause problems when trying to stub them. Presented here is an example how to deal with this situation.
 
 If you need to stub a function that has a function pointer parameter, e.g. something like:
 
@@ -501,7 +501,7 @@ typedef int timer_handle;
 extern int timer_start(timer_handle handle, long delay, void (*cb_function) (int arg), int arg);
 ```
 
-Then creating a fake like below will horribly fail when trying to compile because the FFF macro will internally expand into an illegal variable ```int (*)(int) arg2_val```.
+Then creating a fake like below will horribly fail when trying to compile because the fff macro will internally expand into an illegal variable ```int (*)(int) arg2_val```.
 
 ```c
 /* The fake, attempt one */
@@ -516,7 +516,7 @@ FAKE_VALUE_FUNC(int,
 The solution to this problem is to create a bridging type that needs only to be visible in the unit tester. The fake will use that intermediate type. This way the compiler will not complain because the types match.
 
 ```c
-/* Additional type needed to be able to use callback in FFF */
+/* Additional type needed to be able to use callback in fff */
 typedef void (*timer_cb) (int argument);
 
 /* The fake, attempt two */
@@ -575,7 +575,7 @@ TEST_F(FFFTestSuite, test_fake_with_function_pointer)
 ```
 ## How do I reuse a fake across multiple test-suites?
 
-FFF functions like FAKE_VALUE_FUNC will perform both the declaration AND the definition of the fake function and the corresponding data structs. This cannot be placed in a header, since it will lead to multiple definitions of the fake functions.
+fff functions like `FAKE_VALUE_FUNC` will perform both the declaration AND the definition of the fake function and the corresponding data structs. This cannot be placed in a header, since it will lead to multiple definitions of the fake functions.
 
 The solution is to separate declaration and definition of the fakes, and place the declaration into a public header file, and the definition into a private source file.
 
