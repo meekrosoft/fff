@@ -4,6 +4,28 @@
 [![Build Status](https://travis-ci.org/meekrosoft/fff.svg?branch=master)](https://travis-ci.org/meekrosoft/fff)
 [![Build status](https://ci.appveyor.com/api/projects/status/md1gn8cxnjkrkq3b/branch/master?svg=true)](https://ci.appveyor.com/project/wulfgarpro/fff/branch/master)
 
+- [A Fake Function Framework for C](#a-fake-function-framework-for-c)
+- [Hello fake world!](#hello-fake-world)
+- [Capturing arguments](#capturing-arguments)
+- [Return values](#return-values)
+- [Resetting a fake](#resetting-a-fake)
+- [Call history](#call-history)
+- [Default Argument History](#default-argument-history)
+- [User Defined Argument History](#user-defined-argument-history)
+- [Function Return Value Sequences](#function-return-value-sequences)
+- [Custom Return Value Delegate](#custom-return-value-delegate)
+- [Custom Return Value Delegate Sequences](#custom-return-value-delegate-sequences)
+- [Return value history](#return-value-history)
+- [Variadic Functions](#variadic-functions)
+- [How do I specify calling conventions for my fake functions?](#how-do-i-specify-calling-conventions-for-my-fake-functions)
+- [How do I fake a function that returns a value by reference?](#how-do-i-fake-a-function-that-returns-a-value-by-reference)
+- [How do I fake a function with a function pointer parameter?](#how-do-i-fake-a-function-with-a-function-pointer-parameter)
+- [How do I reuse a fake across multiple test-suites?](#how-do-i-reuse-a-fake-across-multiple-test-suites)
+- [Find out more...](#find-out-more)
+- [Benefits](#benefits)
+- [Under the hood:](#under-the-hood)
+- [Cheat Sheet](#cheat-sheet)
+
 ## A Fake Function Framework for C
 fff is a micro-framework for creating fake C functions for tests.  Because life
 is too short to spend time hand-writing fake functions for testing.
