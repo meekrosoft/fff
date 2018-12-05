@@ -432,53 +432,8 @@ could call the real `fprintf()` like this:
       return vfprintf(stream, format, ap);
     }
 
-## Variadic Functions Custom Delegate Sequences
-
-Say your code is going to call multiple times a variadic function and you desire custom different behaviors for each call. You can obtain this by specifying a sequence of custom functions to be assigned to a variadic function fake using the SET_CUSTOM_FAKE_SEQ macro.
-
-Here's an example:
-
-```c
-int valuefunc3var_custom_fake1(int a, va_list vl)
-{
-    int arg;
-    while((arg = va_arg(vl, int)) != 0)
-        a += arg;
-    return a;
-}
-
-int valuefunc3var_custom_fake2(int a, va_list vl)
-{
-    int arg;
-    while((arg = va_arg(vl, int)) != 0)
-        a -= arg;
-    return a;
-}
-
-int valuefunc3var_custom_fake3(int a, va_list vl)
-{
-    int arg;
-    while((arg = va_arg(vl, int)) != 0)
-        a *= arg;
-    return a;
-}
-
-TEST_F(FFFTestSuite, vararg_custom_fake_sequence)
-{
-    int (*custom_fakes[])(int, va_list) = {valuefunc3var_custom_fake1,
-                                           valuefunc3var_custom_fake2,
-                                           valuefunc3var_custom_fake3};
-    SET_CUSTOM_FAKE_SEQ(valuefunc3var, custom_fakes, 3);
-    int a = 1;
-    ASSERT_EQ(valuefunc3var(a, 2, 3, 4, 0), 10);
-    ASSERT_EQ(valuefunc3var(a, 2, 3, 4, 2, 0), -10);
-    ASSERT_EQ(valuefunc3var(a, 2, 3, 0), 6);
-    ASSERT_EQ(valuefunc3var(a, 2, 4, 0), 8); // here exhausted! It uses valuefunc3var_custom_fake3
-}
-
-The fake will call your custom functions in the order specified by the SET_CUSTOM_FAKE_SEQ
-macro. When the last custom fake is reached the fake will keep calling the last custom
-fake in the sequence. This macro works much like the SET_RETURN_SEQ macro.
+Just like  [return value delegates](#custom-return-value-delegate-sequences), you can also specify sequences for variadic functions using `SET_CUSTOM_FAKE_SEQ`.
+See the test files for examples.
 
 ## How do I specify calling conventions for my fake functions?
 
