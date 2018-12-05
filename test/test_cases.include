@@ -356,33 +356,33 @@ TEST_F(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return
 
 int valuefunc3var_custom_fake1(const char *str, int a, va_list vl)
 {
-	int arg;
-	while ((arg = va_arg(vl, int)) != 0)
-		a += arg;
-	return a;
+    int arg;
+    while ((arg = va_arg(vl, int)) != 0)
+        a += arg;
+    return a;
 }
 
 int valuefunc3var_custom_fake2(const char *str, int a, va_list vl)
 {
-	int arg;
-	while ((arg = va_arg(vl, int)) != 0)
-		a -= arg;
-	return a;
+    int arg;
+    while ((arg = va_arg(vl, int)) != 0)
+        a -= arg;
+    return a;
 }
 
 int valuefunc3var_custom_fake3(const char *str, int a, va_list vl)
 {
-	int arg;
-	while ((arg = va_arg(vl, int)) != 0)
-		a *= arg;
-	return a;
+    int arg;
+    while ((arg = va_arg(vl, int)) != 0)
+        a *= arg;
+    return a;
 }
 
 TEST_F(FFFTestSuite, vararg_custom_fake_sequence_not_exhausted)
 {
-	int (*custom_fakes[])(const char *, int, va_list) = {
-	    valuefunc3var_custom_fake1, valuefunc3var_custom_fake2,
-	    valuefunc3var_custom_fake3};
+	int (*custom_fakes[])(const char *, int, va_list) = {valuefunc3var_custom_fake1, 
+                                                         valuefunc3var_custom_fake2,
+	                                                     valuefunc3var_custom_fake3};
 	SET_CUSTOM_FAKE_SEQ(valuefunc3var, custom_fakes, 3);
 	int a = 1;
 	ASSERT_EQ(valuefunc3var("a", a, 2, 3, 4, 0), 10);
@@ -392,9 +392,9 @@ TEST_F(FFFTestSuite, vararg_custom_fake_sequence_not_exhausted)
 
 TEST_F(FFFTestSuite, vararg_custom_fake_seq_return_values_saved_in_history)
 {
-	int (*custom_fakes[])(const char *, int, va_list) = {
-	    valuefunc3var_custom_fake1, valuefunc3var_custom_fake2,
-	    valuefunc3var_custom_fake3};
+	int (*custom_fakes[])(const char *, int, va_list) = {valuefunc3var_custom_fake1,
+                                                         valuefunc3var_custom_fake2,
+	                                                     valuefunc3var_custom_fake3};
 	SET_CUSTOM_FAKE_SEQ(valuefunc3var, custom_fakes, 3);
 	int a = 1;
 	valuefunc3var("a", a, 2, 3, 4, 0);
@@ -407,9 +407,9 @@ TEST_F(FFFTestSuite, vararg_custom_fake_seq_return_values_saved_in_history)
 
 TEST_F(FFFTestSuite, vararg_custom_fake_sequence_exhausted)
 {
-	int (*custom_fakes[])(const char *, int, va_list) = {
-	    valuefunc3var_custom_fake1, valuefunc3var_custom_fake2,
-	    valuefunc3var_custom_fake3};
+	int (*custom_fakes[])(const char *, int, va_list) = {valuefunc3var_custom_fake1,
+                                                         valuefunc3var_custom_fake2,
+	                                                     valuefunc3var_custom_fake3};
 	SET_CUSTOM_FAKE_SEQ(valuefunc3var, custom_fakes, 3);
 	int a = 1;
 	ASSERT_EQ(valuefunc3var("a", a, 2, 3, 4, 0), 10);
@@ -421,9 +421,9 @@ TEST_F(FFFTestSuite, vararg_custom_fake_sequence_exhausted)
 
 TEST_F(FFFTestSuite, vararg_custom_fake_sequence_reset)
 {
-	int (*custom_fakes[])(const char *, int, va_list) = {
-	    valuefunc3var_custom_fake1, valuefunc3var_custom_fake2,
-	    valuefunc3var_custom_fake3};
+	int (*custom_fakes[])(const char *, int, va_list) = {valuefunc3var_custom_fake1,
+                                                         valuefunc3var_custom_fake2,
+	                                                     valuefunc3var_custom_fake3};
 	SET_CUSTOM_FAKE_SEQ(valuefunc3var, custom_fakes, 3);
 	int a = 1;
 	ASSERT_EQ(valuefunc3var("a", a, 2, 3, 4, 0), 10);
