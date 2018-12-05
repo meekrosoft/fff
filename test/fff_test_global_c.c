@@ -71,6 +71,7 @@ int main()
     RUN_TEST(FFFTestSuite, vararg_custom_fake_sequence_not_exhausted);
     RUN_TEST(FFFTestSuite, vararg_custom_fake_seq_return_values_saved_in_history);
     RUN_TEST(FFFTestSuite, vararg_custom_fake_sequence_exhausted);
+    RUN_TEST(FFFTestSuite, vararg_custom_fake_sequence_reset);
 
     RUN_TEST(FFFTestSuite, can_capture_upto_20_arguments_correctly);
     RUN_TEST(FFFTestSuite, value_func_can_capture_upto_20_arguments_correctly);
