@@ -116,7 +116,7 @@ int main()
 
     RUN_TEST(FFFTestSuite, use_void_vararg_fake_with_different_number_of_arguments);
     RUN_TEST(FFFTestSuite, use_value_vararg_fake_with_different_number_of_arguments);
-    RUN_TEST(FFFTestSuite, vararg_custom_fake_sequence_not_exausthed);
+    RUN_TEST(FFFTestSuite, vararg_custom_fake_sequence_not_exhausted);
     RUN_TEST(FFFTestSuite, vararg_custom_fake_seq_return_values_saved_in_history);
     RUN_TEST(FFFTestSuite, vararg_custom_fake_sequence_exhausted);
 
