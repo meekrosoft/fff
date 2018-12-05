@@ -28,8 +28,8 @@ FAKE_VOID_FUNC(voidfunc1outparam, char *);
 FAKE_VALUE_FUNC(long, longfunc0);
 FAKE_VALUE_FUNC(enum MYBOOL, enumfunc0);
 FAKE_VALUE_FUNC(struct MyStruct, structfunc0);
-FAKE_VOID_FUNC_VARARG(voidfunc3var, char *, int, ...);
-FAKE_VALUE_FUNC_VARARG(int, valuefunc3var, char *, int, ...);
+FAKE_VOID_FUNC_VARARG(voidfunc3var, const char *, int, ...);
+FAKE_VALUE_FUNC_VARARG(int, valuefunc3var, const char *, int, ...);
 FAKE_VALUE_FUNC(int, strlcpy3, char* const, const char* const, const size_t);
 FAKE_VOID_FUNC(voidfunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 FAKE_VALUE_FUNC(int, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
@@ -116,6 +116,10 @@ int main()
 
     RUN_TEST(FFFTestSuite, use_void_vararg_fake_with_different_number_of_arguments);
     RUN_TEST(FFFTestSuite, use_value_vararg_fake_with_different_number_of_arguments);
+    RUN_TEST(FFFTestSuite, vararg_custom_fake_sequence_not_exhausted);
+    RUN_TEST(FFFTestSuite, vararg_custom_fake_seq_return_values_saved_in_history);
+    RUN_TEST(FFFTestSuite, vararg_custom_fake_sequence_exhausted);
+    RUN_TEST(FFFTestSuite, vararg_custom_fake_sequence_reset);
 
     RUN_TEST(FFFTestSuite, can_capture_upto_20_arguments_correctly);
     RUN_TEST(FFFTestSuite, value_func_can_capture_upto_20_arguments_correctly);

@@ -432,6 +432,9 @@ could call the real `fprintf()` like this:
       return vfprintf(stream, format, ap);
     }
 
+Just like  [return value delegates](#custom-return-value-delegate-sequences), you can also specify sequences for variadic functions using `SET_CUSTOM_FAKE_SEQ`.
+See the test files for examples.
+
 ## How do I specify calling conventions for my fake functions?
 
 fff has a limited capability for enabling specification of Microsoft's Visual C/C++ calling conventions, but this support must be enabled when generating fff's header file `fff.h`.

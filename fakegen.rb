@@ -408,6 +408,35 @@ def output_function_body(arg_count, has_varargs, is_value_function)
   putd_backslash "REGISTER_CALL(FUNCNAME);"
 
   if has_varargs
+    return_type = is_value_function ? "return " : ""
+    putd_backslash "if (FUNCNAME##_fake.custom_fake_seq_len){ /* a sequence of custom fakes */"
+    indent {
+      putd_backslash "if (FUNCNAME##_fake.custom_fake_seq_idx < FUNCNAME##_fake.custom_fake_seq_len){"
+      indent {
+      putd_backslash "va_list ap;"
+      putd_backslash "va_start(ap, arg#{arg_count-1});"
+      putd_backslash "RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)}, ap);" unless not is_value_function
+      putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
+      putd_backslash "va_end(ap);"  unless not is_value_function
+      putd_backslash "return ret;" unless not is_value_function
+      putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_idx++](#{arg_list(arg_count)}, ap);" unless is_value_function
+      putd_backslash "va_end(ap);" unless is_value_function
+      }
+      putd_backslash "}"
+      putd_backslash "else{"
+      indent {
+      putd_backslash "va_list ap;"
+      putd_backslash "va_start(ap, arg#{arg_count-1});"
+      putd_backslash "RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)}, ap);" unless not is_value_function
+      putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
+      putd_backslash "va_end(ap);"  unless not is_value_function
+      putd_backslash "return ret;" unless not is_value_function
+      putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)}, ap);"
+      putd_backslash "va_end(ap);" unless is_value_function
+      }
+      putd_backslash "}"
+    }
+    putd_backslash "}"
     putd_backslash "if(FUNCNAME##_fake.custom_fake){"
     indent {
       putd_backslash "RETURN_TYPE ret;" if is_value_function
