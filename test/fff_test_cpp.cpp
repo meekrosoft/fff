@@ -74,7 +74,7 @@ namespace cxx
 #ifndef TEST_WITH_CALLING_CONVENTIONS
     FAKE_VOID_FUNC(voidfunc1, cxx::int_t);
 #else
-	FAKE_VOID_FUNC(_cdecl, voidfunc1, cxx::int_t);
+    FAKE_VOID_FUNC(_cdecl, voidfunc1, cxx::int_t);
 #endif
 }
 
