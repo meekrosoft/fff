@@ -1,6 +1,7 @@
 extern "C"{
     #include "driver.h"
     #include "registers.h"
+    #include "hardware_abstraction.h"
 }
 #include "../../fff.h"
 #include <gtest/gtest.h>

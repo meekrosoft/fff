@@ -271,23 +271,19 @@ def output_macro(arg_count, has_varargs, has_calling_conventions, is_value_funct
   puts
   output_macro_header(declare_macro_name, saved_arg_count, has_varargs, has_calling_conventions, return_type)
   indent {
-    extern_c {  # define argument capture variables
-      output_variables(saved_arg_count, has_varargs, has_calling_conventions, is_value_function)
-    }
+    output_variables(saved_arg_count, has_varargs, has_calling_conventions, is_value_function)
   }
 
   puts
   output_macro_header(define_macro_name, saved_arg_count, has_varargs, has_calling_conventions, return_type)
   indent {
-    extern_c {
-      putd_backslash "FUNCNAME##_Fake FUNCNAME##_fake;"
-      putd_backslash function_signature(saved_arg_count, has_varargs, has_calling_conventions, is_value_function) + "{"
-      indent {
-        output_function_body(saved_arg_count, has_varargs, is_value_function)
-      }
-      putd_backslash "}"
-      putd_backslash "DEFINE_RESET_FUNCTION(FUNCNAME)"
+    putd_backslash "FUNCNAME##_Fake FUNCNAME##_fake;"
+    putd_backslash function_signature(saved_arg_count, has_varargs, has_calling_conventions, is_value_function) + "{"
+    indent {
+      output_function_body(saved_arg_count, has_varargs, is_value_function)
     }
+    putd_backslash "}"
+    putd_backslash "DEFINE_RESET_FUNCTION(FUNCNAME)"
   }
 
   puts
@@ -492,9 +488,9 @@ def define_fff_globals
   }
   putd "} fff_globals_t;"
   puts
-  putd_backslash "FFF_EXTERN_C"
+  putd "FFF_EXTERN_C"
   putd "extern fff_globals_t fff;"
-  putd_backslash "FFF_END_EXTERN_C"
+  putd "FFF_END_EXTERN_C"
   puts
   putd_backslash "#define DEFINE_FFF_GLOBALS"
   indent {
@@ -518,14 +514,6 @@ def define_fff_globals
                 putd "fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
     }
   }
-end
-
-def extern_c
-  putd_backslash "FFF_EXTERN_C"
-  indent {
-    yield
-  }
-  putd_backslash "FFF_END_EXTERN_C"
 end
 
 def in_struct
