@@ -14,3 +14,7 @@ build/fff_test_glob_c
 build/fff_test_glob_cpp --gtest_output=xml:build/test_global_results.xml
 build/driver_testing --gtest_output=xml:build/driver_testing.xml
 build/driver_testing_fff  --gtest_output=xml:build/driver_testing_fff.xml
+build/weak_linking/test_display
+build/weak_linking/test_sensor
+build/weak_linking/test_main
+
