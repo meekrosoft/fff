@@ -3,6 +3,7 @@
 
 [![Build Status](https://travis-ci.org/meekrosoft/fff.svg?branch=master)](https://travis-ci.org/meekrosoft/fff)
 [![Build status](https://ci.appveyor.com/api/projects/status/md1gn8cxnjkrkq3b/branch/master?svg=true)](https://ci.appveyor.com/project/wulfgarpro/fff/branch/master)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/wulfgarpro/fff?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
 - [A Fake Function Framework for C](#a-fake-function-framework-for-c)
 - [Hello fake world!](#hello-fake-world)
