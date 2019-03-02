@@ -19,7 +19,7 @@
 - [Variadic Functions](#variadic-functions)
 - [Common Questions](#common-questions)
 - [Specifying GCC Function Attributes](#specifying-gcc-function-attributes)
-- [Find Out More...](#find-out-more)
+- [Find Out More](#find-out-more)
 - [Benefits](#benefits)
 - [Under the Hood](#under-the-hood)
 - [Cheat Sheet](#cheat-sheet)
@@ -615,7 +615,7 @@ You can mark all fakes with the weak attribute like so:
 
 See the example project that demonstrates the above approach: _./examples/weak_linking_.
 
-## Find Out More...
+## Find Out More
 
 Look under the examples directory for full length examples in both C and C++.
 There is also a test suite for the framework under the test directory.
