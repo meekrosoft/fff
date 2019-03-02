@@ -15,7 +15,6 @@
 - [User Defined Argument History](#user-defined-argument-history)
 - [Function Return Value Sequences](#function-return-value-sequences)
 - [Custom Return Value Delegate](#custom-return-value-delegate)
-- [Custom Return Value Delegate Sequences](#custom-return-value-delegate-sequences)
 - [Return Value History](#return-value-history)
 - [Variadic Functions](#variadic-functions)
 - [Common Questions](#common-questions)
@@ -335,7 +334,7 @@ TEST_F(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return
 }
 ```
 
-## Custom Return Value Delegate Sequences
+### Custom Return Value Delegate Sequences
 
 Say you have a function with an out parameter, and you want it to have a different behaviour
 on the first three calls, for example: set the value 'x' to the out parameter on the first call,
