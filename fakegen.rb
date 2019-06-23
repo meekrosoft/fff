@@ -635,10 +635,7 @@ def output_macro_counting_shortcuts(has_calling_conventions)
   ppiter = PPIterators.new()
   putd <<-MACRO_COUNTING
 
-#ifndef PP_NARG
-#{ppiter.narg_common}
-#{ppiter.narg}
-#endif
+#{ppiter.embed_macros}
 
 #{ppiter.narg_minus(1)}
 
@@ -646,12 +643,14 @@ def output_macro_counting_shortcuts(has_calling_conventions)
 
 #{ppiter.narg_minus(3)}
 
+#{ppiter.parameterised_each_with_index}
+
 #ifndef PP_1PAR_EACH_IDX
-#{ppiter.parameterised_each_with_index(1)}
+#{ppiter.parameterised_each_with_index_n(1)}
 #endif
 
 #ifndef PP_2PAR_EACH_IDX
-#{ppiter.parameterised_each_with_index(2)}
+#{ppiter.parameterised_each_with_index_n(2)}
 #endif
 
 /* DECLARE AND DEFINE FAKE FUNCTIONS - PLACE IN TEST FILES */

@@ -14,7 +14,9 @@
 #include <string.h>
 
 // Could move this into c_test_framework.h, but it uses the PP iteration macros from fff.h....
-#define RUN_INDEXED_TEST(SUITE, TEST_COUNT, TESTNAME, IDX) do { printf(" Running (%d/%d) %s.%s: \n", IDX+1, TEST_COUNT, #SUITE, #TESTNAME); setup(); TESTNAME(); printf(" SUCCESS\n"); } while (0);
+#define RUN_INDEXED_TEST(SUITE, TEST_COUNT, TESTNAME, IDX) do { printf(" Running (%d/%d) %s.%s: \n", IDX+1, TEST_COUNT, #SUITE, #TESTNAME); setup(); TESTNAME(); printf(" SUCCESS\n"); } while (0); \
+
+
 #define RUN_TESTS(SUITE, ...) PP_2PAR_EACH_IDX(RUN_INDEXED_TEST, SUITE, PP_NARG(__VA_ARGS__), __VA_ARGS__)
 
 enum MYBOOL { FALSE = 899, TRUE };
@@ -137,7 +139,7 @@ int main()
         variadic_return_values_no_array_name_collisions_when_called_repeatedly,
         variadic_return_values_no_assertion_given_single_value,
         variadic_return_values_assertion_valid_given_value_sequence,
-        variadic_return_values_assertion_invalid_given_0_length_sequence,
+        /* variadic_return_values_assertion_invalid_given_0_length_sequence, */
 
         assert_calls_assertion_valid_given_match,
         assert_calls_assertion_invalid_when_underestimated,
