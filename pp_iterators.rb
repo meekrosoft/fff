@@ -160,13 +160,11 @@ EOH
 )
   end
 
-  def lists
-    CFile::include_guard('PP_LISTS', <<-EOH
-#define HEAD(FIRST, ...) FIRST
-#define TAIL(FIRST, ...) __VA_ARGS__
-
-#define TEST_LAST EXISTS(1)
-#define NOT_EMPTY(...) NOT(IS_EMPTY(__VA_ARGS__))
+  def is_empty
+    if @gcc
+      '#define IS_EMPTY(...)  NOT(PP_NARG(__VA_ARGS__))'
+    else
+      <<-EOH
 #define IS_EMPTY(...)                                                   \
 _ISEMPTY(                                                               \
           /* test if there is just one argument, eventually an empty    \
@@ -193,7 +191,17 @@ _ISEMPTY(                                                               \
 
 #define PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4
 #define _IS_EMPTY_CASE_0001 ,
+EOH
+    end
+  end
+  def lists
+    CFile::include_guard('PP_LISTS', <<-EOH
+#define HEAD(FIRST, ...) FIRST
+#define TAIL(FIRST, ...) __VA_ARGS__
 
+#define TEST_LAST EXISTS(1)
+#define NOT_EMPTY(...) NOT(IS_EMPTY(__VA_ARGS__))
+#{is_empty}
 EOH
                         )
   end
