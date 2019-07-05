@@ -88,8 +88,8 @@ int main()
     fflush(0);
 
     /* Run tests */
-    RUN_TESTS(FFFTestSuite,
-        when_void_func_never_called_then_callcount_is_zero,
+    RUN_TESTS(
+        FFFTestSuite, when_void_func_never_called_then_callcount_is_zero,
         when_void_func_called_once_then_callcount_is_one,
         when_void_func_called_once_and_reset_then_callcount_is_zero,
         when_void_func_with_1_integer_arg_called_then_last_arg_captured,
@@ -139,7 +139,10 @@ int main()
         variadic_return_values_no_array_name_collisions_when_called_repeatedly,
         variadic_return_values_no_assertion_given_single_value,
         variadic_return_values_assertion_valid_given_value_sequence,
-        /* variadic_return_values_assertion_invalid_given_0_length_sequence, */
+
+#if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+        variadic_return_values_assertion_invalid_given_0_length_sequence,
+#endif
 
         assert_calls_assertion_valid_given_match,
         assert_calls_assertion_invalid_when_underestimated,

@@ -64,12 +64,15 @@ TEST_F(FFFTestSuite, variadic_return_values_assertion_valid_given_value_sequence
     ASSERT_FAKE_ASSERTION_WAS(VALID);
 }
 
-/* TEST_F(FFFTestSuite, variadic_return_values_assertion_invalid_given_0_length_sequence) */
-/* { */
-/*     FFF_RETURN(longfunc0); */
 
-/*     ASSERT_FAKE_ASSERTION_WAS(INVALID); */
-/* } */
+#if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+TEST_F(FFFTestSuite, variadic_return_values_assertion_invalid_given_0_length_sequence)
+{
+    FFF_RETURN(longfunc0);
+
+    ASSERT_FAKE_ASSERTION_WAS(INVALID);
+}
+#endif
 
 static void _callFake(int ncalls)
 {
