@@ -161,39 +161,40 @@ EOH
   end
 
   def is_empty
-    if @gcc
-      '#define IS_EMPTY(...)  NOT(PP_NARG(__VA_ARGS__))'
-    else
       <<-EOH
-#define IS_EMPTY(...)                                                   \
-_ISEMPTY(                                                               \
-          /* test if there is just one argument, eventually an empty    \
-             one */                                                     \
-          HAS_COMMA(__VA_ARGS__),                                       \
-          /* test if _TRIGGER_PARENTHESIS_ together with the argument   \
-             adds a comma */                                            \
-          HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__),                 \
-          /* test if the argument together with a parenthesis           \
-             adds a comma */                                            \
-          HAS_COMMA(__VA_ARGS__ (/*empty*/)),                           \
-          /* test if placing it between _TRIGGER_PARENTHESIS_ and the   \
-             parenthesis adds a comma */                                \
-          HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/))      \
-          )
+#if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+  #define IS_EMPTY(...)  NOT(PP_NARG(__VA_ARGS__))
+#else
+  #define IS_EMPTY(...)                                                   \
+  _ISEMPTY(                                                               \
+            /* test if there is just one argument, eventually an empty    \
+               one */                                                     \
+            HAS_COMMA(__VA_ARGS__),                                       \
+            /* test if _TRIGGER_PARENTHESIS_ together with the argument   \
+               adds a comma */                                            \
+            HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__),                 \
+            /* test if the argument together with a parenthesis           \
+               adds a comma */                                            \
+            HAS_COMMA(__VA_ARGS__ (/*empty*/)),                           \
+            /* test if placing it between _TRIGGER_PARENTHESIS_ and the   \
+               parenthesis adds a comma */                                \
+            HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/))      \
+            )
 
-#define _ISEMPTY(_0, _1, _2, _3)                                               \
-  HAS_COMMA(PASTE5(_IS_EMPTY_CASE_, _0, _1, _2, _3))
+  #define _ISEMPTY(_0, _1, _2, _3)                                               \
+    HAS_COMMA(PASTE5(_IS_EMPTY_CASE_, _0, _1, _2, _3))
 
-#define HAS_COMMA(...)                                                         \
-  PP_ARG_N(__VA_ARGS__, #{'1, '*(@nargs_max-1)} 0)
+  #define HAS_COMMA(...)                                                         \
+    PP_ARG_N(__VA_ARGS__, #{'1, '*(@nargs_max-1)} 0)
 
-#define _TRIGGER_PARENTHESIS_(...) ,
+  #define _TRIGGER_PARENTHESIS_(...) ,
 
-#define PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4
-#define _IS_EMPTY_CASE_0001 ,
-EOH
-    end
+  #define PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4
+  #define _IS_EMPTY_CASE_0001 ,
+#endif
+  EOH
   end
+
   def lists
     CFile::include_guard('PP_LISTS', <<-EOH
 #define HEAD(FIRST, ...) FIRST
