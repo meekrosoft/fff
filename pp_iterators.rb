@@ -28,6 +28,10 @@ class PPIterators
         "#ifndef #{name}\n" + indent(content) + "#endif //#{name}\n"
       end
 
+      def if_gcc_extensions_available(with_gcc, without_gcc)
+        "#if defined(__GNUC__) && !defined(__STRICT_ANSI__)\n" + indent(with_gcc) + "#else\n" + indent(without_gcc) + "#endif\n"
+      end
+
       def define_macro(m)
         m.empty? ? m : "\#define #{m}\n"
       end
@@ -45,11 +49,10 @@ class PPIterators
   MAX_ARG_COUNT_DEFAULT = 256
   MAX_ARG_COUNT_DEFAULT_NON_RECURSIVE = 64
   DEFER_LEVELS_DEFAULT = 6
-  attr_reader :nargs_max, :recursive, :gcc, :defer_levels
+
+  attr_reader :nargs_max, :recursive, :defer_levels
   def initialize(recursive: true,
-                 use_gcc_extensions: false,
                  defer_levels: DEFER_LEVELS_DEFAULT)
-    @gcc = use_gcc_extensions
     @recursive = recursive
     @nargs_max = @recursive ? MAX_ARG_COUNT_DEFAULT : MAX_ARG_COUNT_DEFAULT_NON_RECURSIVE
     @defer_levels = defer_levels
@@ -160,39 +163,32 @@ EOH
 )
   end
 
+  IS_EMPTY_NO_GCC_EXTENSIONS = <<-EOH
+IS_EMPTY(...)\
+_ISEMPTY(\
+          /* test if there is just one argument, eventually an empty one */\
+          HAS_COMMA(__VA_ARGS__),\
+          /* test if _TRIGGER_PARENTHESIS_ together with the argument adds a comma */\
+          HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__),\
+          /* test if the argument together with a parenthesis adds a comma */\
+          HAS_COMMA(__VA_ARGS__ (/*empty*/)),\
+          /* test if placing it between _TRIGGER_PARENTHESIS_ and the parenthesis adds a comma */\
+          HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/))\
+          )
+EOH
+
   def is_empty
-      <<-EOH
-#if defined(__GNUC__) && !defined(__STRICT_ANSI__)
-  #define IS_EMPTY(...)  NOT(PP_NARG(__VA_ARGS__))
-#else
-  #define IS_EMPTY(...)                                                   \
-  _ISEMPTY(                                                               \
-            /* test if there is just one argument, eventually an empty    \
-               one */                                                     \
-            HAS_COMMA(__VA_ARGS__),                                       \
-            /* test if _TRIGGER_PARENTHESIS_ together with the argument   \
-               adds a comma */                                            \
-            HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__),                 \
-            /* test if the argument together with a parenthesis           \
-               adds a comma */                                            \
-            HAS_COMMA(__VA_ARGS__ (/*empty*/)),                           \
-            /* test if placing it between _TRIGGER_PARENTHESIS_ and the   \
-               parenthesis adds a comma */                                \
-            HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/))      \
-            )
-
-  #define _ISEMPTY(_0, _1, _2, _3)                                               \
-    HAS_COMMA(PASTE5(_IS_EMPTY_CASE_, _0, _1, _2, _3))
-
-  #define HAS_COMMA(...)                                                         \
-    PP_ARG_N(__VA_ARGS__, #{'1, '*(@nargs_max-1)} 0)
-
-  #define _TRIGGER_PARENTHESIS_(...) ,
-
-  #define PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4
-  #define _IS_EMPTY_CASE_0001 ,
-#endif
-  EOH
+    CFile::if_gcc_extensions_available(
+      CFile::define_macro("IS_EMPTY(...)  NOT(PP_NARG(__VA_ARGS__))"),
+      CFile::define_macros([
+                             IS_EMPTY_NO_GCC_EXTENSIONS,
+                             "_ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTE5(_IS_EMPTY_CASE_, _0, _1, _2, _3))",
+                             "HAS_COMMA(...) PP_ARG_N(__VA_ARGS__, #{'1, '*(@nargs_max-1)} 0)",
+                             "_TRIGGER_PARENTHESIS_(...) ,",
+                             "PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4",
+                             "_IS_EMPTY_CASE_0001 ,"
+                           ])
+    )
   end
 
   def lists
@@ -238,8 +234,8 @@ EOH
                            )
   end
 
-  def arg_n_seq(delta)
-    seq = arg_seq(first: 1, last: @gcc ? @nargs_max+1 : @nargs_max, prefix: '_')
+  def arg_n_seq(delta, use_gcc_extensions)
+    seq = arg_seq(first: 1, last: use_gcc_extensions ? @nargs_max+1 : @nargs_max, prefix: '_')
     delta==0 ? seq :[arg_seq(first: 0, last: delta-1, prefix: '__', reverse: true), seq].join(', ')
   end
 
@@ -247,15 +243,19 @@ EOH
     narg_minus(0)
   end
 
+  def _narg_minus(m, use_gcc_extensions)
+    suffix = m>0 ? "_MINUS#{m}" : ''
+    CFile::define_macros(["PP_NARG#{suffix}(...)  EXPAND(PP_ARG#{suffix}_N(#{'_0, ##' if use_gcc_extensions}__VA_ARGS__, PP_RSEQ_N()))",
+                          "_PP_ARG#{suffix}_N(#{arg_n_seq(m, use_gcc_extensions)}, N, ...) N"
+                         ])
+  end
+
   def narg_minus(m)
     suffix = m>0 ? "_MINUS#{m}" : ''
-    CFile::define_macro_set("PP_NARG#{suffix}",
-                            [
-                              "PP_NARG#{suffix}(...)  EXPAND(PP_ARG#{suffix}_N(#{'_0, ##' if @gcc}__VA_ARGS__, PP_RSEQ_N()))",
-                              "PP_ARG#{suffix}_N(...) EXPAND(_PP_ARG#{suffix}_N(__VA_ARGS__))",
-                              "_PP_ARG#{suffix}_N(#{arg_n_seq(m)}, N, ...) N",
-                            ]
-                           )
+    CFile::include_guard("PP_NARG#{suffix}",
+                         CFile::define_macro("PP_ARG#{suffix}_N(...) EXPAND(_PP_ARG#{suffix}_N(__VA_ARGS__))")+
+                         CFile::if_gcc_extensions_available(_narg_minus(m,true), _narg_minus(m,false))
+                        )
   end
 
   def pp_each
