@@ -219,7 +219,7 @@ you would use a syntax like this:
 FAKE_VALUE_FUNC(double, pow, double, double);
 ```
 
-*N.B.* When using the variadic form (i.e. `FFF_RETURN(FN, ...)`), the hidden value sequence array
+*N.B.* When using the (GCC only) variadic form (i.e. `FFF_RETURN(FN, ...)`), the hidden value sequence array
 is declared locally by default. If you want to set a return sequence in a function other than
 the test body (e.g. in a fixture setup method or helper function used in multiple tests), you'll
 need to prefix the macro invocation with the `static` keyword. e.g.
@@ -753,13 +753,13 @@ So whats the point?
 | FAKE_VOID_FUNC_VARARG(fn [,arg_types*], ...);               | Define a fake variadic function returning void with type return_type taking n arguments and n variadic arguments    | FAKE_VOID_FUNC_VARARG(fn, const char*, ...)                   |
 | FAKE_VALUE_FUNC_VARARG(return_type, fn [,arg_types*], ...); | Define a fake variadic function returning a value with type return_type taking n arguments and n variadic arguments | FAKE_VALUE_FUNC_VARARG(int, fprintf, FILE*, const char*, ...) |
 | RESET_FAKE(fn);                                             | Reset the state of fake function called fn                                                                          | RESET_FAKE(DISPLAY_init);                                     |
-| FFF_RETURN(fn, ...return_value(s)*);                        | Set one or more return values (final value repeated if calls > values)                                              | FFF_RETURN(DISPLAY_init, 1, 2, 3);                            |
+| FFF_RETURN(fn, ...return_value(s)*);                        | Set one or (GCC only) more return values (final value repeated if calls > values)                                   | FFF_RETURN(DISPLAY_init, 1, 2, 3);                            |
 | FFF_ASSERT_CALLED(fn);                                      | Assert that a function was called once and only once.                                                               | FFF_ASSERT_CALLED(DISPLAY_init);                              |
 | FFF_ASSERT_NOT_CALLED(fn);                                  | Assert that a function was not called.                                                                              | FFF_ASSERT_NOT_CALLED(DISPLAY_init);                          |
 | FFF_ASSERT_CALLS(fn, call_count);                           | Assert that a function was called the specified number of times.                                                    | FFF_ASSERT_CALLS(DISPLAY_init, 3);                            |
 | FFF_ASSERT(fn, ...arg_value(s))                             | Assert that a function was called only once with the specified argument values.                                     | FFF_ASSERT(DISPLAY_output_message, my_message_ptr);           |
 | FFF_ASSERT_LAST(fn, ...arg_value(s))                        | Assert that the last call to a function had the specified argument values.                                          | FFF_ASSERT_LAST(DISPLAY_output_message, my_message_ptr);      |
-| FFF_ASSERT_ANY(fn, ...arg_value(s))                         | Assert that any call to a function had the specified argument values.                                               | FFF_ASSERT_ANY(DISPLAY_output_message, my_message_ptr);       |
-| FFF_ASSERT_NONE(fn, ...arg_value(s))                        | Assert that no calls to a function had the specified argument values.                                               | FFF_ASSERT_NONE(DISPLAY_output_message, my_message_ptr);      |
+| FFF_ASSERT_ANY(fn, ...arg_value(s))                         | (GCC only) Assert that any call to a function had the specified argument values.                                     | FFF_ASSERT_ANY(DISPLAY_output_message, my_message_ptr);       |
+| FFF_ASSERT_NONE(fn, ...arg_value(s))                        | (GCC only) Assert that no calls to a function had the specified argument values.                                     | FFF_ASSERT_NONE(DISPLAY_output_message, my_message_ptr);      |
 
 *N.B.* All of the function argument assertions support partial specification of arguments. I.e. Given a function taking 3 args, you may just specify the first argument for verification. Any arguments that are specified must be specified from left to right however. i.e. it is possibly to specify arguments 0 and 1, but not arguments 0 and 2 (ignoring the value of 1).
