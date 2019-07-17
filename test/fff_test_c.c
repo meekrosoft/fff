@@ -133,15 +133,24 @@ int main()
         can_capture_upto_20_arguments_correctly,
         value_func_can_capture_upto_20_arguments_correctly,
 
+#if !defined(_MSC_VER) || defined(_MSVC_LANG)
         variadic_return_values_should_set_return_val_given_single_value,
         variadic_return_values_should_set_return_sequence_given_multiple_values,
         variadic_return_values,
         variadic_return_values_no_array_name_collisions_when_called_repeatedly,
         variadic_return_values_no_assertion_given_single_value,
         variadic_return_values_assertion_valid_given_value_sequence,
+#endif
 
 #if defined(__GNUC__) && !defined(__STRICT_ANSI__)
         variadic_return_values_assertion_invalid_given_0_length_sequence,
+#endif
+
+#ifdef __GNUC__
+        assert_any_call_assertion_valid_given_any_match,
+        assert_any_call_assertion_invalid_given_no_match,
+        assert_no_call_assertion_invalid_given_any_match,
+        assert_no_call_assertion_valid_given_no_match,
 #endif
 
         assert_calls_assertion_valid_given_match,
@@ -165,12 +174,8 @@ int main()
         assert_nth_call_assertion_invalid_given_arg_mismatch,
 
         assert_last_call_assertion_valid_given_multiple_calls,
-        assert_last_call_assertion_invalid_given_previous_call_args,
-
-        assert_any_call_assertion_valid_given_any_match,
-        assert_any_call_assertion_invalid_given_no_match,
-        assert_no_call_assertion_invalid_given_any_match,
-        assert_no_call_assertion_valid_given_no_match)
+        assert_last_call_assertion_invalid_given_previous_call_args
+      )
 
     printf("\n-------------\n");
     printf("Complete\n");

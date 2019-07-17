@@ -12,6 +12,8 @@ enum AssertionResult {
 
 #define RESET_FAKE_ASSERTIONS() valid_assertions_ = invalid_assertions_ = 0
 
+//FFF_RETURN requires typeof (GCC) or decltype (MSVC, but only available in C++ mode)
+#if !defined(_MSC_VER) || defined(_MSVC_LANG)
 TEST_F(FFFTestSuite, variadic_return_values_should_set_return_val_given_single_value)
 {
     FFF_RETURN(longfunc0, 3);
@@ -63,6 +65,7 @@ TEST_F(FFFTestSuite, variadic_return_values_assertion_valid_given_value_sequence
 
     ASSERT_FAKE_ASSERTION_WAS(VALID);
 }
+#endif
 
 
 #if defined(__GNUC__) && !defined(__STRICT_ANSI__)
@@ -295,6 +298,7 @@ TEST_F(FFFTestSuite, assert_last_call_assertion_invalid_given_previous_call_args
   ASSERT_FAKE_ASSERTION_WAS(INVALID);
 }
 
+#ifdef __GNUC__
 TEST_F(FFFTestSuite, assert_any_call_assertion_valid_given_any_match)
 {
   //Given
@@ -352,3 +356,4 @@ TEST_F(FFFTestSuite, assert_no_call_assertion_valid_given_no_match)
   //Then
   ASSERT_FAKE_ASSERTION_WAS(VALID);
 }
+#endif
