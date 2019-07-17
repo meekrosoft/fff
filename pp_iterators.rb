@@ -46,7 +46,8 @@ class PPIterators
     end
   end
 
-  MAX_ARG_COUNT_DEFAULT = 256
+  # MSVC enforces the standard minimum requirement of 127 VA_ARGS
+  MAX_ARG_COUNT_DEFAULT = 63
   MAX_ARG_COUNT_DEFAULT_NON_RECURSIVE = 64
   DEFER_LEVELS_DEFAULT = 6
 

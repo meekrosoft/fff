@@ -78,7 +78,12 @@ def define_return_sequence_helpers
 /* FFF_RETURN (begin) */
 #define FFF_RETURN(...)                                             \
   _FFF_SEQ_DEF(__VA_ARGS__); if(PP_NARG(__VA_ARGS__) == 2) {FFF_RETURN_VAL(__VA_ARGS__, 0);} else {_FFF_RETURN_SEQ(HEAD(__VA_ARGS__));}
+#ifdef _MSC_VER
+//MSVC decltype ~= typeof, but only in c++ mode....
+#define _FFF_RET_TYPE(FN) decltype(FFF_RET(FN))
+#else
 #define _FFF_RET_TYPE(FN) __typeof__(FFF_RET(FN))
+#endif
 #define _FFF_SEQ(FN) CAT(FN, __LINE__)
 #define _FFF_SEQ_DEF(FN, ...) _FFF_RET_TYPE(FN) _FFF_SEQ(FN)[] = {__VA_ARGS__}
 #define _FFF_SEQ_LEN(FN) (sizeof(_FFF_SEQ(FN))/sizeof(FFF_RET(FN)))
