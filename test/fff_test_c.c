@@ -8,20 +8,11 @@
 
 #include "../fff.h"
 #include "c_test_framework.h"
+#include "c_test_iterators.h"
 
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-
-// Could move this into c_test_framework.h, but it uses the PP iteration macros from fff.h....
-#define RUN_INDEXED_TEST(SUITE, TEST_COUNT, TESTNAME, IDX) do { printf(" Running (%d/%d) %s.%s: \n", IDX+1, TEST_COUNT, #SUITE, #TESTNAME); setup(); TESTNAME(); printf(" SUCCESS\n"); } while (0); \
-
-
-/* #define RUN_TESTS(SUITE, ...) PP_2PAR_EACH_IDX(RUN_INDEXED_TEST, SUITE, PP_NARG(__VA_ARGS__), __VA_ARGS__) */
-//Temporary hack to diagnose MSVC issues....
-#define RUN_TEST(TESTNAME) do { printf(" Running %s: \n", #TESTNAME); setup(); TESTNAME(); printf(" SUCCESS\n"); } while (0); \
-
-#define RUN_TESTS(SUITE, ...) PP_EACH(RUN_TEST, __VA_ARGS__)
 
 enum MYBOOL { FALSE = 899, TRUE };
 struct MyStruct {
