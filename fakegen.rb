@@ -637,7 +637,7 @@ end
 
 def output_macro_counting_shortcuts(has_calling_conventions)
 
-  ppiter = PPIterators.new()
+  ppiter = PPIterators.new(recursive: false)
   putd <<-MACRO_COUNTING
 
 #{ppiter.embed_macros}

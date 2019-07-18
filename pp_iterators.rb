@@ -280,7 +280,7 @@ EOH
     CFile::define_macros([
                          "PP_EACH(TF, ...) _PP_EACH(TF, PP_NARG(__VA_ARGS__), __VA_ARGS__)",
                          "_PP_EACH(TF, N, ...) __PP_EACH(TF, N, __VA_ARGS__)",
-                         "__PP_EACH(TF, N, ...) _PP_EACH_##N(TF, __VA_ARGS__)",
+                         "__PP_EACH(TF, N, ...) EXPAND(_PP_EACH_##N(TF, __VA_ARGS__))",
                          "",
                          "_PP_EACH_0(TF, ...)",
                          "_PP_EACH_1(TF, next_arg) TF(next_arg)",
@@ -293,7 +293,7 @@ EOH
       [
         "PP_EACH_IDX(TF, ...) _PP_EACH_IDX(TF, PP_NARG(__VA_ARGS__), __VA_ARGS__)",
         "_PP_EACH_IDX(TF, N, ...) __PP_EACH_IDX(TF, N, __VA_ARGS__)",
-        "__PP_EACH_IDX(TF, N, ...) _PP_EACH_IDX_##N(TF, __VA_ARGS__)",
+        "__PP_EACH_IDX(TF, N, ...) EXPAND(_PP_EACH_IDX_##N(TF, __VA_ARGS__))",
         "",
         "_PP_EACH_IDX_0(TF, dummy)"
       ] + (1..@nargs_max).map do |arg_count|
@@ -341,7 +341,7 @@ EOH
       [
         "PP_PAR_EACH_IDX(TF, FARGS, ...) _PP_PAR_EACH_IDX(TF, FARGS, PP_NARG(__VA_ARGS__), __VA_ARGS__)",
         "_PP_PAR_EACH_IDX(TF, FARGS, N, ...) __PP_PAR_EACH_IDX(TF, FARGS, N, __VA_ARGS__)",
-        "__PP_PAR_EACH_IDX(TF, FARGS, N, ...) _PP_PAR_IDX_##N(TF, FARGS, __VA_ARGS__)",
+        "__PP_PAR_EACH_IDX(TF, FARGS, N, ...) EXPAND(_PP_PAR_IDX_##N(TF, FARGS, __VA_ARGS__))",
         "_PP_APPLY(TF, FARGS, VARG, IDX) DEFER(TF) (DEPAREN(FARGS), VARG, IDX)",
         "",
         "_PP_PAR_IDX_0(TF, FARGS, dummy)",
