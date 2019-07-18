@@ -697,7 +697,7 @@ def output_assertions
   PP_1PAR_EACH_IDX(_FFF_ASSERT_ARG, FN, __VA_ARGS__)
 
 #define FFF_ASSERT_NTH(FN, CALL_IDX, ...) \
-  _FFF_ASSERT_TRUE_MSG(CALL_IDX > 0, "Invalid call index -- expected >0, got " #CALL_IDX); \
+  _FFF_ASSERT_TRUE_MSG(CALL_IDX>0, "Invalid call index -- expected >0, got " #CALL_IDX); \
   _FFF_ASSERT_TRUE_MSG(FFF_CALLS(FN) >= CALL_IDX, #FN " not called " #CALL_IDX " times"); \
   PP_2PAR_EACH_IDX(_FFF_ASSERT_HISTORICAL_ARG, FN, CALL_IDX, __VA_ARGS__)
 
@@ -722,8 +722,8 @@ def output_assertions
 #define _FFF_ASSERT_EQ(expected, actual) _FFF_ASSERT_EQ_MSG(expected, actual, "Expected " #expected " / Got " #actual)
 #endif
 
-#define _FFF_ASSERT_TRUE_MSG(COND, MSG) _FFF_ASSERT_EQ_MSG(((COND)>0), 1, MSG)
-#define _FFF_ASSERT_FALSE_MSG(COND, MSG) _FFF_ASSERT_EQ_MSG((COND), 0, MSG)
+#define _FFF_ASSERT_TRUE_MSG(COND, MSG) _FFF_ASSERT_EQ_MSG((COND), true, MSG)
+#define _FFF_ASSERT_FALSE_MSG(COND, MSG) _FFF_ASSERT_EQ_MSG((COND), false, MSG)
 
 #define _FFF_ASSERT_ARG(FN, VAL, ARG_IDX) _FFF_ASSERT_EQ_MSG(VAL, FFF_LAST_ARG_VAL(FN, ARG_IDX), #FN" parameter value mismatch at ARG"#ARG_IDX);
 
