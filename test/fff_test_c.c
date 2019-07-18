@@ -51,8 +51,7 @@ FAKE_VOID_FUNC(__cdecl, voidfunc20, int, int, int, int, int, int, int, int, int,
 FAKE_VALUE_FUNC(int, __cdecl, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 #endif
 
-#include "test_cases.include"
-#include "test_cases_assertions.include"
+#include "test_cases_assertions_setup.include"
 
 void setup()
 {
@@ -69,7 +68,8 @@ void setup()
     RESET_FAKE_ASSERTIONS();
 }
 
-
+#include "test_cases.include"
+#include "test_cases_assertions.include"
 
 TEST_F(FFFTestSuite, default_constants_can_be_overridden)
 {
@@ -88,8 +88,8 @@ int main()
     fflush(0);
 
     /* Run tests */
-    RUN_TESTS(
-        FFFTestSuite, when_void_func_never_called_then_callcount_is_zero,
+    RUN_TESTS(FFFTestSuite,
+        when_void_func_never_called_then_callcount_is_zero,
         when_void_func_called_once_then_callcount_is_one,
         when_void_func_called_once_and_reset_then_callcount_is_zero,
         when_void_func_with_1_integer_arg_called_then_last_arg_captured,

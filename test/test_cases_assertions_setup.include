@@ -1,0 +1,13 @@
+static int valid_assertions_, invalid_assertions_;
+#define _FFF_ASSERT_EQ_MSG(EXP, ACT, MSG) if ((EXP)==(ACT)) { valid_assertions_++; } else { invalid_assertions_++; }
+
+enum AssertionResult {
+  INVALID,
+  VALID
+};
+
+#define ASSERT_FAKE_ASSERTION_WAS(RSLT) \
+  if((RSLT)==VALID) ASSERT_EQ(1, valid_assertions_>0); \
+  ASSERT_EQ((!(RSLT)), invalid_assertions_>0)
+
+#define RESET_FAKE_ASSERTIONS() valid_assertions_ = invalid_assertions_ = 0
