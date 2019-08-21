@@ -37,6 +37,8 @@ FAKE_VOID_FUNC(__cdecl, voidfunc20, int, int, int, int, int, int, int, int, int,
 FAKE_VALUE_FUNC(int, __cdecl, valuefunc20, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int);
 #endif
 
+#include "test_cases_assertions_setup.include"
+
 class FFFTestSuite: public testing::Test
 {
 public:
@@ -49,6 +51,7 @@ public:
         RESET_FAKE(voidfunc3var);
         RESET_FAKE(valuefunc3var);
         FFF_RESET_HISTORY();
+        RESET_FAKE_ASSERTIONS();
     }
 };
 
@@ -99,3 +102,4 @@ TEST_F(FFFTestSuite, cxx_can_register_custom_fake)
 }
 
 #include "test_cases.include"
+#include "test_cases_assertions.include"
