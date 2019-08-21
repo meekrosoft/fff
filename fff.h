@@ -173,7 +173,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -214,7 +216,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -258,7 +262,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -305,7 +311,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -355,7 +363,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -408,7 +418,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -464,7 +476,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -523,7 +537,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -585,7 +601,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -650,7 +668,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -718,7 +738,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -789,7 +811,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -863,7 +887,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -940,7 +966,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -1020,7 +1048,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -1103,7 +1133,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -1189,7 +1221,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -1278,7 +1312,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -1370,7 +1406,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -1465,7 +1503,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -1563,7 +1603,9 @@ FFF_END_EXTERN_C
                 FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
+        } \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
 
@@ -1608,7 +1650,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -1657,7 +1704,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -1709,7 +1761,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -1764,7 +1821,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -1822,7 +1884,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -1883,7 +1950,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -1947,7 +2019,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2014,7 +2091,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2084,7 +2166,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2157,7 +2244,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2233,7 +2325,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2312,7 +2409,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2394,7 +2496,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2479,7 +2586,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2567,7 +2679,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2658,7 +2775,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2752,7 +2874,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2849,7 +2976,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -2949,7 +3081,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -3052,7 +3189,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \
@@ -3158,7 +3300,12 @@ FFF_END_EXTERN_C
                 return FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
             } \
         } \
-        if (FUNCNAME##_fake.custom_fake) return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
+        if (FUNCNAME##_fake.custom_fake){  \
+            RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
+            SAVE_RET_HISTORY(FUNCNAME, ret); \
+            return ret; \
+            return FUNCNAME##_fake.custom_fake(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19); \
+        } \
         RETURN_FAKE_RESULT(FUNCNAME) \
     } \
     DEFINE_RESET_FUNCTION(FUNCNAME) \

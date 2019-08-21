@@ -479,7 +479,14 @@ def output_function_body(arg_count, has_varargs, is_value_function)
       putd_backslash "}"
     }
     putd_backslash "}"
-    putd_backslash "if (FUNCNAME##_fake.custom_fake) #{return_type}FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)});"
+    putd_backslash "if (FUNCNAME##_fake.custom_fake){ "
+    indent {
+        putd_backslash "RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)});" unless not is_value_function
+        putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
+        putd_backslash "return ret;" unless not is_value_function
+        putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)});"
+    }
+    putd_backslash "}"
   end
 
   putd_backslash "RETURN_FAKE_RESULT(FUNCNAME)" if is_value_function
