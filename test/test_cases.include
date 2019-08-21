@@ -347,11 +347,30 @@ long my_custom_value_fake(void)
 {
     return MEANING_OF_LIFE;
 }
+
+long my_custom_value_fake2(void)
+{
+    static long val = 0;
+    return val++;
+}
+
 TEST_F(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return_value)
 {
     longfunc0_fake.custom_fake = my_custom_value_fake;
     long retval = longfunc0();
     ASSERT_EQ(MEANING_OF_LIFE, retval);
+}
+
+TEST_F(FFFTestSuite, return_values_from_custom_fake_saved_in_history)
+{
+    longfunc0_fake.custom_fake = my_custom_value_fake2;
+    longfunc0();
+    longfunc0();
+    longfunc0();
+
+    ASSERT_EQ(0, longfunc0_fake.return_val_history[0]);
+    ASSERT_EQ(1, longfunc0_fake.return_val_history[1]);
+    ASSERT_EQ(2, longfunc0_fake.return_val_history[2]);
 }
 
 int valuefunc3var_custom_fake1(const char *str, int a, va_list vl)
