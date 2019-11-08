@@ -198,7 +198,20 @@ void setup()
 }
 ```
 
-You might want to define a macro to do this:
+If you simply want to reset all called fakes, you can do so like this:
+
+```c
+void setup()
+{
+  /* call resets of all previously called fakes */
+  FFF_RESET_CALLED_FAKES();
+
+  /* reset common FFF internal structures */
+  FFF_RESET_HISTORY();
+}
+```
+
+Alternatively, you might want to define a macro to do this:
 
 ```c
 /* List of fakes used by this unit tester */
