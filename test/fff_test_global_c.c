@@ -8,16 +8,7 @@ DEFINE_FFF_GLOBALS;
 
 void setup()
 {
-    RESET_FAKE(voidfunc1);
-    RESET_FAKE(voidfunc2);
-    RESET_FAKE(voidfunc1outparam);
-    RESET_FAKE(longfunc0);
-    RESET_FAKE(enumfunc0);
-    RESET_FAKE(structfunc0);
-    RESET_FAKE(voidfunc3var);
-    RESET_FAKE(valuefunc3var);
-    RESET_FAKE(strlcpy3);
-
+    FFF_RESET_CALLED_FAKES();
     FFF_RESET_HISTORY();
 }
 

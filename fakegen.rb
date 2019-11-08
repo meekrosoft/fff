@@ -7,6 +7,7 @@ $cpp_output = true
 $MAX_ARGS = 20
 $DEFAULT_ARG_HISTORY = 50
 $MAX_CALL_HISTORY = 50
+$MAX_RESET_LIST = 50
 
 def include_dependencies
   putd "#include <stdarg.h>"
@@ -26,12 +27,17 @@ def output_constants
     putd "#define FFF_CALL_HISTORY_LEN (#{$MAX_CALL_HISTORY}u)"
   }
   putd "#endif"
+  putd "#ifndef FFF_RESET_LIST_LEN"
+  indent {
+    putd "#define FFF_RESET_LIST_LEN (#{$MAX_RESET_LIST}u)"
+  }
+  putd "#endif"
   putd "#ifndef FFF_GCC_FUNCTION_ATTRIBUTES"
   indent {
      putd "#define FFF_GCC_FUNCTION_ATTRIBUTES"
   }
   putd "#endif"
-  
+
 end
 
 
@@ -408,6 +414,7 @@ def output_function_body(arg_count, has_varargs, is_value_function)
   putd_backslash "}"
   putd_backslash "INCREMENT_CALL_COUNT(FUNCNAME);"
   putd_backslash "REGISTER_CALL(FUNCNAME);"
+  putd_backslash "REGISTER_RESET_CALL(FUNCNAME##_reset);"
 
   if has_varargs
     return_type = is_value_function ? "return " : ""
@@ -494,10 +501,14 @@ end
 
 def define_fff_globals
   putd "typedef void (*fff_function_t)(void);"
+  putd "typedef void (*fff_reset_function_t)(void);"
   putd "typedef struct { "
   indent {
     putd "fff_function_t call_history[FFF_CALL_HISTORY_LEN];"
     putd "unsigned int call_history_idx;"
+    putd "fff_reset_function_t reset_list[FFF_RESET_LIST_LEN];"
+    putd "unsigned int reset_list_idx;"
+    putd "unsigned int dropped_resets;"
   }
   putd "} fff_globals_t;"
   puts
@@ -520,12 +531,51 @@ def define_fff_globals
     putd "memset(fff.call_history, 0, sizeof(fff.call_history));"
   }
   puts
+  putd_backslash "#define FFF_RESET_CALLED_FAKES()"
+  indent {
+    putd_backslash "for(unsigned int i = 0; i < fff.reset_list_idx; ++i) {"
+    indent {
+      putd_backslash "fff.reset_list[i]();"
+    }
+    putd_backslash "}"
+    putd_backslash "fff.reset_list_idx = 0;"
+    putd_backslash "fff.dropped_resets = 0;"
+    putd "memset(fff.reset_list, 0, sizeof(fff.reset_list));"
+  }
+  puts
   putd_backslash "#define REGISTER_CALL(function)"
   indent {
     putd_backslash "if(fff.call_history_idx < FFF_CALL_HISTORY_LEN)"
     indent {
                 putd "fff.call_history[fff.call_history_idx++] = (fff_function_t)function;"
     }
+  }
+  puts
+  putd_backslash "#define REGISTER_RESET_CALL(reset_function)"
+  indent {
+    putd_backslash "if(fff.reset_list_idx < FFF_RESET_LIST_LEN) {"
+    indent {
+      putd_backslash "int already_in_list = 0;"
+      putd_backslash "for(unsigned int i = 0; i < fff.reset_list_idx; ++i) {"
+      indent {
+        putd_backslash "if(fff.reset_list[i] == (fff_reset_function_t)reset_function) {"
+        indent {
+          putd_backslash "already_in_list = 1;"
+          putd_backslash "break;"
+        }
+        putd_backslash "}"
+      }
+      putd_backslash "}"
+      putd_backslash "if(!already_in_list)"
+      indent {
+        putd_backslash "fff.reset_list[fff.reset_list_idx++] = (fff_reset_function_t)reset_function;"
+      }
+    }
+    putd_backslash "} else {"
+    indent {
+      putd_backslash "fff.dropped_resets++;"
+    }
+    putd "}"
   }
 end
 
