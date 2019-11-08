@@ -11,12 +11,7 @@ class FFFTestSuite: public testing::Test
 public:
     void SetUp()
     {
-        RESET_FAKE(voidfunc1);
-        RESET_FAKE(voidfunc2);
-        RESET_FAKE(longfunc0);
-        RESET_FAKE(voidfunc1outparam);
-        RESET_FAKE(voidfunc3var);
-        RESET_FAKE(valuefunc3var);
+        FFF_RESET_CALLED_FAKES();
         FFF_RESET_HISTORY();
     }
 };
