@@ -12,6 +12,10 @@ def include_dependencies
   putd "#include <stdarg.h>"
   putd "#include <string.h> /* For memset and memcpy */"
   puts
+  putd "#ifdef __cplusplus"
+  putd "#include <type_traits>"
+  putd "#endif"
+  puts
 end
 
 def output_constants

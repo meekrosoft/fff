@@ -4,6 +4,10 @@
 #include <stdarg.h>
 #include <string.h> /* For memset and memcpy */
 
+#ifdef __cplusplus
+#include <type_traits>
+#endif
+
 #define FFF_MAX_ARGS (20u)
 #ifndef FFF_ARG_HISTORY_LEN
     #define FFF_ARG_HISTORY_LEN (50u)
