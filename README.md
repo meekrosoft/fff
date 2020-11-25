@@ -136,8 +136,8 @@ unsigned int DISPLAY_get_line_insert_index();
 Here's how you would define fake functions for these in your test suite:
 
 ```c
-FAKE_VALUE_FUNC(unsigned int, DISPLAY_get_line_capacity);
-FAKE_VALUE_FUNC(unsigned int, DISPLAY_get_line_insert_index);
+FAKE_VALUE_FUNC0(unsigned int, DISPLAY_get_line_capacity);
+FAKE_VALUE_FUNC0(unsigned int, DISPLAY_get_line_insert_index);
 ```
 
 And the unit test might look something like this:
@@ -167,6 +167,10 @@ you would use a syntax like this:
 ```c
 FAKE_VALUE_FUNC(double, pow, double, double);
 ```
+
+Note the difference between `FAKE_VALUE_FUNC0` for functions without arguments
+and `FAKE_VALUE_FUNC` for functions with arguments.
+
 ## Resetting a Fake
 
 Good tests are isolated tests, so it is important to reset the fakes for each
