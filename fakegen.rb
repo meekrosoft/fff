@@ -8,6 +8,11 @@ $MAX_ARGS = 20
 $DEFAULT_ARG_HISTORY = 50
 $MAX_CALL_HISTORY = 50
 
+def output_pragmas
+  putd "#pragma GCC system_header"
+  puts
+end
+
 def include_dependencies
   putd "#include <stdarg.h>"
   putd "#include <string.h> /* For memset and memcpy */"
@@ -637,6 +642,7 @@ end
 
 def output_c_and_cpp(has_calling_conventions)
   include_guard {
+    output_pragmas
     include_dependencies
     output_constants
     output_internal_helper_macros
