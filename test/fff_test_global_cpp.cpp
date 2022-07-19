@@ -1,7 +1,5 @@
 
-extern "C"{
-    #include "global_fakes.h"
-}
+#include "global_fakes.hpp"
 #include <gtest/gtest.h>
 
 DEFINE_FFF_GLOBALS;

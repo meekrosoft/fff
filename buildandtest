@@ -8,10 +8,12 @@ make clean
 make all
 build/fff_test_c 
 build/fff_test_cpp --gtest_output=xml:build/test_results.xml
+build/fff_test_cpp_custom_fn --gtest_output=xml:build/test_results_custom_fn.xml
 build/ui_test_ansic
 build/ui_test_cpp --gtest_output=xml:build/example_results.xml
 build/fff_test_glob_c
 build/fff_test_glob_cpp --gtest_output=xml:build/test_global_results.xml
+build/fff_test_glob_cpp_custom_fn --gtest_output=xml:build/test_global_results_custom_fn.xml
 build/driver_testing --gtest_output=xml:build/driver_testing.xml
 build/driver_testing_fff  --gtest_output=xml:build/driver_testing_fff.xml
 build/weak_linking/test_display

@@ -6,9 +6,20 @@ $(BUILD_DIR)/fff_test_cpp.o \
 $(BUILD_DIR)/gtest-all.o \
 $(BUILD_DIR)/gtest-main.o
 
+FFF_TEST_CPP_CUSTOM_FN_OBJS += \
+$(BUILD_DIR)/fff_test_cpp_custom_fn.o \
+$(BUILD_DIR)/gtest-all.o \
+$(BUILD_DIR)/gtest-main.o
+
 FFF_TEST_GLOBAL_CPP_OBJS += \
 $(BUILD_DIR)/fff_test_global_cpp.o \
-$(BUILD_DIR)/global_fakes.o \
+$(BUILD_DIR)/global_fakes_cpp.o \
+$(BUILD_DIR)/gtest-all.o \
+$(BUILD_DIR)/gtest-main.o
+
+FFF_TEST_GLOBAL_CPP_CUSTOM_FN_OBJS += \
+$(BUILD_DIR)/fff_test_global_cpp_custom_fn.o \
+$(BUILD_DIR)/global_fakes_cpp_custom_fn.o \
 $(BUILD_DIR)/gtest-all.o \
 $(BUILD_DIR)/gtest-main.o
 
@@ -18,14 +29,16 @@ FFF_TEST_GLOBAL_C_OBJS += \
 $(BUILD_DIR)/global_fakes.o \
 $(BUILD_DIR)/fff_test_global_c.o
 
-FFF_TEST_CPP_TARGET = $(BUILD_DIR)/fff_test_cpp
 FFF_TEST_C_TARGET = $(BUILD_DIR)/fff_test_c
+FFF_TEST_CPP_TARGET = $(BUILD_DIR)/fff_test_cpp
+FFF_TEST_CPP_CUSTOM_FN_TARGET = $(BUILD_DIR)/fff_test_cpp_custom_fn
 FFF_TEST_GLOBAL_C_TARGET = $(BUILD_DIR)/fff_test_glob_c
 FFF_TEST_GLOBAL_CPP_TARGET = $(BUILD_DIR)/fff_test_glob_cpp
+FFF_TEST_GLOBAL_CPP_CUSTOM_FN_TARGET = $(BUILD_DIR)/fff_test_glob_cpp_custom_fn
 
 LIBS := -lpthread
 # All Target
-all: $(FFF_TEST_CPP_TARGET) $(FFF_TEST_C_TARGET) $(FFF_TEST_GLOBAL_C_TARGET) $(FFF_TEST_GLOBAL_CPP_TARGET)
+all: $(FFF_TEST_CPP_TARGET) $(FFF_TEST_CPP_CUSTOM_FN_TARGET) $(FFF_TEST_C_TARGET) $(FFF_TEST_GLOBAL_C_TARGET) $(FFF_TEST_GLOBAL_CPP_TARGET) $(FFF_TEST_GLOBAL_CPP_CUSTOM_FN_TARGET)
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -33,6 +46,13 @@ $(BUILD_DIR)/%.o: %.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -I../ -O0 -g3 -Wall -DGTEST_USE_OWN_TR1_TUPLE=1 -c -o "$@" "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+$(BUILD_DIR)/%_custom_fn.o: %.cpp
+	@echo 'Building file: $<'
+	@echo 'Invoking: GCC C++ Compiler'
+	g++ -I../ -O0 -g3 -Wall -DGTEST_USE_OWN_TR1_TUPLE=1 -include custom_function.hpp -c -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -49,6 +69,13 @@ $(FFF_TEST_CPP_TARGET): $(FFF_TEST_CPP_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
 	g++ -o "$(FFF_TEST_CPP_TARGET)" $(FFF_TEST_CPP_OBJS) $(LIBS)
+	@echo 'Finished building target: $@'
+	@echo ' '
+
+$(FFF_TEST_CPP_CUSTOM_FN_TARGET): $(FFF_TEST_CPP_CUSTOM_FN_OBJS)
+	@echo 'Building target: $@'
+	@echo 'Invoking: GCC C++ Linker'
+	g++ -o "$(FFF_TEST_CPP_CUSTOM_FN_TARGET)" $(FFF_TEST_CPP_CUSTOM_FN_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -73,9 +100,18 @@ $(FFF_TEST_GLOBAL_CPP_TARGET): $(FFF_TEST_GLOBAL_CPP_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
+$(FFF_TEST_GLOBAL_CPP_CUSTOM_FN_TARGET): $(FFF_TEST_GLOBAL_CPP_CUSTOM_FN_OBJS)
+	@echo 'Building target: $@'
+	@echo 'Invoking: GCC C++ Linker'
+	g++  -o "$(FFF_TEST_GLOBAL_CPP_CUSTOM_FN_TARGET)" $(FFF_TEST_GLOBAL_CPP_CUSTOM_FN_OBJS) $(LIBS)
+	@echo 'Finished building target: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) $(FFF_TEST_CPP_OBJS) $(FFF_TEST_GLOBAL_C_OBJS) $(FFF_TEST_C_OBJS) \
-		$(FFF_TEST_CPP_TARGET) $(FFF_TEST_C_TARGET) $(FFF_TEST_GLOBAL_CPP_TARGET) $(FFF_TEST_GLOBAL_C_TARGET)
+	-$(RM) $(FFF_TEST_CPP_OBJS) $(FFF_TEST_CPP_CUSTOM_FN_OBJS) $(FFF_TEST_GLOBAL_C_OBJS) $(FFF_TEST_C_OBJS) \
+		$(FFF_TEST_GLOBAL_CPP_OBJS) $(FFF_TEST_GLOBAL_CPP_CUSTOM_FN_OBJS) $(FFF_TEST_CPP_TARGET) \
+		$(FFF_TEST_CPP_CUSTOM_FN_TARGET) $(FFF_TEST_C_TARGET) $(FFF_TEST_GLOBAL_CPP_TARGET) \
+		$(FFF_TEST_GLOBAL_CPP_CUSTOM_FN_TARGET) $(FFF_TEST_GLOBAL_C_TARGET)
 	-@echo ' '
 
