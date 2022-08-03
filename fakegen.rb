@@ -8,6 +8,10 @@ $MAX_ARGS = 20
 $DEFAULT_ARG_HISTORY = 50
 $MAX_CALL_HISTORY = 50
 
+def license
+  File.foreach("#{__dir__}/LICENSE") { |line| putd line }
+end
+
 def include_dependencies
   putd "#include <stdarg.h>"
   putd "#include <string.h> /* For memset and memcpy */"
@@ -636,6 +640,7 @@ def output_macro_counting_shortcuts(has_calling_conventions)
 end
 
 def output_c_and_cpp(has_calling_conventions)
+  license
   include_guard {
     include_dependencies
     output_constants

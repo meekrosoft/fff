@@ -25,6 +25,9 @@ bld/
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 
+# IntelliJ IDE project directory
+.idea/
+
 # Visual C++ cache files
 ipch/
 *.aps

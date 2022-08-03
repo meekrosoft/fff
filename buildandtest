@@ -1,20 +1,15 @@
 #!/bin/bash
 set -e
 
-cat LICENSE > fff.h
-echo >> fff.h
-ruby fakegen.rb >> fff.h
-make clean
-make all
-build/fff_test_c 
-build/fff_test_cpp --gtest_output=xml:build/test_results.xml
-build/ui_test_ansic
-build/ui_test_cpp --gtest_output=xml:build/example_results.xml
-build/fff_test_glob_c
-build/fff_test_glob_cpp --gtest_output=xml:build/test_global_results.xml
-build/driver_testing --gtest_output=xml:build/driver_testing.xml
-build/driver_testing_fff  --gtest_output=xml:build/driver_testing_fff.xml
-build/weak_linking/test_display
-build/weak_linking/test_sensor
-build/weak_linking/test_main
+# Clear the environment
+rm -fr build fff.h
+mkdir build
 
+# Configure the build
+cmake -GNinja -B build || exit -1
+
+# Build all targets
+cmake --build build || exit -1
+
+# Run all tests
+ctest --test-dir build --output-on-failure

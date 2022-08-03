@@ -1554,11 +1554,29 @@ inline bool operator!=(const GTEST_10_TUPLE_(T)& t,
 // <tr1/functional>.  Hence the following #define is a hack to prevent
 // <tr1/functional> from being included.
 #   define _TR1_FUNCTIONAL 1
-#   include <tr1/tuple>
+#   include <tuple>
+namespace std {
+    namespace tr1 {
+        using ::std::get;
+        using ::std::make_tuple;
+        using ::std::tuple;
+        using ::std::tuple_element;
+        using ::std::tuple_size;
+    }
+}
 #   undef _TR1_FUNCTIONAL  // Allows the user to #include
                         // <tr1/functional> if he chooses to.
 #  else
-#   include <tr1/tuple>  // NOLINT
+#   include <tuple>  // NOLINT
+namespace std {
+    namespace tr1 {
+        using ::std::get;
+        using ::std::make_tuple;
+        using ::std::tuple;
+        using ::std::tuple_element;
+        using ::std::tuple_size;
+    }
+}
 #  endif  // !GTEST_HAS_RTTI && GTEST_GCC_VER_ < 40302
 
 # else

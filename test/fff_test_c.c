@@ -6,7 +6,7 @@
 #define OVERRIDE_CALL_HIST_LEN 17u
 #define FFF_CALL_HISTORY_LEN OVERRIDE_CALL_HIST_LEN
 
-#include "../fff.h"
+#include "fff.h"
 #include "c_test_framework.h"
 
 #include <assert.h>

@@ -28,6 +28,18 @@
 fff is a micro-framework for creating fake C functions for tests.  Because life
 is too short to spend time hand-writing fake functions for testing.
 
+## Running all tests
+
+### Linux / MacOS
+To run all the tests and sample apps, simply call `$ buildandtest`. This script
+will call down into CMake with the following:
+
+```shell
+cmake -GNinja -B build
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
+
 ## Hello Fake World!
 
 Say you are testing an embedded user interface and you have a function that

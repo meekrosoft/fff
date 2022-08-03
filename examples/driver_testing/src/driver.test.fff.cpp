@@ -3,7 +3,7 @@ extern "C"{
     #include "registers.h"
     #include "hardware_abstraction.h"
 }
-#include "../../fff.h"
+#include "fff.h"
 #include <gtest/gtest.h>
 
 DEFINE_FFF_GLOBALS;
