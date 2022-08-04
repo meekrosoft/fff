@@ -32,7 +32,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B7658726-71D3-48B3-8BD2-6D383A60DC8E}</ProjectGuid>
     <RootNamespace>msvcffftest</RootNamespace>
-    <WindowsTargetPlatformVersion>17.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
     <ProjectName>ms_vc_fff_test_c</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
