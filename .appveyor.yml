@@ -1,5 +1,7 @@
 version: '{build}-appveyor'
 image: Visual Studio 2017
+install:
+  - set PATH=C:\Ruby200\bin;%PATH%
 build:
   verbosity: minimal
 test_script:
