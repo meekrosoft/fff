@@ -6,7 +6,7 @@ extern "C"{
 #include <gtest/gtest.h>
 
 
-#include "../../fff.h"
+#include "fff.h"
 DEFINE_FFF_GLOBALS;
 
 /* SYSTEM.h */

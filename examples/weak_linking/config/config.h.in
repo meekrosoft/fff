@@ -1,0 +1,5 @@
+/* Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#cmakedefine FFF_GCC_FUNCTION_ATTRIBUTES @FFF_GCC_FUNCTION_ATTRIBUTES@
