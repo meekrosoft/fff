@@ -16,6 +16,10 @@ def include_dependencies
   putd "#include <stdarg.h>"
   putd "#include <string.h> /* For memset and memcpy */"
   puts
+  putd "#ifdef __cplusplus"
+  putd "#include <type_traits>"
+  putd "#endif"
+  puts
 end
 
 def output_constants
@@ -49,6 +53,7 @@ def output_internal_helper_macros
   define_return_sequence_helper
   define_custom_fake_sequence_helper
   define_reset_fake_macro
+  define_normalize_arg_types
   define_declare_arg_helper
   define_declare_all_func_common_helper
   define_declare_return_value_history
@@ -93,6 +98,27 @@ def define_reset_fake_macro
   }
   putd_backslash "}"
   puts
+end
+
+def define_normalize_arg_types
+  puts
+  putd "#ifdef __cplusplus"
+  indent {
+    putd_backslash "#define FFF_NORMALIZE_TYPE(TYPE, n, FUNCNAME)"
+    indent {
+      putd_backslash "typedef std::remove_const<TYPE>::type FUNCNAME##_arg##n;"
+    }
+    puts
+  }
+  putd "#else  /* ansi c */"
+  indent {
+    putd_backslash "#define FFF_NORMALIZE_TYPE(TYPE, n, FUNCNAME)"
+    indent {
+      putd_backslash "typedef TYPE FUNCNAME##_arg##n;"
+    }
+    puts
+  }
+  putd "#endif  /* cpp/ansi c */"
 end
 
 def define_declare_arg_helper
@@ -335,9 +361,12 @@ def macro_signature_for(macro_name, arg_count, has_varargs, has_calling_conventi
 end
 
 def output_variables(arg_count, has_varargs, has_calling_conventions, is_value_function)
+  arg_count.times { |argN|
+    putd_backslash "FFF_NORMALIZE_TYPE(ARG#{argN}_TYPE, #{argN}, FUNCNAME)"
+  }
   in_struct{
     arg_count.times { |argN|
-      putd_backslash "DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME)"
+      putd_backslash "DECLARE_ARG(FUNCNAME##_arg#{argN}, #{argN}, FUNCNAME)"
     }
     putd_backslash "DECLARE_ALL_FUNC_COMMON"
     putd_backslash "DECLARE_VALUE_FUNCTION_VARIABLES(RETURN_TYPE)" unless not is_value_function
