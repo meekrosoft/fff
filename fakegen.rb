@@ -35,9 +35,20 @@ def output_constants
      putd "#define FFF_GCC_FUNCTION_ATTRIBUTES"
   }
   putd "#endif"
-  
+
 end
 
+
+def output_default_function_pointer_macro(has_calling_conventions)
+  name = has_calling_conventions ? "(CALLING_CONVENTION *FUNCNAME)" : "(*FUNCNAME)"
+  calling_conv = has_calling_conventions ? ", CALLING_CONVENTION" : ""
+  putd "#ifndef CUSTOM_FFF_FUNCTION_TEMPLATE"
+  putd_backslash "#define CUSTOM_FFF_FUNCTION_TEMPLATE(RETURN#{calling_conv}, FUNCNAME, ...)"
+  indent {
+    putd "RETURN#{name}(__VA_ARGS__)"
+  }
+  putd "#endif /* CUSTOM_FFF_FUNCTION_TEMPLATE */"
+end
 
 
 
@@ -235,7 +246,9 @@ def define_reset_fake_helper
   indent {
     putd_backslash "void FUNCNAME##_reset(void){"
     indent {
-      putd_backslash "memset(&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake));"
+      putd_backslash "memset((void*)&FUNCNAME##_fake, 0, sizeof(FUNCNAME##_fake) - sizeof(FUNCNAME##_fake.custom_fake) - sizeof(FUNCNAME##_fake.custom_fake_seq));"
+      putd_backslash "FUNCNAME##_fake.custom_fake = NULL;"
+      putd_backslash "FUNCNAME##_fake.custom_fake_seq = NULL;"
       putd_backslash "FUNCNAME##_fake.arg_history_len = FFF_ARG_HISTORY_LEN;"
     }
     putd "}"
@@ -359,6 +372,14 @@ def arg_val_list(args_count)
   arguments.join(", ")
 end
 
+#example: ARG0_TYPE, ARG1_TYPE
+def arg_type_list(args_count)
+  return "void" if (args_count == 0)
+  arguments = []
+  args_count.times { |i| arguments << "ARG#{i}_TYPE" }
+  arguments.join(", ")
+end
+
 #example: arg0, arg1
 def arg_list(args_count)
   arguments = []
@@ -374,17 +395,15 @@ end
 def output_custom_function_signature(arg_count, has_varargs, has_calling_conventions, is_value_function)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
   ap_list = has_varargs ? ", va_list ap" : ""
-  signature = has_calling_conventions ? "(CALLING_CONVENTION *custom_fake)" : "(*custom_fake)"
-  signature += "(#{arg_val_list(arg_count)}#{ap_list});"
-  putd_backslash return_type + signature
+  calling_conv = has_calling_conventions ? ", CALLING_CONVENTION" : ""
+  putd_backslash "CUSTOM_FFF_FUNCTION_TEMPLATE(#{return_type}#{calling_conv}, custom_fake, #{arg_type_list(arg_count)}#{ap_list});"
 end
 
 def output_custom_function_array(arg_count, has_varargs, has_calling_conventions, is_value_function)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
   ap_list = has_varargs ? ", va_list ap" : ""
-  custom_array = has_calling_conventions ? "(CALLING_CONVENTION **custom_fake_seq)" : "(**custom_fake_seq)"
-  custom_array += "(#{arg_val_list(arg_count)}#{ap_list});"
-  putd_backslash return_type + custom_array
+  calling_conv = has_calling_conventions ? ", CALLING_CONVENTION" : ""
+  putd_backslash "CUSTOM_FFF_FUNCTION_TEMPLATE(#{return_type}#{calling_conv}, *custom_fake_seq, #{arg_type_list(arg_count)}#{ap_list});"
 end
 
 # example: RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1)
@@ -483,7 +502,7 @@ def output_function_body(arg_count, has_varargs, is_value_function)
       putd_backslash "}"
     }
     putd_backslash "}"
-    putd_backslash "if (FUNCNAME##_fake.custom_fake){ "
+    putd_backslash "if (FUNCNAME##_fake.custom_fake != NULL){ "
     indent {
         putd_backslash "RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)});" unless not is_value_function
         putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
@@ -644,6 +663,7 @@ def output_c_and_cpp(has_calling_conventions)
   include_guard {
     include_dependencies
     output_constants
+    output_default_function_pointer_macro(has_calling_conventions)
     output_internal_helper_macros
     yield
     output_macro_counting_shortcuts(has_calling_conventions)
