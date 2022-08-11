@@ -38,6 +38,22 @@ add_executable(cpp_global_test
 target_include_directories(cpp_global_test PRIVATE include)
 target_link_libraries(cpp_global_test PRIVATE gtest fff)
 
+# Create the C++ custom function signature executable
+add_executable(cpp_custom_fn_signature_test
+    src/fff_test_custom_function_template.cpp
+    ${COMMON_FILE_LIST}
+)
+target_include_directories(cpp_custom_fn_signature_test PRIVATE include)
+target_link_libraries(cpp_custom_fn_signature_test PRIVATE gtest fff)
+# Due to a bug in WinLibs for Windows it's not currently possible to use:
+#   target_precompile_headers(cpp_custom_fn_signature_test PUBLIC include/custom_function.hpp)
+# See more info at target_precompile_headers(cpp_custom_fn_signature_test PUBLIC include/custom_function.hpp)
+
+add_test(
+      NAME cpp_custom_fn_signature_test
+      COMMAND $<TARGET_FILE:cpp_custom_fn_signature_test>
+  )
+
 # Add the tests for ctest
 add_test(
     NAME c_test
