@@ -35,7 +35,7 @@ def output_constants
      putd "#define FFF_GCC_FUNCTION_ATTRIBUTES"
   }
   putd "#endif"
-  
+ 
 end
 
 
@@ -269,7 +269,7 @@ def indent
   popd
 end
 
-def output_macro(arg_count, has_varargs, has_calling_conventions, is_value_function)
+def output_macro(arg_count, has_varargs, has_calling_conventions, is_value_function, preamble)
 
   vararg_name = has_varargs ? "_VARARG" : ""
   fake_macro_name = is_value_function ? "FAKE_VALUE_FUNC#{arg_count}#{vararg_name}" : "FAKE_VOID_FUNC#{arg_count}#{vararg_name}"
@@ -281,16 +281,16 @@ def output_macro(arg_count, has_varargs, has_calling_conventions, is_value_funct
   puts
   output_macro_header(declare_macro_name, saved_arg_count, has_varargs, has_calling_conventions, return_type)
   indent {
-    output_variables(saved_arg_count, has_varargs, has_calling_conventions, is_value_function)
+    output_variables(saved_arg_count, has_varargs, has_calling_conventions, is_value_function, preamble)
   }
 
   puts
   output_macro_header(define_macro_name, saved_arg_count, has_varargs, has_calling_conventions, return_type)
   indent {
     putd_backslash "FUNCNAME##_Fake FUNCNAME##_fake;"
-    putd_backslash function_signature(saved_arg_count, has_varargs, has_calling_conventions, is_value_function) + "{"
+    putd_backslash function_signature(saved_arg_count, has_varargs, has_calling_conventions, is_value_function, preamble) + "{"
     indent {
-      output_function_body(saved_arg_count, has_varargs, is_value_function)
+      output_function_body(saved_arg_count, has_varargs, is_value_function, preamble)
     }
     putd_backslash "}"
     putd_backslash "DEFINE_RESET_FUNCTION(FUNCNAME)"
@@ -334,7 +334,7 @@ def macro_signature_for(macro_name, arg_count, has_varargs, has_calling_conventi
   parameter_list
 end
 
-def output_variables(arg_count, has_varargs, has_calling_conventions, is_value_function)
+def output_variables(arg_count, has_varargs, has_calling_conventions, is_value_function, preamble)
   in_struct{
     arg_count.times { |argN|
       putd_backslash "DECLARE_ARG(ARG#{argN}_TYPE, #{argN}, FUNCNAME)"
@@ -348,7 +348,7 @@ def output_variables(arg_count, has_varargs, has_calling_conventions, is_value_f
   }
   putd_backslash "extern FUNCNAME##_Fake FUNCNAME##_fake;"
   putd_backslash "void FUNCNAME##_reset(void);"
-  putd_backslash function_signature(arg_count, has_varargs, has_calling_conventions, is_value_function) + ";"
+  putd_backslash function_signature(arg_count, has_varargs, has_calling_conventions, is_value_function, preamble) + ";"
 end
 
 #example: ARG0_TYPE arg0, ARG1_TYPE arg1
@@ -390,15 +390,15 @@ end
 # example: RETURN_TYPE FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1)
 # OR
 # RETURN_TYPE CALLING_CONVENTION FUNCNAME(ARG0_TYPE arg0, ARG1_TYPE arg1)
-def function_signature(arg_count, has_varargs, has_calling_conventions, is_value_function)
+def function_signature(arg_count, has_varargs, has_calling_conventions, is_value_function, preamble)
   return_type = is_value_function ? "RETURN_TYPE" : "void"
   varargs = has_varargs ? ", ..." : ""
   calling_conventions = has_calling_conventions ?
-    "#{return_type} FFF_GCC_FUNCTION_ATTRIBUTES CALLING_CONVENTION FUNCNAME(#{arg_val_list(arg_count)}#{varargs})" :
-    "#{return_type} FFF_GCC_FUNCTION_ATTRIBUTES FUNCNAME(#{arg_val_list(arg_count)}#{varargs})"
+    "#{return_type} FFF_GCC_FUNCTION_ATTRIBUTES CALLING_CONVENTION #{preamble}FUNCNAME(#{arg_val_list(arg_count)}#{varargs})" :
+    "#{return_type} FFF_GCC_FUNCTION_ATTRIBUTES #{preamble}FUNCNAME(#{arg_val_list(arg_count)}#{varargs})"
 end
 
-def output_function_body(arg_count, has_varargs, is_value_function)
+def output_function_body(arg_count, has_varargs, is_value_function, preamble)
   arg_count.times { |i| putd_backslash "SAVE_ARG(FUNCNAME, #{i});" }
   putd_backslash "if(ROOM_FOR_MORE_HISTORY(FUNCNAME)){"
   indent {
@@ -411,7 +411,7 @@ def output_function_body(arg_count, has_varargs, is_value_function)
   }
   putd_backslash "}"
   putd_backslash "INCREMENT_CALL_COUNT(FUNCNAME);"
-  putd_backslash "REGISTER_CALL(FUNCNAME);"
+  putd_backslash "REGISTER_CALL(#{preamble}FUNCNAME);"
 
   if has_varargs
     return_type = is_value_function ? "return " : ""
@@ -662,17 +662,29 @@ def help
 end
 
 help {
+  args = ARGV
+  preamble = ""
+  while !args.empty?
+    current_arg, *args = args
+    if current_arg == "--with-calling-conventions" or current_arg == "-wcc"
+      has_calling_conventions = true
+    elsif current_arg == "--preamble" or current_arg == "-p"
+      preamble, *args = args
+      preamble = "#{preamble}##"
+    end
+  end
+
   # Determine if we should generate with support for calling conventions
-  has_calling_conventions = true if (ARGV[0] == "--with-calling-conventions" or ARGV[0] == "-wcc")
+  #has_calling_conventions = true if (ARGV[0] == "--with-calling-conventions" or ARGV[0] == "-wcc")
   # lets generate!!
   output_c_and_cpp(has_calling_conventions) {
     define_fff_globals
     # Create fake generators for 0..MAX_ARGS
     num_fake_generators = $MAX_ARGS + 1
-    num_fake_generators.times {|arg_count| output_macro(arg_count, false, has_calling_conventions, false)}
-    num_fake_generators.times {|arg_count| output_macro(arg_count, false, has_calling_conventions, true)}
+    num_fake_generators.times {|arg_count| output_macro(arg_count, false, has_calling_conventions, false, preamble)}
+    num_fake_generators.times {|arg_count| output_macro(arg_count, false, has_calling_conventions, true, preamble)}
     # generate the varargs variants
-    (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, has_calling_conventions, false)}
-    (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, has_calling_conventions, true)}
+    (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, has_calling_conventions, false, preamble)}
+    (2..$MAX_ARGS).each {|arg_count| output_macro(arg_count, true, has_calling_conventions, true, preamble)}
   }
 }
