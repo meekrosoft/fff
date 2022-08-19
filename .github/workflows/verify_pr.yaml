@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - master
+  push:
+
 
 jobs:
   check-pr:
@@ -13,9 +15,11 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v3
-      - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build
+      - uses: seanmiddleditch/gha-setup-ninja@master
       - name: Build
-        run: cmake --build ${{github.workspace}}/build
-      - name: Test
-        run: ctest --test-dir ${{github.workspace}} --output-on-failure
+        run: |
+          mkdir build
+          cmake -GNinja -B build
+          cmake --build build
+          ctest --test-dir build --output-on-failure
+
