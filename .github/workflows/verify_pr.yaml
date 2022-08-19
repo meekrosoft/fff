@@ -17,5 +17,9 @@ jobs:
       - uses: actions/checkout@v3
       - uses: seanmiddleditch/gha-setup-ninja@master
       - name: Build
-        run: ./buildandtest
+        run: |
+          mkdir build
+          cmake -GNinja -B build
+          cmake --build build
+          ctest --test-dir build --output-on-failure
 
