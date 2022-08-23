@@ -70,6 +70,11 @@ add_test(
 )
 
 add_test(
+    NAME cpp_global_test
+    COMMAND $<TARGET_FILE:cpp_global_test>
+)
+
+add_test(
     NAME c_preamble_test
     COMMAND $<TARGET_FILE:c_global_test>
 )
