@@ -34,6 +34,25 @@ add_executable(cpp_global_test
 )
 target_link_libraries(cpp_global_test PRIVATE gtest fff)
 
+# genertae fff_preamble.h so we can test --preamble command
+add_custom_command(
+  OUTPUT
+    ${CMAKE_CURRENT_LIST_DIR}/fff_preamble.h
+  COMMAND
+    ruby ${CMAKE_CURRENT_LIST_DIR}/../fakegen.rb --preamble __wrap_ >> ${CMAKE_CURRENT_LIST_DIR}/fff_preamble.h
+  DEPENDS
+    ${CMAKE_CURRENT_LIST_DIR}/../fakegen.rb
+    ${CMAKE_CURRENT_LIST_DIR}/../LICENSE
+)
+add_custom_target(fff_preamble_h DEPENDS ${CMAKE_CURRENT_LIST_DIR}/fff_preamble.h)
+
+# Create the test executable to test fff_preamble.h
+add_executable(c_preamble_test
+    fff_preamble.h
+    fff_test_preamble.c
+    ${COMMON_FILE_LIST}
+)
+
 # Add the tests for ctest
 add_test(
     NAME c_test
@@ -53,4 +72,9 @@ add_test(
 add_test(
     NAME cpp_global_test
     COMMAND $<TARGET_FILE:cpp_global_test>
+)
+
+add_test(
+    NAME c_preamble_test
+    COMMAND $<TARGET_FILE:c_global_test>
 )

@@ -627,6 +627,21 @@ You can mark all fakes with the weak attribute like so:
 
 See the example project that demonstrates the above approach: _./examples/weak_linking_.
 
+## Specifying a preamble in the mock funtion name
+
+You can make fff add a preamble to the mock function name by generating fff.h as below
+```
+ruby fakegen.rb --preamble bar_
+```
+This will cause the mock of function foo() to be named as bar_foo() for every mocked function foo().
+
+This is useful if one needs to build with the real function included. Note that references to the real function will need to change to refer to the new mock function name, this can be done with the help of linkers.
+
+One example is below,
+- Use method described here to name function foo() as __wrap_foo()
+- use the GNU linker option -Wl,--wrap foo to re-route all references to foo() to __wrap_foo()
+- Set 'foo_fake.custom_fake' field to point to the real version of foo(), this will now be named as __real_foo()
+
 ## Find Out More
 
 Look under the examples directory for full length examples in both C and C++.
