@@ -459,9 +459,17 @@ The basic mechanism that fff provides you in this case is the custom_fake field 
 
 You need to create a custom function (e.g. getTime_custom_fake) to produce the output optionally by use of a helper variable (e.g. getTime_custom_now) to retrieve that output from. Then some creativity to tie it all together. The most important part (IMHO) is to keep your test case readable and maintainable.
 
-In case your project uses a C compiler that supports nested functions (e.g. GCC) you can even combine all this in a single unit test function so you can easily oversee all details of the test.
+In case your project uses a C compiler that supports nested functions (e.g. GCC), or when using C++ lambdas, you can even combine all this in a single unit test function so you can easily oversee all details of the test.
 
 ```c
+#include <functional>
+
+/* Configure FFF to use std::function, which enables capturing lambdas */
+#define CUSTOM_FFF_FUNCTION_TEMPLATE(RETURN, FUNCNAME, ...) \
+    std::function<RETURN (__VA_ARGS__)> FUNCNAME
+
+#include "fff.h"
+
 /* The time structure */
 typedef struct {
    int hour, min;
@@ -474,15 +482,13 @@ FAKE_VOID_FUNC(getTime, Time*);
 TEST_F(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_output)
 {
     Time t;
-    Time getTime_custom_now;
-    void getTime_custom_fake(Time *now) {
-        *now = getTime_custom_now;
-    }
-    getTime_fake.custom_fake = getTime_custom_fake;
-
-    /* given a specific time */
-    getTime_custom_now.hour = 13;
-    getTime_custom_now.min  = 05;
+    Time getTime_custom_now = {
+        .hour = 13,
+        .min = 05,
+    };
+    getTime_fake.custom_fake = [getTime_custom_now](Time *now) {
+      *now = getTime_custom_now;
+    };
 
     /* when getTime is called */
     getTime(&t);

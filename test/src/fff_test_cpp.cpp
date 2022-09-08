@@ -13,7 +13,7 @@
 #define FFF_CALL_HISTORY_LEN OVERRIDE_CALL_HIST_LEN
 
 #include "fff.h"
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 DEFINE_FFF_GLOBALS
 

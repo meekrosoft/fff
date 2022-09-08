@@ -1,8 +1,8 @@
 #ifndef GLOBAL_FAKES_H_
 #define GLOBAL_FAKES_H_
 
-#include "fff.h"
-#include "string.h"
+#include <fff.h>
+#include <string.h>
 
 
 ////  Imaginary production code header file ///

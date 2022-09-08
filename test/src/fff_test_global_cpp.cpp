@@ -2,7 +2,7 @@
 extern "C"{
     #include "global_fakes.h"
 }
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 DEFINE_FFF_GLOBALS;
 
