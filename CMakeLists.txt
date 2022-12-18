@@ -2,15 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 cmake_minimum_required(VERSION 3.20.0)
+option(FFF_BUILD_TESTS "Whether or not to build the tests" ON)
+option(FFF_BUILD_EXAMPLES "Whether or not to build the examples" ON)
+
 project(fff)
 
 set(CMAKE_CXX_STANDARD 11)
-
-# Add the gtest library which will be used below
-add_subdirectory(gtest)
-
-# Enable ctest
-enable_testing()
 
 # Generate fff.h if fakegen.rb changed
 add_custom_command(
@@ -30,5 +27,16 @@ add_dependencies(fff fff_h)
 target_include_directories(fff INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
 # Add tests and samples
-add_subdirectory(test)
-add_subdirectory(examples)
+if(FFF_BUILD_TESTS)
+  # Add the gtest library which will be used below
+  add_subdirectory(gtest)
+
+  # Enable ctest
+  enable_testing()
+
+  add_subdirectory(test)
+endif()
+
+if(FFF_BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif()
