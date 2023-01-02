@@ -6,9 +6,6 @@ project(fff)
 
 set(CMAKE_CXX_STANDARD 11)
 
-# Add the gtest library which will be used below
-add_subdirectory(gtest)
-
 # Enable ctest
 enable_testing()
 
