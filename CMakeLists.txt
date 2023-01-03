@@ -26,6 +26,12 @@ add_library(fff INTERFACE)
 add_dependencies(fff fff_h)
 target_include_directories(fff INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
-# Add tests and samples
-add_subdirectory(test)
-add_subdirectory(examples)
+if(NOT DEFINED UNIT_TESTING)
+  set(UNIT_TESTING TRUE)
+endif()
+
+if(UNIT_TESTING)
+  # Add tests and samples
+  add_subdirectory(test)
+  add_subdirectory(examples)
+endif()
