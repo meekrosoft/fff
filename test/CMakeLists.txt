@@ -55,7 +55,7 @@ add_executable(cpp_custom_fn_signature_test
     ${COMMON_FILE_LIST}
 )
 target_include_directories(cpp_custom_fn_signature_test PRIVATE include)
-target_link_libraries(cpp_custom_fn_signature_test PRIVATE gtest fff)
+target_link_libraries(cpp_custom_fn_signature_test PRIVATE GTest::gtest_main fff)
 # Due to a bug in WinLibs for Windows it's not currently possible to use:
 #   target_precompile_headers(cpp_custom_fn_signature_test PUBLIC include/custom_function.hpp)
 # See more info at target_precompile_headers(cpp_custom_fn_signature_test PUBLIC include/custom_function.hpp)
