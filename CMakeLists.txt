@@ -9,9 +9,7 @@ set(CMAKE_CXX_STANDARD 11)
 # Enable ctest
 enable_testing()
 
-if(NOT DEFINED FFF_GENERATE)
-  set(FFF_GENERATE TRUE)
-endif()
+option(FFF_GENERATE "If enabled, fff.h will be regenerated using ruby" OFF)
 
 # Generate fff.h if fakegen.rb changed
 if(FFF_GENERATE)
@@ -33,9 +31,7 @@ add_library(fff INTERFACE)
 add_dependencies(fff fff_h)
 target_include_directories(fff INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
-if(NOT DEFINED FFF_UNIT_TESTING)
-  set(FFF_UNIT_TESTING TRUE)
-endif()
+option(FFF_UNIT_TESTING "If enabled, fff tests will be compiled and run" OFF)
 
 if(FFF_UNIT_TESTING)
   # Add tests and samples
