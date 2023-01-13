@@ -9,16 +9,23 @@ set(CMAKE_CXX_STANDARD 11)
 # Enable ctest
 enable_testing()
 
+if(NOT DEFINED FFF_GENERATE)
+  set(FFF_GENERATE TRUE)
+endif()
+
 # Generate fff.h if fakegen.rb changed
-add_custom_command(
-  OUTPUT
-    ${CMAKE_CURRENT_LIST_DIR}/fff.h
-  COMMAND
-    ruby ${CMAKE_CURRENT_LIST_DIR}/fakegen.rb >> ${CMAKE_CURRENT_LIST_DIR}/fff.h
-  DEPENDS
-    ${CMAKE_CURRENT_LIST_DIR}/fakegen.rb
-    ${CMAKE_CURRENT_LIST_DIR}/LICENSE
-)
+if(FFF_GENERATE)
+  add_custom_command(
+    OUTPUT
+      ${CMAKE_CURRENT_LIST_DIR}/fff.h
+    COMMAND
+      ruby ${CMAKE_CURRENT_LIST_DIR}/fakegen.rb >> ${CMAKE_CURRENT_LIST_DIR}/fff.h
+    DEPENDS
+      ${CMAKE_CURRENT_LIST_DIR}/fakegen.rb
+      ${CMAKE_CURRENT_LIST_DIR}/LICENSE
+  )
+endif()
+
 add_custom_target(fff_h DEPENDS ${CMAKE_CURRENT_LIST_DIR}/fff.h)
 
 # Add an interface library for fff.h
