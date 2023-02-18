@@ -6,11 +6,17 @@ project(fff)
 
 set(CMAKE_CXX_STANDARD 11)
 
-# Add the gtest library which will be used below
-add_subdirectory(gtest)
+# Enable easier enabling/disabling of example and test builds
+option(FFF_BUILD_TEST "If set to ON, unit tests will be compiled" ON)
+option(BuildExample "If set to ON, examples will be compiled" ON)
 
-# Enable ctest
-enable_testing()
+if(FFF_BUILD_TEST)
+  # Add the gtest library which will be used below
+  add_subdirectory(gtest)
+
+  # Enable ctest
+  enable_testing()
+endif()
 
 # Generate fff.h if fakegen.rb changed
 add_custom_command(
@@ -30,5 +36,9 @@ add_dependencies(fff fff_h)
 target_include_directories(fff INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
 # Add tests and samples
-add_subdirectory(test)
-add_subdirectory(examples)
+if(FFF_BUILD_TEST)
+  add_subdirectory(test)
+endif()
+if(BuildExample)
+  add_subdirectory(examples)
+endif()
