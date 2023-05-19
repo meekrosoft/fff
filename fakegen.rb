@@ -456,7 +456,7 @@ def output_function_body(arg_count, has_varargs, is_value_function)
       putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
       putd_backslash "va_end(ap);"  unless not is_value_function
       putd_backslash "return ret;" unless not is_value_function
-      putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)}, ap);"
+      putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)}, ap);" unless is_value_function
       putd_backslash "va_end(ap);" unless is_value_function
       }
       putd_backslash "}"
@@ -497,7 +497,7 @@ def output_function_body(arg_count, has_varargs, is_value_function)
         putd_backslash "RETURN_TYPE ret = FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)});" unless not is_value_function
         putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
         putd_backslash "return ret;" unless not is_value_function
-        putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)});"
+        putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake_seq[FUNCNAME##_fake.custom_fake_seq_len-1](#{arg_list(arg_count)});" unless is_value_function
       }
       putd_backslash "}"
     }
@@ -507,7 +507,7 @@ def output_function_body(arg_count, has_varargs, is_value_function)
         putd_backslash "RETURN_TYPE ret = FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)});" unless not is_value_function
         putd_backslash "SAVE_RET_HISTORY(FUNCNAME, ret);" unless not is_value_function
         putd_backslash "return ret;" unless not is_value_function
-        putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)});"
+        putd_backslash "#{return_type}FUNCNAME##_fake.custom_fake(#{arg_list(arg_count)});" unless is_value_function
     }
     putd_backslash "}"
   end
