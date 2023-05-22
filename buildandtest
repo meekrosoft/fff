@@ -6,7 +6,7 @@ rm -fr build fff.h
 mkdir build
 
 # Configure the build
-cmake -GNinja -B build || exit -1
+cmake -B build -DFFF_GENERATE=ON -DFFF_UNIT_TESTING=ON || exit -1
 
 # Build all targets
 cmake --build build || exit -1
