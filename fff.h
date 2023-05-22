@@ -46,10 +46,12 @@ SOFTWARE.
 /* -- INTERNAL HELPER MACROS -- */
 #define SET_RETURN_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
     FUNCNAME##_fake.return_val_seq = ARRAY_POINTER; \
-    FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN;
+    FUNCNAME##_fake.return_val_seq_len = ARRAY_LEN; \
+    FUNCNAME##_fake.return_val_seq_idx = 0;
 #define SET_CUSTOM_FAKE_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
     FUNCNAME##_fake.custom_fake_seq = ARRAY_POINTER; \
-    FUNCNAME##_fake.custom_fake_seq_len = ARRAY_LEN;
+    FUNCNAME##_fake.custom_fake_seq_len = ARRAY_LEN; \
+    FUNCNAME##_fake.custom_fake_seq_idx = 0;
 
 /* Defining a function to reset a fake function */
 #define RESET_FAKE(FUNCNAME) { \
