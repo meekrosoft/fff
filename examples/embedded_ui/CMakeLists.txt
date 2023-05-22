@@ -9,7 +9,7 @@ target_link_libraries(ui_test_ansic PRIVATE fff)
 # Create the ui_test_cpp test binary
 add_executable(ui_test_cpp src/UI_test_cpp.cpp src/UI.c)
 target_include_directories(ui_test_cpp PRIVATE include)
-target_link_libraries(ui_test_cpp PRIVATE gtest fff)
+target_link_libraries(ui_test_cpp PRIVATE GTest::gtest_main fff)
 
 # Add tests to ctest
 add_test(

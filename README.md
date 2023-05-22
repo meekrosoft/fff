@@ -35,7 +35,7 @@ To run all the tests and sample apps, simply call `$ buildandtest`. This script
 will call down into CMake with the following:
 
 ```shell
-cmake -GNinja -B build
+cmake -B build -DFFF_GENERATE=ON -DFFF_UNIT_TESTING=ON
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
