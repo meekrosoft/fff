@@ -198,7 +198,20 @@ void setup()
 }
 ```
 
-You might want to define a macro to do this:
+If you simply want to reset all called fakes, you can do so like this:
+
+```c
+void setup()
+{
+  /* call resets of all previously called fakes */
+  FFF_RESET_CALLED_FAKES();
+
+  /* reset common FFF internal structures */
+  FFF_RESET_HISTORY();
+}
+```
+
+Alternatively, you might want to define a macro to do this:
 
 ```c
 /* List of fakes used by this unit tester */
@@ -663,3 +676,4 @@ So whats the point?
 | FAKE_VOID_FUNC_VARARG(fn [,arg_types*], ...); | Define a fake variadic function returning void with type return_type taking n arguments and n variadic arguments | FAKE_VOID_FUNC_VARARG(fn, const char*, ...) |
 | FAKE_VALUE_FUNC_VARARG(return_type, fn [,arg_types*], ...); | Define a fake variadic function returning a value with type return_type taking n arguments and n variadic arguments | FAKE_VALUE_FUNC_VARARG(int, fprintf, FILE*, const char*, ...) |
 | RESET_FAKE(fn); | Reset the state of fake function called fn | RESET_FAKE(DISPLAY_init); |
+| FFF_RESET_CALLED_FAKES(); | Reset the state of all called fake functions globally | FFF_RESET_CALLED_FAKES(); |

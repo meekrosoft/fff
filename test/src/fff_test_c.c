@@ -49,15 +49,7 @@ FAKE_VALUE_FUNC(int, __cdecl, valuefunc20, int, int, int, int, int, int, int, in
 
 void setup()
 {
-    RESET_FAKE(voidfunc1);
-    RESET_FAKE(voidfunc2);
-    RESET_FAKE(voidfunc1outparam);
-    RESET_FAKE(longfunc0);
-    RESET_FAKE(enumfunc0);
-    RESET_FAKE(structfunc0);
-    RESET_FAKE(voidfunc3var);
-    RESET_FAKE(valuefunc3var);
-    RESET_FAKE(strlcpy3);
+    FFF_RESET_CALLED_FAKES();
     FFF_RESET_HISTORY();
 }
 
@@ -123,6 +115,11 @@ int main()
 
     RUN_TEST(FFFTestSuite, can_capture_upto_20_arguments_correctly);
     RUN_TEST(FFFTestSuite, value_func_can_capture_upto_20_arguments_correctly);
+
+    RUN_TEST(FFFTestSuite, reset_list_index_is_incremented_upon_call_of_fake);
+    RUN_TEST(FFFTestSuite, reset_list_index_is_reset_upon_call_of_FFF_RESET_CALLED_FAKES);
+    RUN_TEST(FFFTestSuite, called_fakes_are_reset_upon_call_of_FFF_RESET_CALLED_FAKES);
+    RUN_TEST(FFFTestSuite, reset_list_stores_unique_entries_only);
 
     printf("\n-------------\n");
     printf("Complete\n");
