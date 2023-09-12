@@ -68,6 +68,9 @@ TEST_F(FFFTestSuite, when_fake_func_called_then_const_arguments_captured)
 {
     char dst[80];
     strlcpy3(dst, __FUNCTION__, sizeof(__FUNCTION__));
+    ASSERT_EQ(strlcpy3_fake.arg0_val, dst);
+    ASSERT_EQ(strlcpy3_fake.arg1_val, __FUNCTION__);
+    ASSERT_EQ(strlcpy3_fake.arg2_val, sizeof(__FUNCTION__));
 }
 #endif /* __cplusplus */
 
