@@ -107,12 +107,16 @@ int main()
     RUN_TEST(FFFTestSuite, call_history_will_not_write_past_array_bounds);
     RUN_TEST(FFFTestSuite, calling_fake_registers_one_call);
 
+    RUN_TEST(FFFTestSuite, return_value_saved_in_history);
+    RUN_TEST(FFFTestSuite, return_value_sequences_reset);
+    RUN_TEST(FFFTestSuite, return_value_sequence_saved_in_history);
     RUN_TEST(FFFTestSuite, return_value_sequences_not_exhausted);
     RUN_TEST(FFFTestSuite, return_value_sequences_exhausted);
     RUN_TEST(FFFTestSuite, default_constants_can_be_overridden);
 
     RUN_TEST(FFFTestSuite, can_register_custom_fake);
     RUN_TEST(FFFTestSuite, when_value_custom_fake_called_THEN_it_returns_custom_return_value);
+    RUN_TEST(FFFTestSuite, return_values_from_custom_fake_saved_in_history);
 
     RUN_TEST(FFFTestSuite, use_void_vararg_fake_with_different_number_of_arguments);
     RUN_TEST(FFFTestSuite, use_value_vararg_fake_with_different_number_of_arguments);
