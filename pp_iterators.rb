@@ -6,7 +6,7 @@
 # - http://saadahmad.ca/cc-preprocessor-metaprogramming-2/
 # - http://ptspts.blogspot.ie/2013/11/how-to-apply-macro-to-all-arguments-of.html
 # - https://codecraft.co/2014/11/25/variadic-macros-tricks/ (Similar, but recursive)
-# IS_EMPTY implementation adapted from here:
+# ISEMPTY implementation adapted from here:
 # - https://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/
 
 require 'date'
@@ -164,8 +164,8 @@ EOH
 )
   end
 
-  IS_EMPTY_NO_GCC_EXTENSIONS = <<-EOH
-IS_EMPTY(...)\
+  ISEMPTY_NO_GCC_EXTENSIONS = <<-EOH
+ISEMPTY(...)\
 _ISEMPTY(\
           /* test if there is just one argument, eventually an empty one */\
           HAS_COMMA(__VA_ARGS__),\
@@ -180,14 +180,14 @@ EOH
 
   def is_empty
     CFile::if_gcc_extensions_available(
-      CFile::define_macro("IS_EMPTY(...)  NOT(PP_NARG(__VA_ARGS__))"),
+      CFile::define_macro("ISEMPTY(...)  NOT(PP_NARG(__VA_ARGS__))"),
       CFile::define_macros([
-                             IS_EMPTY_NO_GCC_EXTENSIONS,
-                             "_ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTE5(_IS_EMPTY_CASE_, _0, _1, _2, _3))",
+                             ISEMPTY_NO_GCC_EXTENSIONS,
+                             "_ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTE5(_ISEMPTY_CASE_, _0, _1, _2, _3))",
                              "HAS_COMMA(...) PP_ARG_N(__VA_ARGS__, #{'1, '*(@nargs_max-1)} 0)",
                              "_TRIGGER_PARENTHESIS_(...) ,",
                              "PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4",
-                             "_IS_EMPTY_CASE_0001 ,"
+                             "_ISEMPTY_CASE_0001 ,"
                            ])
     )
   end
@@ -198,7 +198,7 @@ EOH
 #define TAIL(FIRST, ...) __VA_ARGS__
 
 #define TEST_LAST EXISTS(1)
-#define NOT_EMPTY(...) NOT(IS_EMPTY(__VA_ARGS__))
+#define NOT_EMPTY(...) NOT(ISEMPTY(__VA_ARGS__))
 #{is_empty}
 EOH
                         )
